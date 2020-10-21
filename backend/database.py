@@ -28,7 +28,6 @@ class User(db.Entity):
     Players = Set('Player')
     Matches = Set('Match')
 
-db.generate_mapping(create_tables=True)
 
 
-
+db.generate_mapping(create_tables=True)  
