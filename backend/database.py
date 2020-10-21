@@ -1,7 +1,6 @@
 from pony.orm import *
 
 db = Database()
-<<<<<<< HEAD
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)  
 
 SecretRolDiccionary = {0:"Voldemort",
@@ -21,10 +20,15 @@ class Player(db.Entity):
     UserId = Optional('User')
     MatchId = Optional('Match')
 
-
-db.generate_mapping(create_tables=True)  
-=======
-db.bind('sqlite', 'example.sqlite', create_db=True)
+class User(db.Entity):
+    Id = PrimaryKey(int, auto=True)
+    Email = Required(str, unique=True)
+    Username = Required(str, max_len=30, unique=True)
+    Password = Required(str, hidden=True, max_len=30)
+    Players = Set('Player')
+    Matches = Set('Match')
 
 db.generate_mapping(create_tables=True)
->>>>>>> SV-51 #time 10m #comment setting database, nothing to test. #done
+
+
+
