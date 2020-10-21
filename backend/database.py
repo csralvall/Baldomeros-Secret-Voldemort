@@ -30,7 +30,6 @@ class Match(db.Entity):
     Board = Optional('Board')
     Creator = Required('User')
     
-
 class Board(db.Entity):
     Id = PrimaryKey(int, auto=True)
     BoardType = Required(int, min=0, max=2)
@@ -38,7 +37,6 @@ class Board(db.Entity):
     DeathEaterProclamations = Optional(int, min=0, max=5)
     FailedElectionsCount = Optional(int)
     Match = Required(Match)
-
 
 class Player(db.Entity):
     PlayerId = PrimaryKey(int, auto=True)
