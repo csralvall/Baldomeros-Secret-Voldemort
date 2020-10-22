@@ -5,18 +5,18 @@ import { login } from "./../actions/login";
 
 function Login() {
   
-  const [user,setUser] = useState({username : "",password : ""});
+  const [userInput,setUser] = useState({username : "",password : ""});
   
   const changeUsername = (e) => { 
     setUser({username : e.target.value,
-              password: user.password})
+              password: userInput.password})
     }
 
   const changePassword = (e) => { 
-    setUser({username : user.username,
+    setUser({username : userInput.username,
               password: e.target.value})
     }
-  const logged_in = useSelector((state) => state.logged_in);
+  const logged_in = useSelector((state) => state.user.logged_in);
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -27,20 +27,22 @@ function Login() {
     // )
     // const data = await response.json
     
-    const data = user.username = "Tom Riddle" && user.password == "123"
-    dispatch(login(data));
-    if(data) history.push("/");
+    const data = {logged_in : false, username : "Tom Riddle", id: 1};
+    data.logged_in = userInput.username == "Tom Riddle" && userInput.password == "123"
+    
+    if(data.logged_in){
+      dispatch(login(data));
+      history.push("/");
+    }
   }
 
   return (
     <div>
       <h3>Username</h3>
-      <input value = {user.username} onChange = { e => (changeUsername(e))}/>
+      <input value = {userInput.username} onChange = { e => (changeUsername(e))}/>
       <h3>Password</h3>
-      <input value = {user.password} onChange = { e => (changePassword(e))}/>
-      <button onClick={ () => {handleClick()}}>
-        {logged_in ? "Logout" : "Login"}
-      </button>
+      <input value = {userInput.password} onChange = { e => (changePassword(e))}/>
+      <button onClick={ () => {handleClick()}}>Login</button>
     </div>
   );
 }
