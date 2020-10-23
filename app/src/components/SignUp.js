@@ -1,91 +1,103 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { signUp } from "./../actions/signUpAction";
+import React, { useEffect, useState, useRef } from "react";
 
 function SignUp() {
-  const [userProps, setUserProps] = useState({
-    username: "",
-    password: "",
-    email: "",
-  });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [userProps, setUserProps] = useState({});
+  const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
+
+  const loaded = useRef(false);
+  useEffect(() => {
+    if (loaded.current) {
+      registerUser();
+    } else {
+      loaded.current = true;
+    }
+  }, [userProps]);
 
   const updateUsername = (e) => {
-    setUserProps({
-      username: e.target.value,
-      password: userProps.password,
-      email: userProps.email,
-    });
+    setUsername(e.target.value);
   };
 
   const updatePassword = (e) => {
-    setUserProps({
-      username: userProps.username,
-      password: e.target.value,
-      email: userProps.email,
-    });
+    setPassword(e.target.value);
   };
 
   const updateEmail = (e) => {
-    setUserProps({
-      username: userProps.username,
-      password: userProps.password,
-      email: e.target.value,
-    });
+    setEmail(e.target.value);
   };
 
-  const dispatch = useDispatch();
+  const registerUser = async () => {
+    const url = "http://127.0.0.1:8000";
+
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", password);
+    formData.append("email", email);
+
+    const response = await fetch(url + "/account", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.detail);
+    } else {
+      setIsSignUpSuccess(true);
+    }
+  };
 
   const getUserProps = (e) => {
     e.preventDefault();
-    dispatch(signUp());
-    console.log(userProps);
+    setUserProps({
+      username: username,
+      password: password,
+      email: email,
+    });
   };
 
-  const hasSignedUp = useSelector((state) => state.hasSignedUp);
-
-  return (
+  const signUpFormJSX = (
     <div>
-      {hasSignedUp ? (
-        <h1>Succesfully Registered</h1>
-      ) : (
-        <div>
-          <h1>Sign Up</h1>
-          <form onSubmit={getUserProps}>
-            <label>
-              Username
-              <input
-                className="text-input"
-                type="text"
-                value={userProps.username}
-                onChange={updateUsername}
-                required
-              />
-            </label>
-            <label>
-              Password
-              <input
-                className="text-input"
-                type="password"
-                value={userProps.password}
-                onChange={updatePassword}
-                required
-              />
-            </label>
-            <label>
-              E-Mail
-              <input
-                className="text-input"
-                type="email"
-                value={userProps.email}
-                onChange={updateEmail}
-                required
-              />
-            </label>
-            <button type="submit">Sign Up!</button>
-          </form>
-        </div>
-      )}
+      <h1>Sign Up</h1>
+      <form onSubmit={getUserProps}>
+        <label>
+          Username
+          <input
+            className="text-input"
+            type="text"
+            value={username}
+            onChange={updateUsername}
+            required
+          />
+        </label>
+        <label>
+          Password
+          <input
+            className="text-input"
+            type="password"
+            value={password}
+            onChange={updatePassword}
+            required
+          />
+        </label>
+        <label>
+          E-Mail
+          <input
+            className="text-input"
+            type="email"
+            value={email}
+            onChange={updateEmail}
+            required
+          />
+        </label>
+        <button type="submit">Sign Up!</button>
+      </form>
     </div>
   );
+
+  return <div>{isSignUpSuccess ? <h1>Success!</h1> : signUpFormJSX}</div>;
 }
+
 export default SignUp;
