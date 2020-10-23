@@ -3,7 +3,7 @@ import matchReducer from "./match";
 import { combineReducers } from "redux";
 
 const reducers = combineReducers({
-  logged_in: loginReducer,
+  user: loginReducer,
   match: matchReducer
 });
 
