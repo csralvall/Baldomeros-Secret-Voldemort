@@ -1,5 +1,8 @@
 from pony.orm import *
 
+db = Database()
+db.bind(provider='sqlite', filename='database.sqlite', create_db=True)  
+
 Status = {0: "Joinable",
           1: "In Game",
           2: "Finished"}
@@ -16,6 +19,7 @@ class Match(db.Entity):
     BoardType = Required(int, min=0, max=2)
     Players = Set('Player')
     Board = Optional('Board')
+    Creator = Required('User')
     
 
 class Board(db.Entity):
@@ -25,3 +29,5 @@ class Board(db.Entity):
     DeathEaterProclamations = Optional(int, min=0, max=5)
     FailedElectionsCount = Optional(int)
     Match = Required(Match)
+
+db.generate_mapping(create_tables=True)  
