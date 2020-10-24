@@ -1,6 +1,6 @@
 import unittest 
 from ..crud import create_user, delete_data
-from ..model import *
+from ..database import *
 
 class TestCrud(unittest.TestCase):
 
