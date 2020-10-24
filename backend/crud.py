@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from pony.orm import db_session, select, count
 from .database import *
 
@@ -35,3 +36,6 @@ def get_user(username, password):
         user = user.to_dict("Id Username")
     return user
 
+=======
+from .database import *
+>>>>>>> SV-51 #time 10m #comment setting database, nothing to test. #done
