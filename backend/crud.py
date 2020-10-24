@@ -1,5 +1,5 @@
 from pony.orm import *
-from .model import *
+from .database import *
 
 @db_session
 def create_user(email: str, username: str, password: str):
