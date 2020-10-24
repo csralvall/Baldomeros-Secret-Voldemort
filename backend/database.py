@@ -1,5 +1,8 @@
 from pony.orm import *
 
+db = Database()
+db.bind(provider='sqlite', filename='database.sqlite', create_db=True)  
+
 SecretRolDiccionary = {0:"Voldemort",
                        1: "Death Eater",
                        2: "Order of The Phoenix"}
@@ -15,4 +18,7 @@ class Player(db.Entity):
     GovRol = Required(int, min=0, max=2)
     IsDead = Required(bool)
     UserId = Optional('User')
-    MatchId = Optional(Match)
+    MatchId = Optional('Match')
+
+
+db.generate_mapping(create_tables=True)  
