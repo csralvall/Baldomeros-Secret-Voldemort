@@ -32,3 +32,4 @@ class Board(db.Entity):
     Match = Required(Match)
 
 db.generate_mapping(create_tables=True)  
+
