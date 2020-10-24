@@ -37,6 +37,12 @@ class TestCrud(unittest.TestCase):
     def test_check_mail_3(self):
         self.assertFalse(check_email(""))
 
+    def test_get_user(self):
+        self.assertEqual(get_user("mati", "123456"), {"Id": 12, "Username": "mati"})
+
+    def test_get_user_2(self):
+        self.assertEqual(get_user("matii", "asfa"), None)
+
 if __name__ == '__main__':
     unittest.main()
 
