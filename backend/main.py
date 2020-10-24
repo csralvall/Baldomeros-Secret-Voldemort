@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from .crud import *
 
 from backend.db.crud import *
 from backend.api.routers import users
