@@ -124,3 +124,97 @@ def test_register_user_correct():
         "email": "foo@gmail.com",
         "username": "foo"}
 
+def test_login_user_correct_user():
+
+    response = client.post(
+        "/account",
+        data={
+            "email": "bar@gmail.com",
+            "username": "bar",
+            "password": "bar"}
+    )
+
+    response = client.post(
+        "/session",
+        data={
+            "username": "bar",
+            "password": "bar"}
+    )
+
+    delete_user("bar@gmail.com","bar","bar")
+
+    assert response.status_code == 200
+    assert response.json()['username'] == "bar"
+
+def test_login_user_bad_name():
+
+    response = client.post(
+        "/account",
+        data={
+            "email": "bar@gmail.com",
+            "username": "bar",
+            "password": "bar"}
+    )
+
+    response = client.post(
+        "/session",
+        data={
+            "username": "car",
+            "password": "bar"}
+    )
+
+    delete_user("bar@gmail.com","bar","bar")
+
+    assert response.status_code == 401
+    assert response.json() == {
+        "detail": "User not found"
+    }
+
+def test_login_user_bad_password():
+
+    response = client.post(
+        "/account",
+        data={
+            "email": "bar@gmail.com",
+            "username": "bar",
+            "password": "bar",
+        },
+    )
+
+    response = client.post(
+        "/session",
+        data={
+            "username": "bar",
+            "password": "zar"}
+    )
+
+    delete_user("bar@gmail.com","bar","bar")
+
+    assert response.status_code == 401
+    assert response.json() == {
+        "detail": "User not found"
+    }
+
+def test_login_user_empty_username():
+
+    response = client.post(
+        "/session",
+        data={
+            "username": "",
+            "password": "zar"}
+    )
+
+    assert response.status_code == 422
+    assert response.json()['detail'][0]['msg'] == "field required"
+
+def test_login_user_empty_password():
+
+    response = client.post(
+        "/session",
+        data={
+            "username": "",
+            "password": "zar"}
+    )
+
+    assert response.status_code == 422
+    assert response.json()['detail'][0]['msg'] == "field required"
