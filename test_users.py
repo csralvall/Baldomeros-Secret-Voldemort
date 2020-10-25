@@ -218,4 +218,3 @@ def test_login_user_empty_password():
 
     assert response.status_code == 422
     assert response.json()['detail'][0]['msg'] == "field required"
-

@@ -46,4 +46,4 @@ async def autenticate_user(
     user = {k.lower(): v for k, v in user.items()}
 
     return user
-
+  
