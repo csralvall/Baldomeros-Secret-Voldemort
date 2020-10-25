@@ -39,14 +39,21 @@ function SignUp() {
     const response = await fetch(url + "/account", {
       method: "POST",
       body: formData,
-    });
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.detail);
-    } else {
-      setIsSignUpSuccess(true);
-    }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          if (response.status === 409) {
+            alert("Username or E-Mail already exist");
+          } else {
+            alert("Could not Sign Up. Unknown Error.");
+          }
+        } else {
+          setIsSignUpSuccess(true);
+        }
+      })
+      .catch(() => {
+        alert("Network Error");
+      });
   };
 
   const getUserProps = (e) => {
