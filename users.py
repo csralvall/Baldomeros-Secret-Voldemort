@@ -7,13 +7,7 @@ from typing import Optional
 
 app = FastAPI()
 
-@app.get("/")
-def db_dump():
-    with db_session:
-        q = select(p for p in db.User)
-        return [p.to_dict() for p in q]
-
-@app.post("/account", tags=["user"])
+@app.post("/account", tags=['user'], status_code=201)
 async def register_user(
     email: EmailStr = Form(...),
     username: str = Form(...),
@@ -31,7 +25,7 @@ async def register_user(
     password_ = password.get_secret_value()
 
     if not create_user(email, username, password_):
-        raise HTTPException(status_code=409, detail="Unable to register user")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
     return user
 
