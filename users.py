@@ -7,7 +7,7 @@ from typing import Optional
 
 app = FastAPI()
 
-@app.post("/account", tags=['user'], status_code=201)
+@app.post("/account", tags=["User"], status_code=201)
 async def register_user(
     email: EmailStr = Form(...),
     username: str = Form(...),
@@ -29,5 +29,21 @@ async def register_user(
 
     return user
 
+@app.post("/session", tags=["User"], status_code=200)
+async def autenticate_user(
+    username: str = Form(...),
+    password: SecretStr = Form(...)):
 
+    password_ = password.get_secret_value()
 
+    user = get_user(username, password_)
+
+    if user is None:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    user['token'] = 145
+
+    user = {k.lower(): v for k, v in user.items()}
+
+    return user
+  
