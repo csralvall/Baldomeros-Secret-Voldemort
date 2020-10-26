@@ -1,7 +1,24 @@
 from pony.orm import *
 
 db = Database()
-db.bind('sqlite', 'example.sqlite', create_db=True)
+db.bind(provider='sqlite', filename='database.sqlite', create_db=True)  
+
+SecretRolDiccionary = {0:"Voldemort",
+                       1: "Death Eater",
+                       2: "Order of The Phoenix"}
+
+GovRolDiccionary = {0: "HeadMaster",
+                    1: "Magic Minister",
+                    2: "Citizen"}
+
+class Player(db.Entity):
+    PlayerId = PrimaryKey(int, auto=True)
+    Position = Required(int, min=0, max=5)
+    SecretRol = Required(int, min=0, max=2)
+    GovRol = Required(int, min=0, max=2)
+    IsDead = Required(bool)
+    UserId = Optional('User')
+    MatchId = Optional('Match')
 
 class User(db.Entity):
     Id = PrimaryKey(int, auto=True)
@@ -11,6 +28,5 @@ class User(db.Entity):
     Players = Set('Player')
     Matches = Set('Match')
 
-db.generate_mapping(create_tables=True)
 
-
+db.generate_mapping(create_tables=True)  
