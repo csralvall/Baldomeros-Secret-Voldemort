@@ -15,7 +15,8 @@ function Lobby() {
     }
 
   return (
-    <div> { logged_in ?
+    <div> 
+      { logged_in ?
       (<div >
         <h1> Welcome, {user} </h1>
         <button>Create Game</button>

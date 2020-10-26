@@ -16,33 +16,64 @@ function Login() {
     setUser({username : userInput.username,
               password: e.target.value})
     }
-  const logged_in = useSelector((state) => state.user.logged_in);
+    
   const dispatch = useDispatch();
 
   const history = useHistory();
 
-  const handleClick = async () => {
-    // const response = await fetch(
-    //   'request' get {user}
-    // )
-    // const data = await response.json
-    
-    const data = {logged_in : false, username : "Tom Riddle", id: 1};
-    data.logged_in = userInput.username == "Tom Riddle" && userInput.password == "123"
-    
-    if(data.logged_in){
-      dispatch(login(data));
-      history.push("/");
-    }
+
+  const autenticateUser = async (e) => {
+    e.preventDefault();
+    const url = "http://127.0.0.1:8000";
+
+    const formData = new FormData();
+    formData.append("username", userInput.username);
+    formData.append("password", userInput.password);
+
+    const response = await fetch(url + "/session", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        const responseData = response.body.json
+        if (response.status !== 200) {
+          if (response.status === 401) {
+            alert("Username not found");
+          } else {
+            alert("Could not login. Unknown Error.");
+          }
+        } else {
+          dispatch(login(responseData));
+          history.push("/");
+        }
+      })
+      .catch(() => {
+        alert("Network Error");
+      });
+
   }
 
   return (
-    <div>
-      <h3>Username</h3>
-      <input value = {userInput.username} onChange = { e => (changeUsername(e))}/>
-      <h3>Password</h3>
-      <input value = {userInput.password} onChange = { e => (changePassword(e))}/>
-      <button onClick={ () => {handleClick()}}>Login</button>
+    <div> 
+      <h1>Enter User Info</h1>
+      <form onSubmit= {autenticateUser}>
+        <label>
+          Username
+          <input 
+            required 
+            value = {userInput.username}
+            onChange = {changeUsername}/>
+        </label>
+        <label>
+          Password
+          <input 
+          type = "password"
+          required 
+          value = {userInput.password} 
+          onChange = {changePassword}/>
+        </label> 
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
 }
