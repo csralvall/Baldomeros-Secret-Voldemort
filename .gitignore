@@ -1,2 +1,5 @@
 app/node_modules/
-
+backend/venv/lib/python3.6/site-packages/setuptools/command/__pycache__/bdist_wininst.cpython-36.pyc
+__pycache__
+venv
+example.sqlite
