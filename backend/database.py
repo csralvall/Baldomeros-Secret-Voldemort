@@ -3,6 +3,7 @@ from pony.orm import *
 db = Database()
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)  
 
+
 Status = {0: "Joinable",
           1: "In Game",
           2: "Finished"}
@@ -10,6 +11,7 @@ Status = {0: "Joinable",
 BoardType = {0: "5-6",
              1: "7-8",
              2: "9-10"}
+
 
 SecretRolDiccionary = {0:"Voldemort",
                        1: "Death Eater",
@@ -57,3 +59,4 @@ class User(db.Entity):
 
 
 db.generate_mapping(create_tables=True)  
+
