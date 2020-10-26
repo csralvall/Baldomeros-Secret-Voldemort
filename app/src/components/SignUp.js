@@ -41,7 +41,7 @@ function SignUp() {
       body: formData,
     })
       .then((response) => {
-        if (!response.ok) {
+        if (response.status !== 201) {
           if (response.status === 409) {
             alert("Username or E-Mail already exist");
           } else {
