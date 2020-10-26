@@ -11,6 +11,14 @@ BoardType = {0: "5-6",
              1: "7-8",
              2: "9-10"}
 
+SecretRolDiccionary = {0:"Voldemort",
+                       1: "Death Eater",
+                       2: "Order of The Phoenix"}
+
+GovRolDiccionary = {0: "HeadMaster",
+                    1: "Magic Minister",
+                    2: "Citizen"}
+
 class Match(db.Entity):
     Id = PrimaryKey(int, auto=True)
     MaxPlayers = Required(int, min=5, max=10)
@@ -32,6 +40,15 @@ class Board(db.Entity):
     Match = Required(Match)
 
 
+class Player(db.Entity):
+    PlayerId = PrimaryKey(int, auto=True)
+    Position = Required(int, min=0, max=5)
+    SecretRol = Required(int, min=0, max=2)
+    GovRol = Required(int, min=0, max=2)
+    IsDead = Required(bool)
+    UserId = Optional('User')
+    MatchId = Optional('Match')
+
 class User(db.Entity):
     Id = PrimaryKey(int, auto=True)
     Email = Required(str, unique=True)
@@ -40,6 +57,5 @@ class User(db.Entity):
     Players = Set('Player')
     Matches = Set('Match')
 
-db.generate_mapping(create_tables=True)
 
-
+db.generate_mapping(create_tables=True)  
