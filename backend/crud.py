@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from pony.orm import db_session, select, count
 from .database import *
 
@@ -39,3 +40,21 @@ def get_user(username, password):
 =======
 from .database import *
 >>>>>>> SV-51 #time 10m #comment setting database, nothing to test. #done
+=======
+from pony.orm import *
+from .database import *
+
+@db_session
+def create_user(email: str, username: str, password: str):
+    try:
+        User(Email=email, Username=username, Password=password)
+        return True
+    except Exception:
+        return False
+
+
+#needed for testing
+@db_session
+def delete_data(table):
+    delete(p for p in table)
+>>>>>>> Feature/sv 21 registro bd (#4)
