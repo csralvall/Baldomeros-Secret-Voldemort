@@ -13,10 +13,11 @@ BoardType = {0: "5-6",
 
 class Match(db.Entity):
     Id = PrimaryKey(int, auto=True)
-    Max_players = Required(int, min=5, max=10)
-    Min_players = Required(int, min=5, max=10)
+    MaxPlayers = Required(int, min=5, max=10)
+    MinPlayers = Required(int, min=5, max=10)
     Status = Required(int, min=0, max=2)
     BoardType = Required(int, min=0, max=2)
+    LastMinister = Optional(int)
     Players = Set('Player')
     Board = Optional('Board')
     Creator = Required('User')
