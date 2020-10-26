@@ -1,7 +1,7 @@
 from pony.orm import db_session, select, count
 from .database import *
 
-@db_session
+@db_session #Bool
 def user_is_registred(name, upassword):
     try:
         u = User.get(Username = name, Password = upassword)
@@ -15,7 +15,7 @@ def user_is_registred(name, upassword):
 @db_session
 def check_username(username):
     try: 
-        User.exists(Username=username)
+        u = User.exists(Username=username)
         return u 
     except Exception:
         return False
@@ -23,12 +23,12 @@ def check_username(username):
 @db_session
 def check_email(email):
     try: 
-        User.exists(Email=email)
+        u = User.exists(Email=email)
         return u 
     except Exception:
         return False
 
-@db_session
+@db_session #get the User object.
 def get_user(username, password):
     user = User.get(Username=username, Password=password)
     if user is not None:
