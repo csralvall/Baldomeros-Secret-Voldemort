@@ -29,5 +29,4 @@ class User(db.Entity):
     Matches = Set('Match')
 
 
-
 db.generate_mapping(create_tables=True)  
