@@ -5,7 +5,7 @@ import { useSelector, useDispatch} from "react-redux";
 function Lobby() {
 
   const user = "Tom Riddle";
-  const logged_in = useSelector((state) => state.logged_in);
+  const logged_in = useSelector((state) => state.user.logged_in);
 
 
   const history = useHistory(); 
@@ -15,7 +15,8 @@ function Lobby() {
     }
 
   return (
-    <div> { logged_in ?
+    <div> 
+      { logged_in ?
       (<div >
         <h1> Welcome, {user} </h1>
         <button>Create Game</button>
