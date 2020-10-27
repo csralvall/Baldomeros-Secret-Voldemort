@@ -5,7 +5,7 @@ import { useSelector} from "react-redux";
 import logo from "./SV_logo.png";
 
 function Nav() {
-  const logged_in = useSelector((state) => state.logged_in);
+  const logged_in = useSelector((state) => state.user.logged_in);
   return (
     <div>
       <nav>
