@@ -9,7 +9,6 @@ import reducers from "../reducers/index";
 
 
 Enzyme.configure({ adapter: new Adapter() });
-jest.mock(Login.autenticateUser)
 
 describe("Login Interface", () => {
   
@@ -66,7 +65,7 @@ describe("Login Interface", () => {
     const userInput = wrapper.find('div form input').findWhere(
       (n) => n.prop("type") === "username") 
     userInput.simulate('change', { target: { value: 'avc' } })
-    // Re render. "update" method doesn't work;
+    // Manual re-render. "update" method doesn't work;
     //this appears to be the only way
     const Input = wrapper.find('div form input').findWhere(
       (n) => n.prop("type") === "username")

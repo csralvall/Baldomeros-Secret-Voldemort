@@ -1,6 +1,6 @@
-import React, {useState} from "react";
-import { useSelector, useDispatch} from "react-redux";
-import {useHistory} from "react-router-dom";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { login } from "./../actions/login";
 
 function Login() {
@@ -8,18 +8,22 @@ function Login() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const [userInput,setUser] = useState({username : "",password : ""});
-  
-  const changeUsername = (e) => { 
-    setUser({username : e.target.value,
-              password: userInput.password})
-    }
+  const [userInput, setUser] = useState({ username: "", password: "" });
 
-  const changePassword = (e) => { 
-    setUser({username : userInput.username,
-              password: e.target.value})
-    }
-    
+  const changeUsername = (e) => {
+    setUser({
+      username: e.target.value,
+      password: userInput.password
+    })
+  }
+
+  const changePassword = (e) => {
+    setUser({
+      username: userInput.username,
+      password: e.target.value
+    })
+  }
+
   const autenticateUser = async (e) => {
     e.preventDefault();
     const url = "http://127.0.0.1:8000";
@@ -32,8 +36,8 @@ function Login() {
       method: "POST",
       body: formData,
     })
-      .then((response) => {
-        const responseData = response.body.json
+      .then(async (response) => {
+        const responseData = await response.json()
         if (response.status !== 200) {
           if (response.status === 401) {
             alert("Username not found");
@@ -52,25 +56,25 @@ function Login() {
   }
 
   return (
-    <div> 
+    <div>
       <h1>Enter User Info</h1>
-      <form onSubmit= {autenticateUser}>
+      <form onSubmit={autenticateUser}>
         <label>
           Username
-          <input 
-            type = "username"
-            required 
-            value = {userInput.username}
-            onChange = {changeUsername}/>
+          <input
+            type="username"
+            required
+            value={userInput.username}
+            onChange={changeUsername} />
         </label>
         <label>
           Password
-          <input 
-          type = "password"
-          required 
-          value = {userInput.password} 
-          onChange = {changePassword}/>
-        </label> 
+          <input
+            type="password"
+            required
+            value={userInput.password}
+            onChange={changePassword} />
+        </label>
         <button type="submit">Login</button>
       </form>
     </div>
