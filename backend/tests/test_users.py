@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 
 from backend.db.crud import delete_user
 
-from backend.api.users import app
+from backend.main import app
 
 client = TestClient(app)
 
