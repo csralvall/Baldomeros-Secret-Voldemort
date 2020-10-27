@@ -45,6 +45,36 @@ def create_user(email: str, username: str, password: str):
     except Exception:
         return False
 
+@db_session
+def add_match_db(minp,maxp,uhid):
+    try:
+        creator= User[uhid]
+        newmatch = Match(MaxPlayers=maxp,
+            MinPlayers=minp,
+            Status=0,
+            BoardType=0, #Por ahora hardcodeado
+            LastMinister = 0, #Cambia cuando empieza la partida
+            Creator = creator)
+
+        #inicializamos el tablero
+        Board(BoardType = newmatch.BoardType,
+            PhoenixProclamations = 0,
+            DeathEaterProclamations = 0,
+            FailedElectionsCount = 0,
+            Match = newmatch
+        )
+        #agregamos al creador a la tabla player
+        Player(Position = 0,
+            SecretRol = 0, #definir en el inicio de partida
+            GovRol = 0, #definir en el inicio de partida
+            IsDead = False,
+            UserId = creator,
+            MatchId = newmatch
+        )
+        return True
+    except Exception:
+        return False
+
 
 #needed for testing
 @db_session
