@@ -11,15 +11,15 @@ import {
 } from "./CreateMatchSliderProps";
 
 function CreateMatch() {
-  const isLogged = useSelector((state) => state.logged_in);
-  const username = useSelector((state) => state.username);
+  const isLogged = useSelector((state) => state.user.logged_in);
+  const userID = useSelector((state) => state.user.id);
   const [isCreateMatchSuccess, setIsCreateMatchSuccess] = useState(false);
   const [minMaxPlayers, setMinMaxPlayers] = useState({
     minPlayers: 5,
     maxPlayers: 10,
   });
   const [matchProps, setMatchProps] = useState({
-    username: username,
+    userID: userID,
     minPlayers: minMaxPlayers.minPlayers,
     maxPlayers: minMaxPlayers.maxPlayers,
   });
@@ -41,7 +41,7 @@ function CreateMatch() {
     const url = "http://127.0.0.1:8000";
 
     const formData = new FormData();
-    formData.append("username", username);
+    formData.append("userID", userID);
     formData.append("minPlayers", minMaxPlayers.minPlayers);
     formData.append("maxPlayers", minMaxPlayers.maxPlayers);
 
@@ -68,7 +68,7 @@ function CreateMatch() {
       alert("Min players can't be larger than max players!");
     } else {
       setMatchProps({
-        username: username,
+        userID: userID,
         minPlayers: minMaxPlayers.minPlayers,
         maxPlayers: minMaxPlayers.maxPlayers,
       });
