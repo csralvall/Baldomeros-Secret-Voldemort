@@ -1,7 +1,8 @@
 import unittest
 from backend.db.crud import *
 
-class TestF(unittest.TestCase):
+class TestCrudAllowedCases(unittest.TestCase):
+
     def setUp(self):
         create_user("mati@gmail.com", "mati", "123456")
 
@@ -21,10 +22,7 @@ class TestF(unittest.TestCase):
         self.assertEqual(get_user("mati", "123456")['Username'],  "mati")
 
 
-class TestCrud(unittest.TestCase):
-
-    delete_user("mati@gmail.com", "mati", "123456")
-    create_user("mati@gmail.com", "mati", "123456")
+class TestCrudBadCases(unittest.TestCase):
 
     def test_user_is_registred_2(self):
         self.assertFalse(user_is_registred("mati", "12345"))

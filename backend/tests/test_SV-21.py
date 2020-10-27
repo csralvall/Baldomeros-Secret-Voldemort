@@ -2,18 +2,17 @@ import unittest
 from backend.db.crud import create_user, delete_data
 from backend.db.database import *
 
-class TestCrud(unittest.TestCase):
+class TestCreation(unittest.TestCase):
 
     def setUp(self):
         delete_data(User)
-         
+
     def test_first(self):
         self.assertTrue(create_user("joaco@gmail.com","joaco","kajdsflaskfdjsla"))
 
     def test_second(self):
         self.assertFalse(create_user("joa@gmail.com","","hola"))
 
-    
     def test_third(self):
         self.assertFalse(create_user("","joaaaa","holaasdsad"))
 
