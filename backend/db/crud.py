@@ -26,8 +26,7 @@ def check_email(email):
         u = User.exists(Email=email)
         return u 
     except Exception:
-        pass
-        #return False
+        return False
 
 @db_session #get the User object.
 def get_user(username, password):
