@@ -1,5 +1,7 @@
 from fastapi import FastAPI
-from .crud import *
+
+from backend.db.crud import *
+from backend.api.routers import users
 
 app = FastAPI()
 
@@ -10,13 +12,7 @@ async def root():
 
 # USER
 
-@app.post("/account")
-async def register_user():
-  return {"secret voldemort": "user registration"}
-
-@app.post("/session")
-async def autenticate_user():
-  return {"secret voldemort": "user autentication"}
+app.include_router(users.router)
 
 @app.put("/session")
 async def update_session():

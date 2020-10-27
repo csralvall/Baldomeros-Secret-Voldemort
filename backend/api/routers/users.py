@@ -1,13 +1,13 @@
-from crud import *
+from backend.db.crud import *
 
-from fastapi import FastAPI, File, Form, UploadFile, HTTPException
+from fastapi import APIRouter, File, Form, UploadFile, HTTPException
 from pydantic import BaseModel, EmailStr, SecretStr
 
 from typing import Optional
 
-app = FastAPI()
+router = APIRouter()
 
-@app.post("/account", tags=["User"], status_code=201)
+@router.post("/account", tags=["User"], status_code=201)
 async def register_user(
     email: EmailStr = Form(...),
     username: str = Form(...),
@@ -29,7 +29,7 @@ async def register_user(
 
     return user
 
-@app.post("/session", tags=["User"], status_code=200)
+@router.post("/session", tags=["User"], status_code=200)
 async def autenticate_user(
     username: str = Form(...),
     password: SecretStr = Form(...)):

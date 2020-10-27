@@ -1,6 +1,5 @@
-
 from pony.orm import db_session, select, count
-from .database import *
+from backend.db.database import *
 
 @db_session #Bool
 def user_is_registred(name, upassword):
@@ -105,3 +104,10 @@ def add_match_db(minp,maxp,uhid):
 def delete_data(table):
     delete(p for p in table)
 
+@db_session
+def delete_user(email, username, password):
+    user = User.get(Email=email, Username=username, Password=password)
+    if user is not None:
+        user.delete()
+
+    return user
