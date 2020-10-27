@@ -4,7 +4,10 @@ import {useHistory} from "react-router-dom";
 import { login } from "./../actions/login";
 
 function Login() {
-  
+
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   const [userInput,setUser] = useState({username : "",password : ""});
   
   const changeUsername = (e) => { 
@@ -17,11 +20,6 @@ function Login() {
               password: e.target.value})
     }
     
-  const dispatch = useDispatch();
-
-  const history = useHistory();
-
-
   const autenticateUser = async (e) => {
     e.preventDefault();
     const url = "http://127.0.0.1:8000";
@@ -60,6 +58,7 @@ function Login() {
         <label>
           Username
           <input 
+            type = "username"
             required 
             value = {userInput.username}
             onChange = {changeUsername}/>
