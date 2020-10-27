@@ -37,7 +37,7 @@ function Login() {
       body: formData,
     })
       .then(async (response) => {
-        const responseData = await response.json()
+        const responseData = await response.json();
         if (response.status !== 200) {
           if (response.status === 401) {
             alert("Username not found");
