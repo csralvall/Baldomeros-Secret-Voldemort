@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException
+from backend.db.crud import *
 
-
-def there_space(mid): return True # esta hardcodeado para un solo usurio
 def put_user_in_match(mid,user): return True # esperar funcion de Feltes
 
 @app.post("/game/{gid}")
