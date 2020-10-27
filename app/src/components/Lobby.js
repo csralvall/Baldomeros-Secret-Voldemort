@@ -7,10 +7,11 @@ function Lobby() {
 
   //Esto vendría de useSelector
   const user = {username:"Tom Riddle",id:1,autenticator:true};
-  const logged_in = useSelector((state) => state.logged_in);
+  const logged_in = useSelector((state) => state.user.logged_in);
 
   return (
-    <div> { logged_in ?
+    <div> 
+      { logged_in ?
       (<div >
         <h1> Welcome, {user.username} </h1>
         <button>Create Game</button>
