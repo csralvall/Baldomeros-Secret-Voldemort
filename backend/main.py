@@ -4,11 +4,7 @@ from backend.db.crud import *
 
 from backend.api.routers import users, newgame
 
-from backend.db.crud import *
-from backend.api.routers import users
-
 app = FastAPI()
-
 
 @app.get("/")
 async def root():
