@@ -11,6 +11,6 @@ async def create_match(minp: int, maxp: int, uhid: int):
     if (newmatch is not None): 
         return newmatch
     else:
-        raise HTTPException(status_code=404, detail="couldnt create a game")  
+        raise HTTPException(status_code=404, detail="couldnt create the game")  
 
 
