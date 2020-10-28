@@ -1,6 +1,6 @@
 import unittest 
-from ..crud import *
-from ..database import *
+from backend.db.crud import *
+from backend.db.database import *
 
 class TestAddMatch(unittest.TestCase):
 

@@ -67,13 +67,14 @@ def add_board(newmatch):
     return newboard
 
 @db_session
-def add_user_in_match(user, matchid, position):
+def add_user_in_match(userid, matchid, position):
     mymatch = Match[matchid]
+    myuser= User[userid]
     newplayer = Player(Position = position,
         SecretRol = 0, #Changes when the match starts
         GovRol = 0, #Changes when the match starts
         IsDead = False,
-        UserId = user,
+        UserId = myuser,
         MatchId = mymatch)
     return newplayer
 
@@ -90,7 +91,7 @@ def add_match_db(minp,maxp,uhid):
     if match is not None:
         matchId= match.to_dict("Id")["Id"]
         add_board(match)
-        player = add_user_in_match(creator, matchId, 0)# add the creeator to player table 
+        player = add_user_in_match(uhid, matchId, 0)# add the creeator to player table 
         match_and_player = {
             "Match_id": matchId,
             "Player_id": player.to_dict("PlayerId")["PlayerId"]
