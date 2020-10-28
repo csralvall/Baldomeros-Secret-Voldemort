@@ -44,6 +44,61 @@ def create_user(email: str, username: str, password: str):
     except Exception:
         return False
 
+@db_session
+def add_match(minp,maxp,creator):
+    try:
+        newmatch = Match(MaxPlayers=maxp,
+            MinPlayers=minp,
+            Status=0,
+            BoardType=0, #hardcoded
+            LastMinister = 0, #Changes when the match starts
+            Creator = creator)
+        return newmatch
+    except :
+        return None
+
+@db_session
+def add_board(newmatch):
+    newboard = Board(BoardType = newmatch.BoardType,
+        PhoenixProclamations = 0,
+        DeathEaterProclamations = 0,
+        FailedElectionsCount = 0,
+        Match = newmatch)
+    return newboard
+
+@db_session
+def add_user_in_match(user, matchid, position):
+    mymatch = Match[matchid]
+    newplayer = Player(Position = position,
+        SecretRol = 0, #Changes when the match starts
+        GovRol = 0, #Changes when the match starts
+        IsDead = False,
+        UserId = user,
+        MatchId = mymatch)
+    return newplayer
+
+@db_session
+def add_match_db(minp,maxp,uhid):
+    if(minp>maxp):
+        return None
+    try:
+        creator= User[uhid]
+    except :
+        return None
+    
+    match = add_match(minp,maxp,creator)
+    if match is not None:
+        matchId= match.to_dict("Id")["Id"]
+        add_board(match)
+        player = add_user_in_match(creator, matchId, 0)# add the creeator to player table 
+        match_and_player = {
+            "Match_id": matchId,
+            "Player_id": player.to_dict("PlayerId")["PlayerId"]
+        }
+        return match_and_player
+    else:
+        return None
+
 
 #needed for testing
 @db_session
