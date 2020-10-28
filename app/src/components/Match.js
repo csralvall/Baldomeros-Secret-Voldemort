@@ -5,7 +5,7 @@ import { useSelector, useDispatch} from "react-redux";
 function Match( {match} ) {
 
   const game = useSelector(state => state.match);
-  const user = { username: "Tom Riddle", id: 2, autenticator: true };
+  const user = useSelector((state) => state.user);
 
   return (
     <div>

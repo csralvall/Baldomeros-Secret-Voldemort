@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 import Enzyme, { shallow, mount } from "enzyme";
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
 import { createStore } from "redux";
@@ -54,7 +54,7 @@ describe("Match Interface", () => {
         expect(matchId.text()).toBe(" You are the Host ")
     })
 
-    it("Should show if you are not the host", () =>{
+    it("Shouldn't show if you are not the host", () =>{
         store.getState().match = { name: "Game 1", id: 1, hostid: 1 }
         store.getState().user = { name: "Tom Riddle", id: 2, logged_in: true, autenticator: 145}
         const wrapper = wrap()

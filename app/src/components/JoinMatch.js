@@ -1,15 +1,15 @@
 import React from 'react';
 import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { joinMatch } from "../actions/match"
 
 
 function JoinMatch() {
 
     const dispatch = useDispatch();
-    const history = useHistory(); 
-    
-    const user = { username: "Tom Riddle", id: 1, autenticator: true };
+    const history = useHistory();
+
+    const user = useSelector((state) => state.user)
     const joinGame = async () => {
         const url = "http://127.0.0.1:8000";
 
@@ -17,13 +17,14 @@ function JoinMatch() {
         formData.append("username", user.username);
         formData.append("userid", user.id);
         formData.append("autenticator", user.autenticator);
+        formData.append("matchid", 1);
         const response = await fetch(url + "/match", {
-            method: "GET",
-            parameters: formData,
+            method: "POST",
+            body: formData,
         })
             .then(async (response) => {
                 const responseData = await response.json
-                if (!response.ok) {
+                if (!response.status !== 200) {
                     if (response.status === 409) {
                         alert("");
                     } else {

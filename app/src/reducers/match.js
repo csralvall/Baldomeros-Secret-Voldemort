@@ -1,4 +1,4 @@
-const matchReducer = (state = {id: 1, hostid:2, name: "Match1"}, action) => {
+const matchReducer = (state = {id: 0, hostid:0, name: ""}, action) => {
     switch (action.type) {
       case "JOIN":
         return action.payload;
