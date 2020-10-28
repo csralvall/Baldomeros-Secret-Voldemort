@@ -90,7 +90,7 @@ function CreateMatch() {
               <h1>{minMaxPlayers.maxPlayers}</h1>
             </label>
             <button className="create-button" type="submit">
-              Create Game
+              Create Match
             </button>
           </form>
           <Slider
