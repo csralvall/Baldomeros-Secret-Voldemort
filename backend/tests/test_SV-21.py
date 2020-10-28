@@ -1,5 +1,5 @@
 import unittest 
-from backend.db.crud import create_user, delete_data
+from backend.db.crud import *
 from backend.db.database import *
 
 class TestCreation(unittest.TestCase):
