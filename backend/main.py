@@ -6,7 +6,6 @@ from backend.api.routers import users, newgame
 
 app = FastAPI()
 
-
 @app.get("/")
 async def root():
   return {"secret voldemort": "initial page"}
