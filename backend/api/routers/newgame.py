@@ -1,9 +1,10 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException, APIRouter
+
 from backend.db.crud import *
 
-app = FastAPI()
+router = APIRouter()
 
-@app.post("/game/new")
+@router.post("/game/new")
 async def create_match(minp: int, maxp: int, uhid: int):
   
     newmatch = add_match_db(minp,maxp,uhid)
