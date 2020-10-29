@@ -103,6 +103,18 @@ def add_match_db(minp,maxp,uhid):
     else:
         return None
 
+@db_session
+def there_is_space(mid):
+    try: 
+        players = Match[mid].Players
+        MaxPlayers = Match[mid].MaxPlayers
+        if (len(players) < MaxPlayers):
+            return True
+        else:
+            return False
+    except :
+        return False
+
 
 #needed for testing
 @db_session
