@@ -68,8 +68,11 @@ def add_board(newmatch):
 
 @db_session
 def add_user_in_match(userid, matchid, position):
-    mymatch = Match[matchid]
-    myuser= User[userid]
+    try:
+        mymatch = Match[matchid]
+        myuser= User[userid]
+    except :
+        return None
     newplayer = Player(Position = position,
         SecretRol = 0, #Changes when the match starts
         GovRol = 0, #Changes when the match starts
