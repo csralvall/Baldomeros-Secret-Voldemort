@@ -1,7 +1,7 @@
 import { act } from "react-dom/test-utils";
 import React from "react";
 
-const loginReducer = (state = {token: 0, logged_in: true, username :"", id:0}, action) => {
+const loginReducer = (state = {token: 0, logged_in: false, username :"", id:0}, action) => {
   switch (action.type) {
     case "LOGIN":
       if (action.payload.token === 145)

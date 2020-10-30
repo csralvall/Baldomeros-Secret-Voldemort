@@ -12,20 +12,21 @@ function JoinMatch() {
     const joinGame = async () => {
         const url = "http://127.0.0.1:8000";
 
-        const formData = new FormData();
-        formData.append("username", user.username);
-        formData.append("userid", user.id);
-        formData.append("autenticator", user.autenticator);
-        formData.append("matchid", 1);
-        const response = await fetch(url + "/match", {
+        // const formData = new FormData();
+        // formData.append("username", user.username);
+        // formData.append("userid", user.id);
+        // formData.append("autenticator", user.autenticator);
+        // formData.append("matchid", 1);
+
+        await fetch(url + "/game/1?user=" +user.id , {
             method: "POST",
-            body: formData,
+            //body: formData,
         })
             .then(async (response) => {
                 const responseData = await response.json
                 if (!response.status !== 200) {
-                    if (response.status === 409) {
-                        alert("");
+                    if (response.status === 404) {
+                        alert("Could not join");
                     } else {
                         alert("Could not join. Unknown Error.");
                     }
