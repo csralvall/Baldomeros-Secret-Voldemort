@@ -12,7 +12,9 @@ function Lobby() {
       { user.logged_in ?
         (<div >
           <h1> Welcome, {user.username} </h1>
-          <button>Create Game</button>
+          <Link to="/match/create">
+            <button>Create Game</button>
+          </Link>
           <JoinMatch />
         </div>)
 

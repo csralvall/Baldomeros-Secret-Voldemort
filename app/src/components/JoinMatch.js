@@ -8,7 +8,6 @@ function JoinMatch() {
 
     const dispatch = useDispatch();
     const history = useHistory();
-
     const user = useSelector((state) => state.user)
     const joinGame = async () => {
         const url = "http://127.0.0.1:8000";
@@ -32,7 +31,7 @@ function JoinMatch() {
                     }
                 } else {
                     dispatch(joinMatch(responseData));
-                    history.push("/match/" + responseData.id);
+                    history.push("/match/" + responseData.Match_id);
                 }
             })
             .catch(() => {
