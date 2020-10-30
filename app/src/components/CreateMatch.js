@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { storeMatch } from "./../actions/storeMatch";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import "./CreateMatch.css";
 import {
@@ -11,6 +13,8 @@ import {
 } from "./CreateMatchSliderProps";
 
 function CreateMatch() {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const isLogged = useSelector((state) => state.user.logged_in);
   const userID = useSelector((state) => state.user.id);
   const [isCreateMatchSuccess, setIsCreateMatchSuccess] = useState(false);
@@ -40,21 +44,21 @@ function CreateMatch() {
   const createMatch = async () => {
     const url = "http://127.0.0.1:8000";
 
-    const formData = new FormData();
-    formData.append("userID", userID);
-    formData.append("minPlayers", minMaxPlayers.minPlayers);
-    formData.append("maxPlayers", minMaxPlayers.maxPlayers);
-
-    await fetch(url + "/game/new", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
+    await fetch(
+      url +
+        `/game/new?minp=${minMaxPlayers.minPlayers}&maxp=${minMaxPlayers.maxPlayers}&uhid=${userID}`,
+      {
+        method: "POST",
+      }
+    )
+      .then(async (response) => {
+        const responseData = await response.json();
         if (response.status !== 200) {
           alert("Could not Create Match. Unknown Error.");
         } else {
           setIsCreateMatchSuccess(true);
-          console.log(matchProps);
+          dispatch(storeMatch(responseData));
+          history.push(`/match/${responseData.Match_id}`);
         }
       })
       .catch(() => {
