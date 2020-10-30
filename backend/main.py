@@ -53,6 +53,7 @@ async def list_games():
 # async def join_game():
 #   return {"game": "your game"}
 
+
 @app.patch("/game/{gid}")
 async def start_game():
   return {"game": "started game"}
