@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { storeMatch } from "./../actions/storeMatch";
+import { joinMatch } from "./../actions/match";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import "./CreateMatch.css";
 import {
@@ -57,7 +57,7 @@ function CreateMatch() {
           alert("Could not Create Match. Unknown Error.");
         } else {
           setIsCreateMatchSuccess(true);
-          dispatch(storeMatch(responseData));
+          dispatch(joinMatch(responseData));
           history.push(`/match/${responseData.Match_id}`);
         }
       })

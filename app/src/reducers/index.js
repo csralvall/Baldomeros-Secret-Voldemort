@@ -1,10 +1,10 @@
 import loginReducer from "./login";
-import StoreMatchReducer from "./storeMatch";
+import matchReducer from "./match";
 import { combineReducers } from "redux";
 
 const reducers = combineReducers({
   user: loginReducer,
-  match: StoreMatchReducer,
+  match: matchReducer
 });
 
 export default reducers;
