@@ -44,11 +44,6 @@ function CreateMatch() {
   const createMatch = async () => {
     const url = "http://127.0.0.1:8000";
 
-    const formData = new FormData();
-    formData.append("uhid", userID);
-    formData.append("minp", minMaxPlayers.minPlayers);
-    formData.append("maxp", minMaxPlayers.maxPlayers);
-
     await fetch(
       url +
         `/game/new?minp=${minMaxPlayers.minPlayers}&maxp=${minMaxPlayers.maxPlayers}&uhid=${userID}`,
