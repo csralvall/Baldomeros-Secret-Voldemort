@@ -1,11 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import APIRouter, HTTPException
 from backend.db.crud import *
+from backend.db.database import *
 
-app = FastAPI()
 
-def there_is_space(mid): return True
+router = APIRouter()
 
-@app.post("/game/{gid}")
+
+@router.post("/game/{mid}")
 async def join_game(mid: int, user: int): 
 
     if there_is_space(mid):
@@ -15,8 +16,8 @@ async def join_game(mid: int, user: int):
         if (playerobj is not None):
 
             playerdic = {
-                "Match_id": mid['Id'],
-                "Player_id": playerobj['Id']
+                "Match_id": mid,
+                "Player_id": playerobj.to_dict("PlayerId")["PlayerId"]
             }
 
             return playerdic
