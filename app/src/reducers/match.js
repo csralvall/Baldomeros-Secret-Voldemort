@@ -5,10 +5,10 @@ const matchReducer = (
   switch (action.type) {
     case "JOIN":
       return {
-        Match_id: action.payload.Match_id,
-        Player_id: action.payload.Player_id,
-        Host_id: action.payload.Host_id,
-        Match_name: action.payload.Match_name
+        id: action.payload.Match_id,
+        playerId: action.payload.Player_id,
+        hostId: action.payload.Host_id,
+        name: action.payload.Match_name
       };
     default:
       return state;
