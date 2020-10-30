@@ -68,8 +68,11 @@ def add_board(newmatch):
 
 @db_session
 def add_user_in_match(userid, matchid, position):
-    mymatch = Match[matchid]
-    myuser= User[userid]
+    try:
+        mymatch = Match[matchid]
+        myuser= User[userid]
+    except :
+        return None
     newplayer = Player(Position = position,
         SecretRol = 0, #Changes when the match starts
         GovRol = 0, #Changes when the match starts
@@ -99,6 +102,18 @@ def add_match_db(minp,maxp,uhid):
         return match_and_player
     else:
         return None
+
+@db_session
+def there_is_space(mid):
+    try: 
+        players = Match[mid].Players
+        MaxPlayers = Match[mid].MaxPlayers
+        if (len(players) < MaxPlayers):
+            return True
+        else:
+            return False
+    except :
+        return False
 
 
 #needed for testing

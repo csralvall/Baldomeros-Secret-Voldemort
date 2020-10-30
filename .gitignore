@@ -3,3 +3,8 @@ backend/venv/lib/python3.6/site-packages/setuptools/command/__pycache__/bdist_wi
 __pycache__
 venv
 example.sqlite
+backend/tests/__init__.pyc
+backend/db/__init__.pyc
+backend/db/database.sqlite
+backend/__init__.pyc
+.cache/v/cache/lastfailed
