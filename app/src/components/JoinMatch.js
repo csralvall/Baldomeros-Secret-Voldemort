@@ -23,8 +23,8 @@ function JoinMatch() {
             //body: formData,
         })
             .then(async (response) => {
-                const responseData = await response.json
-                if (!response.status !== 200) {
+                const responseData = await response.json()
+                if (response.status !== 200) {
                     if (response.status === 404) {
                         alert("Could not join");
                     } else {
