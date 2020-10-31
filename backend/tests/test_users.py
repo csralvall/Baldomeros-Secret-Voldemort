@@ -1,12 +1,16 @@
 from fastapi.testclient import TestClient
 
-from backend.db.crud import delete_user
+from backend.db.crud import *
 
 from backend.main import app
 
 client = TestClient(app)
 
 def test_register_user_empty_email():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     response = client.post(
         "/account",
@@ -20,6 +24,10 @@ def test_register_user_empty_email():
     assert response.json()['detail'][0]['msg'] == "field required"
 
 def test_register_user_empty_username():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     response = client.post(
         "/account",
@@ -33,6 +41,10 @@ def test_register_user_empty_username():
     assert response.json()['detail'][0]['msg'] == "field required"
 
 def test_register_user_empty_password():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     response = client.post(
         "/account",
@@ -46,6 +58,11 @@ def test_register_user_empty_password():
     assert response.json()['detail'][0]['msg'] == "field required"
 
 def test_register_user_bad_email():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
     response = client.post(
         "/account",
         data={
@@ -63,6 +80,10 @@ def test_register_user_bad_email():
         }
 
 def test_register_user_used_email():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     client.post(
         "/account",
@@ -85,6 +106,10 @@ def test_register_user_used_email():
     assert response.json() == {"detail": "Email already registered"}
 
 def test_register_user_used_username():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     client.post(
         "/account",
@@ -108,6 +133,10 @@ def test_register_user_used_username():
     assert response.json() == {"detail": "Username already taken"}
 
 def test_register_user_correct():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     delete_user("foo@gmail.com","foo","foo")
 
@@ -125,6 +154,10 @@ def test_register_user_correct():
         "username": "foo"}
 
 def test_login_user_correct_user():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     response = client.post(
         "/account",
@@ -147,6 +180,10 @@ def test_login_user_correct_user():
     assert response.json()['username'] == "bar"
 
 def test_login_user_bad_name():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     response = client.post(
         "/account",
@@ -171,6 +208,10 @@ def test_login_user_bad_name():
     }
 
 def test_login_user_bad_password():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     response = client.post(
         "/account",
@@ -196,6 +237,10 @@ def test_login_user_bad_password():
     }
 
 def test_login_user_empty_username():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     response = client.post(
         "/session",
@@ -208,6 +253,10 @@ def test_login_user_empty_username():
     assert response.json()['detail'][0]['msg'] == "field required"
 
 def test_login_user_empty_password():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
     response = client.post(
         "/session",

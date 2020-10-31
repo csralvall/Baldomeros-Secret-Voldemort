@@ -3,24 +3,6 @@ from pony.orm import *
 db = Database()
 db.bind(provider='sqlite', filename='database.sqlite', create_db=True)  
 
-
-Status = {0: "Joinable",
-          1: "In Game",
-          2: "Finished"}
-
-BoardType = {0: "5-6",
-             1: "7-8",
-             2: "9-10"}
-
-
-SecretRolDiccionary = {0:"Voldemort",
-                       1: "Death Eater",
-                       2: "Order of The Phoenix"}
-
-GovRolDiccionary = {0: "HeadMaster",
-                    1: "Magic Minister",
-                    2: "Citizen"}
-
 class Match(db.Entity):
     Id = PrimaryKey(int, auto=True)
     MaxPlayers = Required(int, min=5, max=10)
@@ -46,6 +28,7 @@ class Player(db.Entity):
     SecretRol = Required(int, min=0, max=2)
     GovRol = Required(int, min=0, max=2)
     IsDead = Required(bool)
+    Vote = Optional(int, min=0, max=2)
     UserId = Optional('User')
     MatchId = Optional('Match')
     Vote = Optional(int, min=0, max=2)
