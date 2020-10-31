@@ -25,7 +25,6 @@ def test_vote_nox():
     )
 
     assert response.status_code == 200
-    assert response.json() == get_player_votes(gid)['foo']
 
 def test_vote_lumos():
     delete_data(Board)
@@ -46,7 +45,6 @@ def test_vote_lumos():
     )
 
     assert response.status_code == 200
-    assert response.json() == get_player_votes(gid)['foo']
 
 def test_vote_negative_match_id():
     delete_data(Board)
@@ -266,3 +264,55 @@ def test_vote_empty_player_id():
 
     assert response.status_code == 404
     assert response.json()['detail'] == 'Not Found'
+
+def test_vote_endpoint():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("baz@gmail.com", "baz", "baz")
+    create_user("bar@gmail.com", "bar", "bar")
+    create_user("zoo@gmail.com", "zoo", "zoo")
+    create_user("zar@gmail.com", "zar", "zar")
+    user = get_user("foo", "foo")
+    baruid = get_user("bar", "bar")['Id']
+    bazuid = get_user("baz", "baz")['Id']
+    zoouid = get_user("zoo", "zoo")['Id']
+    zaruid = get_user("zar", "zar")['Id']
+    uid = user['Id']
+
+    gid = add_match_db(5,7,uid)['Match_id']
+
+    add_user_in_match(baruid,gid,1)
+    add_user_in_match(bazuid,gid,2)
+    add_user_in_match(zoouid,gid,3)
+    add_user_in_match(zaruid,gid,4)
+
+    pid = get_player_id(gid,uid)
+    barpid = get_player_id(gid,baruid)
+    bazpid = get_player_id(gid,bazuid)
+    zoopid = get_player_id(gid,zoouid)
+    zarpid = get_player_id(gid,zaruid)
+
+    name_list = ['bar','baz','zoo','zar','foo']
+
+    for p in name_list:
+        client.put(f"/game/{gid}/player/{pid}?vote=lumos")
+        client.put(f"/game/{gid}/player/{barpid}?vote=lumos")
+        client.put(f"/game/{gid}/player/{bazpid}?vote=lumos")
+        client.put(f"/game/{gid}/player/{zoopid}?vote=lumos")
+        client.put(f"/game/{gid}/player/{zarpid}?vote=lumos")
+
+        assert get_minister_username(gid) == p
+
+    for p in name_list:
+        client.put(f"/game/{gid}/player/{pid}?vote=nox")
+        client.put(f"/game/{gid}/player/{barpid}?vote=nox")
+        client.put(f"/game/{gid}/player/{bazpid}?vote=nox")
+        client.put(f"/game/{gid}/player/{zoopid}?vote=nox")
+        client.put(f"/game/{gid}/player/{zarpid}?vote=nox")
+
+        assert get_minister_username(gid) == p
+

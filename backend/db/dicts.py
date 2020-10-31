@@ -8,13 +8,13 @@ BoardType = {0: "5-6",
              2: "9-10"}
 
 
-SecretRolDiccionary = {0:"Voldemort",
+SecretRolDiccionary = {0: "Voldemort",
                        1: "Death Eater",
                        2: "Order of The Phoenix"}
 
 GovRolDiccionary = {0: "Head Master",
                     1: "Magic Minister",
-                    2: "Citizen"}
+                    2: "Magician"}
 
 VoteType = {0: 'nox',
             1: 'lumos',

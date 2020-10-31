@@ -76,14 +76,14 @@ def add_user_in_match(userid, matchid, position):
         return None
     newplayer = Player(Position = position,
         SecretRol = 0, #Changes when the match starts
-        GovRol = 0, #Changes when the match starts
+        GovRol = 2, #Changes when the match starts
         IsDead = False,
         UserId = myuser,
         MatchId = mymatch)
     return newplayer
 
 @db_session
-def check_player_in_match(gid: int, pid: int): # need testsing
+def check_player_in_match(gid: int, pid: int): # need testing
     if Match.exists(Id=gid):
         return exists(p for p in Match[gid].Players if p.PlayerId == pid)
     return False
@@ -101,7 +101,8 @@ def add_match_db(minp,maxp,uhid):
     if match is not None:
         matchId= match.to_dict("Id")["Id"]
         add_board(match)
-        player = add_user_in_match(uhid, matchId, 0)# add the creeator to player table 
+        player = add_user_in_match(uhid, matchId, 0)# add the creator to player table 
+        player.GovRol = 1
         match_and_player = {
             "Match_id": matchId,
             "Player_id": player.to_dict("PlayerId")["PlayerId"]
@@ -146,7 +147,7 @@ def delete_user(email, username, password): # needed for testing
 
 @db_session
 def get_minister_username(ID: int): # need testing
-    minister = Match[ID].Players.filter(lambda p: p.GovRol == 0).first()
+    minister = Match[ID].Players.filter(lambda p: p.GovRol == 1).first()
     return minister.UserId.Username 
 
 @db_session
@@ -175,11 +176,49 @@ def get_player_votes(match_id: int): # need testing
             result = 'lumos'
         return result
 
-    players = Match[match_id].Players.order_by(Player.Position)
-    return {x.UserId.Username: replace(x.Vote) for x in players}        
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players.order_by(Player.Position)
+        return {x.UserId.Username: replace(x.Vote) for x in players}        
 
 @db_session
 def get_player_id(match_id: int, user_id: int): # need testing
     if Match.exists(Id=match_id):
         player = get(p for p in Match[match_id].Players if p.UserId.Id == user_id)
         return player.PlayerId
+
+@db_session
+def set_next_minister(match_id: int):
+    if Match.exists(Id=match_id):
+        query = Match[match_id].Players.order_by(Player.Position)
+        players = [x for x in query]
+        last_minister = Match[match_id].LastMinister
+        players[last_minister].GovRol = 2
+        current_minister = (last_minister + 1) % len(players)
+        players[current_minister].GovRol = 1
+        Match[match_id].LastMinister = current_minister
+        return current_minister
+
+@db_session
+def compute_election_result(match_id: int):
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        lumos = 0
+        voting_cutoff = 0.5000001
+        result = 'nox'
+        if not exists(p for p in players if p.Vote == 2):
+            total = count(p for p in players)
+            lumos = count(p for p in players if p.Vote == 1)
+            lumos = lumos/total
+
+        if lumos > voting_cutoff:
+            result = 'lumos'
+
+        return result
+
+@db_session
+def restore_election(match_id: int):
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            p.Vote = 2
+
