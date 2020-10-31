@@ -48,6 +48,7 @@ class Player(db.Entity):
     IsDead = Required(bool)
     UserId = Optional('User')
     MatchId = Optional('Match')
+    Vote = Optional(int, min=0, max=2)
 
 class User(db.Entity):
     Id = PrimaryKey(int, auto=True)

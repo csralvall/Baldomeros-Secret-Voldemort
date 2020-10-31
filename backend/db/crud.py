@@ -128,3 +128,40 @@ def delete_user(email, username, password):
         user.delete()
 
     return user
+
+
+
+
+@db_session
+def get_minister_username(ID: int):
+    minister = Match[ID].Players.filter(lambda p: p.GovRol == 0).first()
+    return minister.UserId.Username 
+
+@db_session
+def get_match_status(ID: int):
+    return Status[Match[ID].Status] 
+
+@db_session
+def get_board_status(ID: int):
+    board_attr = ["PhoenixProclamations", "DeathEaterProclamations"]
+    board_status = Match[ID].Board.to_dict(board_attr)
+    board_status['boardtype'] = BoardType[Match[ID].Board.BoardType]
+    return board_status    
+
+@db_session
+def check_match(mid):
+    return Match.exists(Id=mid)
+
+
+@db_session
+def get_player_votes(match_id: int):
+    def replace(vote: int):
+        result = 'missing vote'
+        if vote == 0:
+            result = 'nox'
+        elif vote == 1:
+            result = 'lumos'
+        return result
+
+    players = Match[match_id].Players.order_by(Player.Position)
+    return {x.UserId.Username: replace(x.Vote) for x in players}        
