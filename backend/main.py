@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from backend.db.crud import *
 
-from backend.api.routers import users, newgame, joinmatch
+from backend.api.routers import users, newgame, joinmatch, gamestatus
 
 app = FastAPI()
 
@@ -40,10 +40,11 @@ async def change_user_password():
 
 app.include_router(newgame.router)
 app.include_router(joinmatch.router)
+app.include_router(gamestatus.router)
 
-@app.get("/games")
-async def list_games():
-  return {"games": "list of games"}
+# @app.get("/games")
+# async def status_games():
+#   return {"games": "game status"}
 
 # @app.post("/game/new")
 # async def create_game():
