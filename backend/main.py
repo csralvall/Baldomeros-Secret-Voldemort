@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from backend.db.crud import *
 
-from backend.api.routers import users, newgame, joinmatch, gamestatus
+from backend.api.routers import users, newgame, joinmatch, gamestatus, game
 
 app = FastAPI()
 
@@ -41,6 +41,7 @@ async def change_user_password():
 app.include_router(newgame.router)
 app.include_router(joinmatch.router)
 app.include_router(gamestatus.router)
+app.include_router(game.router)
 
 # @app.get("/games")
 # async def status_games():
@@ -67,13 +68,13 @@ async def get_game_players():
 
 # RUNNING GAMES
 
-@app.get("/game/{gid}/player/{pid}")
-async def get_player_info():
-  return {"game": "player info"}
+#@app.get("/game/{gid}/player/{pid}")
+#async def get_player_info():
+  #return {"game": "player info"}
 
-@app.put("/game/{gid}/player/{pid}/vote")
-async def vote_candidate():
-  return {"game": "vote"}
+#@app.put("/game/{gid}/player/{pid}/vote")
+#async def vote_candidate():
+#  return {"game": "vote"}
 
 @app.get("/game/{gid}/election")
 async def get_election_info():
