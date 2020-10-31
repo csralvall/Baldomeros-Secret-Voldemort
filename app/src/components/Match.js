@@ -1,4 +1,5 @@
 import React from 'react';
+import useInterval from 'react-useinterval';
 import { useSelector, useDispatch} from "react-redux";
 
 
@@ -19,9 +20,35 @@ function Match( {match} ) {
   'board': {'PhoenixProclamations': 1, 'DeathEaterProclamations': 4, 'board_type': '5-6'},
   'winner': 'Death Eaters'}
 
-  const myPlayer = gameStatus.players.find(player =>(
+  useInterval (async () => {
+    console.log("I AM POLLINGG!!!!!")
+    const url = "http://127.0.0.1:8000";
+
+    await fetch(url + "/game/1/status" , {
+        method: "GET",
+    })
+    .then(async (response) => {
+        const responseData = await response.json()
+        if (response.status !== 200) {
+            if (response.status === 404) {
+                alert("Error");
+            } else {
+                alert("Unknown Error");
+            }
+        } else {
+            gameStatus = responseData;
+        }
+    })
+    .catch(() => {
+        alert("Disconnected");
+    });
+  },10000);
+
+  const myPlayer = () => {
+    gameStatus.players.find(player =>(
     player.name === user.username
-  ))
+    ))
+  }
 
   const Election = (
     <div>
