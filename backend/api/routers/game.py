@@ -20,6 +20,12 @@ async def vote_candidate(
 
         vote_director(pid, vote)
 
+        player_votes = get_player_votes(gid)
+
+        if 'missing vote' not in player_votes.values():
+            set_next_minister(gid)
+            restore_election(gid)
+
         return vote
 
 
