@@ -1,24 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import useInterval from 'react-useinterval';
 import { useSelector, useDispatch} from "react-redux";
+import { wait } from '@testing-library/react';
 
 
 function Match( {match} ) {
 
   const game = useSelector(state => state.match);
   const user = useSelector((state) => state.user);
-  
-  const gameStatus = 
-  {'minister': 'mati', 
-  'players': [{name: 'mati', vote:'lumos'},
-              {name: 'manu', vote:'lumos'},
-              {name: 'cesar', vote:'nox'},
-              {name: 'guido', vote:'nox'},
-              {name: 'joaquin', vote:'missing'},
-              {name: 'rodri', vote:'missing'}],
-  'status': 'Started', 
-  'board': {'PhoenixProclamations': 1, 'DeathEaterProclamations': 4, 'board_type': '5-6'},
-  'winner': 'Death Eaters'}
+  const [gameStatus, setGameStatus] = useState({
+    'minister': '', 
+    'players': {},
+    'status': '', 
+    'board': {'PhoenixProclamations': 0, 'DeathEaterProclamations': 0, 'board_type': '5-6'},
+    'winner': ''
+  })
+
 
   useInterval (async () => {
     console.log("I AM POLLINGG!!!!!")
@@ -36,27 +33,24 @@ function Match( {match} ) {
                 alert("Unknown Error");
             }
         } else {
-            gameStatus = responseData;
+            setGameStatus(responseData);
         }
     })
     .catch(() => {
         alert("Disconnected");
     });
-  },10000);
 
-  const myPlayer = () => {
-    gameStatus.players.find(player =>(
-    player.name === user.username
-    ))
-  }
+  },5000);
+
 
   const Election = (
     <div>
       <h1>The current minister is {gameStatus.minister}</h1>    
-      {gameStatus.players.map(player =>(
-        <h4>Player {player.name} voted {player.vote}</h4>
-      ))}
-      <div> { myPlayer.vote === 'missing' ? (<button> Vote </button>) : ""}</div>
+      { Object.entries(gameStatus.players).map(player =>(
+        <h4>Player {player[0]} voted {player[1]}</h4>
+      ))
+      }
+      <div> { gameStatus.players[user.username] === 'missing' ? (<button> Vote </button>) : ""}</div>
     </div>
   )
 
