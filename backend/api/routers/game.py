@@ -24,8 +24,12 @@ async def vote_candidate(
 
         if 'missing vote' not in player_votes.values():
             set_next_minister(gid)
+            if compute_election_result(gid) == 'lumos':
+                enact_proclamation(gid,'death eater')
             restore_election(gid)
 
-        return vote
+        winner = is_victory_from(gid)
+
+        return winner
 
 

@@ -18,7 +18,7 @@ class Board(db.Entity):
     Id = PrimaryKey(int, auto=True)
     BoardType = Required(int, min=0, max=2)
     PhoenixProclamations = Optional(int, min=0, max=5)
-    DeathEaterProclamations = Optional(int, min=0, max=5)
+    DeathEaterProclamations = Optional(int, min=0, max=6)
     FailedElectionsCount = Optional(int)
     Match = Required(Match)
 
