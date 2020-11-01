@@ -5,7 +5,11 @@ import lumos from "../media/Lumos.png";
 import nox from "../media/Nox.png";
 import "./Vote.css";
 
-Modal.setAppElement("#root");
+if (process.env.NODE_ENV === "test") {
+  Modal.setAppElement("*");
+} else {
+  Modal.setAppElement("#root");
+}
 
 function Vote({ open, closeVote }) {
   const matchID = useSelector((state) => state.match.id);
