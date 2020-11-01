@@ -5,7 +5,16 @@ from backend.db.database import *
 class TestCreation(unittest.TestCase):
 
     def setUp(self):
+        delete_data(Board)
+        delete_data(Player)
+        delete_data(Match)
         delete_data(User)
+
+    def tearDown(self):
+        delete_data(Board)
+        delete_data(Player)
+        delete_data(Match)
+        delete_data(User)    
 
     def test_first(self):
         self.assertTrue(create_user("joaco@gmail.com","joaco","kajdsflaskfdjsla"))
