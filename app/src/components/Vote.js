@@ -19,7 +19,6 @@ function Vote() {
 
   //flag for voting when the vote is the same as the last
   const [voteFlag, setFlag] = useState(false);
-  
   const loaded = useRef(false);
   useEffect(() => {
     if (loaded.current) {
@@ -28,7 +27,7 @@ function Vote() {
       loaded.current = true;
     }
   }, [currentVote,voteFlag]);
-
+  
   const sendVote = async () => {
     const url = "http://127.0.0.1:8000";
 
