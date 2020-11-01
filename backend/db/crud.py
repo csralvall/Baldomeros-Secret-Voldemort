@@ -187,7 +187,7 @@ def get_player_id(match_id: int, user_id: int): # need testing
         return player.PlayerId
 
 @db_session
-def set_next_minister(match_id: int):
+def set_next_minister(match_id: int): # need testing
     if Match.exists(Id=match_id):
         query = Match[match_id].Players.order_by(Player.Position)
         players = [x for x in query]
@@ -199,7 +199,7 @@ def set_next_minister(match_id: int):
         return current_minister
 
 @db_session
-def compute_election_result(match_id: int):
+def compute_election_result(match_id: int): # need testing
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         lumos = 0
@@ -216,9 +216,37 @@ def compute_election_result(match_id: int):
         return result
 
 @db_session
-def restore_election(match_id: int):
+def restore_election(match_id: int): # need testing
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
             p.Vote = 2
+
+@db_session
+def enact_proclamation(match_id: int, proclamation: str): # need testing
+    if proclamation == "phoenix":
+        Match[match_id].Board.PhoenixProclamations += 1
+    elif proclamation == "death eater":
+        Match[match_id].Board.DeathEaterProclamations += 1
+
+@db_session
+def get_phoenix_proclamations(match_id: int): # need testing
+    return Match[match_id].Board.PhoenixProclamations
+
+@db_session
+def get_death_eater_proclamations(match_id): # need testing
+    return Match[match_id].Board.DeathEaterProclamations
+
+@db_session
+def is_victory_from(match_id: int): # need testing
+    if Match.exists(Id=match_id):
+        winner = "no winner yet"
+        if get_death_eater_proclamations(match_id) == 6:
+            winner = "death eater"
+            Match[match_id].Status = 2
+        elif get_phoenix_proclamations(match_id) == 5:
+            winner = "phoenix"
+            Match[match_id].Status = 2
+
+        return winner
 
