@@ -9,7 +9,7 @@ class TestAddMatch(unittest.TestCase):
         delete_data(Player)
         delete_data(Match)
         delete_data(User)
-        create_user("exapmle@gmail.com","exapmle","password")
+        create_user("example@gmail.com","example","password")
         create_user("one@gmail.com","one","one")
         create_user("one1@gmail.com","one1","one")
         create_user("one2@gmail.com","one2","one")
@@ -29,46 +29,46 @@ class TestAddMatch(unittest.TestCase):
         delete_data(User)
 
     def test_ok1(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(5,5,userId)
         self.assertIsNotNone(mp["Match_id"])
         self.assertIsNotNone(mp["Player_id"])
 
     def test_ok2(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(6,7,userId)
         self.assertIsNotNone(mp["Match_id"])
         self.assertIsNotNone(mp["Player_id"])
 
     def test_fail_maxp(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(5,1,userId)
         self.assertIsNone(mp)
 
     def test_fail_maxp2(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(5,11,userId)
         self.assertIsNone(mp)
 
     def test_fail_minp(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(2,6,userId)
         self.assertIsNone(mp)
 
     def test_fail_minp2(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(11,12,userId)
         self.assertIsNone(mp)
 
 
     def test_fail_minp_and_maxp(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(7,6,userId)
         self.assertIsNone(mp)
@@ -79,32 +79,32 @@ class TestAddMatch(unittest.TestCase):
         self.assertIsNone(mp)
 
     def test_add_userplayer_ok(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         oneid = get_user("one","one")['Id']
         matchid= add_match_db(7,9,userId)["Match_id"]
         self.assertTrue(add_user_in_match(oneid,matchid,1))
 
     def test_add_userplayer_fail_uid(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         matchid= add_match_db(7,9,userId)["Match_id"]
         self.assertFalse(add_user_in_match(99999999999,matchid,1))
 
     def test_add_userplayer_fail_mid(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         self.assertFalse(add_user_in_match(userId,99999999999,1))
 
     def test_space_ok(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(5,5,userId)
         self.assertTrue(there_is_space(mp["Match_id"]))
 
 
     def test_space_ok2(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(5,5,userId)
         oneid = get_user("one","one")['Id']
@@ -117,7 +117,7 @@ class TestAddMatch(unittest.TestCase):
 
 
     def test_space_false(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(5,5,userId)
         oneid = get_user("one","one")['Id']
@@ -132,7 +132,7 @@ class TestAddMatch(unittest.TestCase):
 
 
     def test_space_false2(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(5,10,userId)
         oneid = get_user("one","one")['Id']
@@ -156,7 +156,7 @@ class TestAddMatch(unittest.TestCase):
         self.assertFalse(there_is_space(mp["Match_id"]))
 
     def test_space_ok10(self):
-        user = get_user("exapmle","password")
+        user = get_user("example","password")
         userId = user['Id']
         mp = add_match_db(5,10,userId)
         oneid = get_user("one","one")['Id']
