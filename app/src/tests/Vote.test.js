@@ -20,7 +20,13 @@ describe("Vote if open", () => {
     const modal = wrapper.find("div Modal");
     expect(modal.exists()).toBe(true);
   });
-  it("should show two img", () => {
+  it("shouldn't show images if modal is closed", () => {
+    const imgs = wrapper.find("div Modal div img");
+    expect(imgs).toHaveLength(0);
+  });
+  it("should show two img if modal opens", () => {
+    const button = wrapper.find("div button")
+    button.simulate('click')
     const imgs = wrapper.find("div Modal div img");
     expect(imgs).toHaveLength(2);
   });
