@@ -372,15 +372,16 @@ class TestInMatch(unittest.TestCase):
     def test_compute_election_OK4(self):
         restore_election(self.matchid)
         vote_director(self.playeridcreator, 'lumos')
-        self.assertEqual(compute_election_result(self.matchid),'nox')#may change if we add an else in the function
-
+        self.assertEqual(compute_election_result(self.matchid),'missing vote')
+ 
 
     def test_compute_election_other_match(self):
         restore_election(self.matchid)
         restore_election(self.matchid2)
         vote_director(self.playeridcreator, 'lumos')
         vote_director(self.player1id,'lumos')
-        self.assertEqual(compute_election_result(self.matchid2),'nox')
+        self.assertEqual(compute_election_result(self.matchid),'lumos')
+        self.assertEqual(compute_election_result(self.matchid2),'missing vote')
         
     #-------------54 test^-------------------
 
