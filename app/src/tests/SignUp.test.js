@@ -1,7 +1,7 @@
 import React from "react";
-import Enzyme, { shallow, mount } from "enzyme";
+import Enzyme, { shallow } from "enzyme";
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
-import SignUp, { registerUser } from "../components/SignUp";
+import SignUp from "../components/SignUp";
 
 Enzyme.configure({ adapter: new Adapter() });
 

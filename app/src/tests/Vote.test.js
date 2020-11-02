@@ -25,8 +25,8 @@ describe("Vote if open", () => {
     expect(imgs).toHaveLength(0);
   });
   it("should show two img if modal opens", () => {
-    const button = wrapper.find("div button")
-    button.simulate('click')
+    const button = wrapper.find("div button");
+    button.simulate("click");
     const imgs = wrapper.find("div Modal div img");
     expect(imgs).toHaveLength(2);
   });

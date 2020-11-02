@@ -1,22 +1,18 @@
 import React from "react";
-import { Provider } from 'react-redux';
-import Enzyme, { shallow, mount } from "enzyme";
+import { Provider } from "react-redux";
+import Enzyme, { mount } from "enzyme";
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
 import { createStore } from "redux";
-import { Link } from 'react-router';
 import Login from "../components/Login";
 import reducers from "../reducers/index";
-
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe("Login Interface", () => {
-  
-
   const store = createStore(reducers);
   const wrapper = mount(
     <Provider store={store}>
-      <Login/>
+      <Login />
     </Provider>
   );
 
@@ -61,24 +57,28 @@ describe("Login Interface", () => {
     expect(passwordInput.exists()).toBe(true);
   });
   //DATA INPUTS
-  it("Username input must update", () => {  
-    const userInput = wrapper.find('div form input').findWhere(
-      (n) => n.prop("type") === "username") 
-    userInput.simulate('change', { target: { value: 'avc' } })
+  it("Username input must update", () => {
+    const userInput = wrapper
+      .find("div form input")
+      .findWhere((n) => n.prop("type") === "username");
+    userInput.simulate("change", { target: { value: "avc" } });
     // Manual re-render. "update" method doesn't work;
     //this appears to be the only way
-    const Input = wrapper.find('div form input').findWhere(
-      (n) => n.prop("type") === "username")
-    expect(Input.prop("value")).toBe('avc')
-  })
-  it("Password input must update",() => {
-    const passwordInput = wrapper.find('div form input').findWhere(
-    (n) => n.prop("type") === "password");
-    passwordInput.simulate('change', { target: { value: "123" } });
+    const Input = wrapper
+      .find("div form input")
+      .findWhere((n) => n.prop("type") === "username");
+    expect(Input.prop("value")).toBe("avc");
+  });
+  it("Password input must update", () => {
+    const passwordInput = wrapper
+      .find("div form input")
+      .findWhere((n) => n.prop("type") === "password");
+    passwordInput.simulate("change", { target: { value: "123" } });
     //Manual re-render. "update" method doesn't work;
     //this appears to be the only way
-    const Input = wrapper.find('div form input').findWhere(
-      (n) => n.prop("type") === "password")
-    expect(Input.prop("value")).toBe('123')
-  })
+    const Input = wrapper
+      .find("div form input")
+      .findWhere((n) => n.prop("type") === "password");
+    expect(Input.prop("value")).toBe("123");
+  });
 });
