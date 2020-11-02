@@ -55,7 +55,7 @@ def add_match(minp,maxp,creator):
             LastMinister = 0, #Changes when the match starts
             Creator = creator)
         return newmatch
-    except :
+    except Exception:
         return None
 
 @db_session
@@ -72,7 +72,7 @@ def add_user_in_match(userid, matchid, position):
     try:
         mymatch = Match[matchid]
         myuser= User[userid]
-    except :
+    except Exception:
         return None
     newplayer = Player(Position = position,
         SecretRol = 0, #Changes when the match starts
@@ -89,15 +89,15 @@ def check_player_in_match(gid: int, pid: int):
     return False
 
 @db_session
-def add_match_db(minp,maxp,uhid):
-    if(minp>maxp):
+def add_match_db(minp, maxp, uhid):
+    if(minp > maxp):
         return None
     try:
         creator= User[uhid]
-    except :
+    except Exception:
         return None
     
-    match = add_match(minp,maxp,creator)
+    match = add_match(minp, maxp, creator)
     if match is not None:
         matchId= match.to_dict("Id")["Id"]
         add_board(match)
@@ -120,7 +120,7 @@ def there_is_space(mid):
             return True
         else:
             return False
-    except :
+    except Exception:
         return False
 
 @db_session
@@ -188,7 +188,7 @@ def set_next_minister(match_id: int):
         return current_minister
 
 @db_session
-def compute_election_result(match_id: int): # May need an else in the second if
+def compute_election_result(match_id: int):
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         lumos = 0
@@ -198,6 +198,8 @@ def compute_election_result(match_id: int): # May need an else in the second if
             total = count(p for p in players)
             lumos = count(p for p in players if p.Vote == 1)
             lumos = lumos/total
+        else:
+            result = 'missing vote'
 
         if lumos > voting_cutoff:
             result = 'lumos'
