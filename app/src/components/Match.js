@@ -18,7 +18,7 @@ function Match({ match }) {
   useInterval(async () => {
     const url = "http://127.0.0.1:8000";
 
-    await fetch(url + `/games/?mid=${game.id}`, {
+    await fetch(url + `/game/${game.id}`, {
       method: "GET",
     })
       .then(async (response) => {
