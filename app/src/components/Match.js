@@ -47,7 +47,6 @@ function Match({ match }) {
         </h4>
       ))}
       <div>
-        {" "}
         {gameStatus.players[user.username] === "missing vote" ? <Vote /> : ""}
       </div>
     </div>
@@ -55,10 +54,9 @@ function Match({ match }) {
 
   const Board = (
     <div>
-      <h1> Phoenix Proclamations : {gameStatus.phoenixproclamations}/5 </h1>
+      <h1>Phoenix Proclamations : {gameStatus.phoenixproclamations}/5</h1>
       <h1>
-        {" "}
-        Death Eaters Proclamations : {gameStatus.deatheaterproclamations}/6{" "}
+        Death Eaters Proclamations : {gameStatus.deatheaterproclamations}/6
       </h1>
     </div>
   );
