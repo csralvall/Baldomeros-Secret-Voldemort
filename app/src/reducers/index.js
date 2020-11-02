@@ -4,7 +4,7 @@ import { combineReducers } from "redux";
 
 const reducers = combineReducers({
   user: loginReducer,
-  match: matchReducer
+  match: matchReducer,
 });
 
 export default reducers;

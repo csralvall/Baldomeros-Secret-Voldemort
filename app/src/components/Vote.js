@@ -15,7 +15,7 @@ function Vote() {
   const matchID = useSelector((state) => state.match.id);
   const playerID = useSelector((state) => state.match.playerId);
   const [currentVote, setCurrentVote] = useState("");
-  const [open,setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   //flag for voting when the vote is the same as the last
   const [voteFlag, setFlag] = useState(false);
@@ -26,12 +26,13 @@ function Vote() {
     } else {
       loaded.current = true;
     }
-  }, [currentVote,voteFlag]);
-  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentVote, voteFlag]);
+
   const sendVote = async () => {
     const url = "http://127.0.0.1:8000";
 
-    const response = await fetch(
+    await fetch(
       url + `/game/${matchID}/player/${playerID}?vote=${currentVote}`,
       {
         method: "PUT",
@@ -55,7 +56,13 @@ function Vote() {
 
   return (
     <div>
-      <button onClick={() => {setOpen(true)}}>Vote</button>
+      <button
+        onClick={() => {
+          setOpen(true);
+        }}
+      >
+        Vote
+      </button>
       <Modal
         isOpen={open}
         closeTimeoutMS={200}

@@ -1,12 +1,10 @@
 import React from "react";
 import { Provider } from "react-redux";
-import Enzyme, { shallow, mount, ReactWrapper } from "enzyme";
+import Enzyme, { mount } from "enzyme";
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
 import { createStore } from "redux";
-import { Link } from "react-router";
 import CreateMatch from "../components/CreateMatch";
 import reducers from "../reducers/index";
-import { Slider } from "react-compound-slider";
 
 Enzyme.configure({ adapter: new Adapter() });
 

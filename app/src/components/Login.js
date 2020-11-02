@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { login } from "./../actions/login";
 
 function Login() {
-
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -13,16 +12,16 @@ function Login() {
   const changeUsername = (e) => {
     setUser({
       username: e.target.value,
-      password: userInput.password
-    })
-  }
+      password: userInput.password,
+    });
+  };
 
   const changePassword = (e) => {
     setUser({
       username: userInput.username,
-      password: e.target.value
-    })
-  }
+      password: e.target.value,
+    });
+  };
 
   const autenticateUser = async (e) => {
     e.preventDefault();
@@ -32,7 +31,7 @@ function Login() {
     formData.append("username", userInput.username);
     formData.append("password", userInput.password);
 
-    const response = await fetch(url + "/session", {
+    await fetch(url + "/session", {
       method: "POST",
       body: formData,
     })
@@ -52,8 +51,7 @@ function Login() {
       .catch(() => {
         alert("Network Error");
       });
-
-  }
+  };
 
   return (
     <div>
@@ -65,7 +63,8 @@ function Login() {
             type="username"
             required
             value={userInput.username}
-            onChange={changeUsername} />
+            onChange={changeUsername}
+          />
         </label>
         <label>
           Password
@@ -73,7 +72,8 @@ function Login() {
             type="password"
             required
             value={userInput.password}
-            onChange={changePassword} />
+            onChange={changePassword}
+          />
         </label>
         <button type="submit">Login</button>
       </form>

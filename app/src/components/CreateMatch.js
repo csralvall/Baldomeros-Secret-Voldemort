@@ -39,6 +39,7 @@ function CreateMatch() {
     } else {
       loaded.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchProps]);
 
   const createMatch = async () => {

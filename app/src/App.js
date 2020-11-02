@@ -7,7 +7,6 @@ import Signup from "./components/SignUp";
 import Match from "./components/Match";
 import CreateMatch from "./components/CreateMatch";
 
-
 function App() {
   return (
     <BrowserRouter>

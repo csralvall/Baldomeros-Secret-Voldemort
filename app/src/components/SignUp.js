@@ -14,6 +14,7 @@ function SignUp() {
     } else {
       loaded.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProps]);
 
   const updateUsername = (e) => {
@@ -36,7 +37,7 @@ function SignUp() {
     formData.append("password", password);
     formData.append("email", email);
 
-    const response = await fetch(url + "/account", {
+    await fetch(url + "/account", {
       method: "POST",
       body: formData,
     })
