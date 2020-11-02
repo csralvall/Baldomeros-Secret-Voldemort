@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.db.crud import *
 
-from backend.api.routers import users, newgame, joinmatch, gamestatus, game
+from backend.api.routers import authentication, game
 
 app = FastAPI()
 
@@ -21,7 +21,7 @@ async def root():
 
 # USER
 
-app.include_router(users.router)
+app.include_router(authentication.router)
 
 @app.put("/session")
 async def update_session():
@@ -47,10 +47,10 @@ async def change_user_password():
 
 # OPEN GAMES
 
-app.include_router(newgame.router)
-app.include_router(joinmatch.router)
-app.include_router(gamestatus.router)
 app.include_router(game.router)
+#app.include_router(newgame.router)
+#app.include_router(joinmatch.router)
+#app.include_router(gamestatus.router)
 
 # @app.get("/games")
 # async def status_games():
