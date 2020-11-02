@@ -55,7 +55,7 @@ def add_match(minp,maxp,creator):
             LastMinister = 0, #Changes when the match starts
             Creator = creator)
         return newmatch
-    except :
+    except Exception:
         return None
 
 @db_session
@@ -72,7 +72,7 @@ def add_user_in_match(userid, matchid, position):
     try:
         mymatch = Match[matchid]
         myuser= User[userid]
-    except :
+    except Exception:
         return None
     newplayer = Player(Position = position,
         SecretRol = 0, #Changes when the match starts
@@ -80,24 +80,24 @@ def add_user_in_match(userid, matchid, position):
         IsDead = False,
         UserId = myuser,
         MatchId = mymatch)
-    return newplayer
+    return newplayer#need to refactor so it only returns id
 
 @db_session
-def check_player_in_match(gid: int, pid: int): # need testing
+def check_player_in_match(gid: int, pid: int):
     if Match.exists(Id=gid):
         return exists(p for p in Match[gid].Players if p.PlayerId == pid)
     return False
 
 @db_session
-def add_match_db(minp,maxp,uhid):
-    if(minp>maxp):
+def add_match_db(minp, maxp, uhid):
+    if(minp > maxp):
         return None
     try:
         creator= User[uhid]
-    except :
+    except Exception:
         return None
     
-    match = add_match(minp,maxp,creator)
+    match = add_match(minp, maxp, creator)
     if match is not None:
         matchId= match.to_dict("Id")["Id"]
         add_board(match)
@@ -120,11 +120,11 @@ def there_is_space(mid):
             return True
         else:
             return False
-    except :
+    except Exception:
         return False
 
 @db_session
-def vote_director(player_id: int, vote: str): # need testing
+def vote_director(player_id: int, vote: str):
     if vote == 'nox':
         Player[player_id].Vote = 0
     elif vote == 'lumos':
@@ -134,40 +134,28 @@ def vote_director(player_id: int, vote: str): # need testing
 
 
 @db_session
-def delete_data(table): # needed for testing
-    delete(p for p in table)
-
-@db_session
-def delete_user(email, username, password): # needed for testing
-    user = User.get(Email=email, Username=username, Password=password)
-    if user is not None:
-        user.delete()
-
-    return user
-
-@db_session
-def get_minister_username(ID: int): # need testing
+def get_minister_username(ID: int): 
     minister = Match[ID].Players.filter(lambda p: p.GovRol == 1).first()
     return minister.UserId.Username 
 
 @db_session
-def get_match_status(ID: int): # need testing
+def get_match_status(ID: int):
     return Status[Match[ID].Status] 
 
 @db_session
-def get_board_status(ID: int): # need testing
+def get_board_status(ID: int):
     board_attr = ["PhoenixProclamations", "DeathEaterProclamations"]
     board_status = Match[ID].Board.to_dict(board_attr)
     board_status['boardtype'] = BoardType[Match[ID].Board.BoardType]
     return board_status    
 
 @db_session
-def check_match(mid): # need testing
+def check_match(mid):
     return Match.exists(Id=mid)
 
 
 @db_session
-def get_player_votes(match_id: int): # need testing
+def get_player_votes(match_id: int): 
     def replace(vote: int):
         result = 'missing vote'
         if vote == 0:
@@ -181,13 +169,14 @@ def get_player_votes(match_id: int): # need testing
         return {x.UserId.Username: replace(x.Vote) for x in players}        
 
 @db_session
-def get_player_id(match_id: int, user_id: int): # need testing
+def get_player_id(match_id: int, user_id: int):
     if Match.exists(Id=match_id):
         player = get(p for p in Match[match_id].Players if p.UserId.Id == user_id)
-        return player.PlayerId
+        if player is not None:
+            return player.PlayerId
 
 @db_session
-def set_next_minister(match_id: int): # need testing
+def set_next_minister(match_id: int):
     if Match.exists(Id=match_id):
         query = Match[match_id].Players.order_by(Player.Position)
         players = [x for x in query]
@@ -199,7 +188,7 @@ def set_next_minister(match_id: int): # need testing
         return current_minister
 
 @db_session
-def compute_election_result(match_id: int): # need testing
+def compute_election_result(match_id: int):
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         lumos = 0
@@ -209,6 +198,8 @@ def compute_election_result(match_id: int): # need testing
             total = count(p for p in players)
             lumos = count(p for p in players if p.Vote == 1)
             lumos = lumos/total
+        else:
+            result = 'missing vote'
 
         if lumos > voting_cutoff:
             result = 'lumos'
@@ -216,29 +207,29 @@ def compute_election_result(match_id: int): # need testing
         return result
 
 @db_session
-def restore_election(match_id: int): # need testing
+def restore_election(match_id: int): 
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
             p.Vote = 2
 
 @db_session
-def enact_proclamation(match_id: int, proclamation: str): # need testing
+def enact_proclamation(match_id: int, proclamation: str):
     if proclamation == "phoenix":
         Match[match_id].Board.PhoenixProclamations += 1
     elif proclamation == "death eater":
         Match[match_id].Board.DeathEaterProclamations += 1
 
 @db_session
-def get_phoenix_proclamations(match_id: int): # need testing
+def get_phoenix_proclamations(match_id: int): 
     return Match[match_id].Board.PhoenixProclamations
 
 @db_session
-def get_death_eater_proclamations(match_id): # need testing
+def get_death_eater_proclamations(match_id):
     return Match[match_id].Board.DeathEaterProclamations
 
 @db_session
-def is_victory_from(match_id: int): # need testing
+def is_victory_from(match_id: int):
     if Match.exists(Id=match_id):
         winner = "no winner yet"
         if get_death_eater_proclamations(match_id) == 6:
@@ -250,3 +241,35 @@ def is_victory_from(match_id: int): # need testing
 
         return winner
 
+@db_session
+def change_match_status(mid,status):
+    Match[mid].Status = status
+
+#needed for testing
+@db_session
+def delete_data(table): 
+    delete(p for p in table)
+
+@db_session
+def delete_user(email, username, password): 
+    user = User.get(Email=email, Username=username, Password=password)
+    if user is not None:
+        user.delete()
+    return user
+
+@db_session
+def make_minister(pid):
+    Player[pid].GovRol = 1
+
+@db_session
+def make_magician(pid):
+    Player[pid].GovRol = 2  
+
+@db_session
+def reset_proclamation(mid):
+    Match[mid].Board.PhoenixProclamations = 0
+    Match[mid].Board.DeathEaterProclamations = 0
+
+@db_session
+def change_last_minister(mid,pos):
+    Match[mid].LastMinister = pos
