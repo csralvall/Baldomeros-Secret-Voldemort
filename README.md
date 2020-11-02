@@ -20,3 +20,11 @@ sudo npm install
 ```bash
 sudo npm start
 ```
+Then, open `http://localhost:3000/` on your browser
+
+### For testing
+
+```bash
+cd app/
+sudo npm run test
+```
