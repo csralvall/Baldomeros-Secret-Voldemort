@@ -21,7 +21,7 @@ def test_gamestatus_ok():
     gidauxid = gidaux["Match_id"]
 
     response = client.get(
-        f"/games?mid={gidauxid}"
+        f"/game/{gidauxid}"
     )
 
     assert response.status_code == 200
@@ -42,7 +42,7 @@ def test_gamestatus_fail_mid():
     trash = 666
 
     response = client.get(
-        f"/games?mid={trash}"
+        f"/game/{trash}"
     )
 
     assert response.status_code == 404
@@ -62,8 +62,8 @@ def test_gamestatus_empty_mid():
     gidauxid = gidaux["Match_id"]
 
     response = client.get(
-        f"/games"
+        f"/game/"
     )
 
-    assert response.status_code == 422
-    assert response.json()['detail'][0]['msg'] == "field required" 
+    assert response.status_code == 404
+    assert response.json()['detail'] == "Not Found" 
