@@ -1,5 +1,5 @@
 import unittest
-from backend.db.crud import *
+from server.db.crud import *
 
 class TestCrudAllowedCases(unittest.TestCase):
 

@@ -1,4 +1,4 @@
-from backend.db.crud import *
+from server.db.crud import *
 
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException
 from pydantic import BaseModel, EmailStr, SecretStr

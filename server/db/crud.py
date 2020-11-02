@@ -1,6 +1,6 @@
 from pony.orm import db_session, select, count
-from backend.db.database import *
-from backend.db.dicts import *
+from server.db.database import *
+from server.db.dicts import *
 
 @db_session #Bool
 def user_is_registred(name, upassword):

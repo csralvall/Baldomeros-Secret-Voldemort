@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.db.crud import *
+from server.db.crud import *
 
-from backend.api.routers import authentication, game
+from server.api.routes import authentication, game
 
 app = FastAPI()
 
