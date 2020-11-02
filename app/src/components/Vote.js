@@ -11,11 +11,14 @@ if (process.env.NODE_ENV === "test") {
   Modal.setAppElement("#root");
 }
 
-function Vote({ open, closeVote }) {
+function Vote() {
   const matchID = useSelector((state) => state.match.id);
   const playerID = useSelector((state) => state.match.playerId);
   const [currentVote, setCurrentVote] = useState("");
+  const [open,setOpen] = useState(false);
 
+  //flag for voting when the vote is the same as the last
+  const [voteFlag, setFlag] = useState(false);
   const loaded = useRef(false);
   useEffect(() => {
     if (loaded.current) {
@@ -23,8 +26,8 @@ function Vote({ open, closeVote }) {
     } else {
       loaded.current = true;
     }
-  }, [currentVote]);
-
+  }, [currentVote,voteFlag]);
+  
   const sendVote = async () => {
     const url = "http://127.0.0.1:8000";
 
@@ -42,7 +45,7 @@ function Vote({ open, closeVote }) {
             alert("Could not Vote. Unknown Error.");
           }
         } else {
-          closeVote();
+          setOpen(false);
         }
       })
       .catch(() => {
@@ -52,6 +55,7 @@ function Vote({ open, closeVote }) {
 
   return (
     <div>
+      <button onClick={() => {setOpen(true)}}>Vote</button>
       <Modal
         isOpen={open}
         closeTimeoutMS={200}
@@ -71,6 +75,7 @@ function Vote({ open, closeVote }) {
             src={lumos}
             onClick={() => {
               setCurrentVote("lumos");
+              setFlag(!voteFlag);
             }}
             style={{ cursor: "pointer" }}
             className="nav-logo"
@@ -80,6 +85,7 @@ function Vote({ open, closeVote }) {
             src={nox}
             onClick={() => {
               setCurrentVote("nox");
+              setFlag(!voteFlag);
             }}
             style={{ cursor: "pointer" }}
             className="nav-logo"
