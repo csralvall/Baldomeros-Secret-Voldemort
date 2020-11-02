@@ -1,0 +1,28 @@
+.create-game-form {
+  display: flex;
+  margin: 0 auto;
+  max-width: 1000px;
+}
+
+.title {
+  text-align: center;
+  padding-bottom: 2vh;
+}
+
+input,
+label {
+  display: block;
+}
+
+.text-input {
+  font-size: 10vmin;
+}
+
+.create-button {
+  width: 100vmin;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}

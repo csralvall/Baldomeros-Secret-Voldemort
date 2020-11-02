@@ -1,0 +1,27 @@
+nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 10vh;
+  background: rgb(107, 149, 170);
+  color: blue;
+}
+
+.nav-links {
+  width: 50%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-logo {
+  height: auto;
+  width: auto;
+  max-height: 15vh;
+}
