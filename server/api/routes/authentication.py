@@ -1,4 +1,4 @@
-from backend.db.crud import *
+from server.db.crud import *
 
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException
 from pydantic import BaseModel, EmailStr, SecretStr
@@ -7,7 +7,7 @@ from typing import Optional
 
 router = APIRouter()
 
-@router.post("/account", tags=["User"], status_code=201)
+@router.post("/account", tags=["Authentication"], status_code=201)
 async def register_user(
     email: EmailStr = Form(...),
     username: str = Form(...),
@@ -29,7 +29,7 @@ async def register_user(
 
     return user
 
-@router.post("/session", tags=["User"], status_code=200)
+@router.post("/session", tags=["Authentication"], status_code=200)
 async def autenticate_user(
     username: str = Form(...),
     password: SecretStr = Form(...)):

@@ -1,8 +1,8 @@
 from fastapi.testclient import TestClient
 
-from backend.db.crud import *
+from server.db.crud import *
 
-from backend.main import app
+from server.main import app
 
 client = TestClient(app)
 
