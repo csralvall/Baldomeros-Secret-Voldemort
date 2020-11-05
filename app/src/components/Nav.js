@@ -1,8 +1,8 @@
 import React from "react";
-import "./Nav.css";
+import "./css/Nav.css";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import logo from "./media/SV_logo.png";
+import logo from "../media/logos/logo.png";
 
 function Nav() {
   const logged_in = useSelector((state) => state.user.logged_in);

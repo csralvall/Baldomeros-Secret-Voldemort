@@ -1,5 +1,18 @@
+@font-face {
+  font-family: "Harry P";
+  src: url("./media/fonts/HarryP.woff2") format("woff2"),
+    url("./media/fonts/HarryP.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  background: linear-gradient(
+    72deg,
+    rgba(92, 34, 34, 1) 38%,
+    rgba(101, 85, 106, 1) 76%
+  );
 }

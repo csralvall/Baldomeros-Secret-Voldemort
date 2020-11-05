@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import Modal from "react-modal";
-import lumos from "../media/Lumos.png";
-import nox from "../media/Nox.png";
-import "./Vote.css";
+import lumos from "../media/cards/lumos.png";
+import nox from "../media/cards/nox.png";
+import "./css/Vote.css";
 
 if (process.env.NODE_ENV === "test") {
   Modal.setAppElement("*");
