@@ -1,0 +1,63 @@
+.logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 70vw;
+  max-height: 30vh;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.btns div {
+  max-width: 50vmin;
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 2vh;
+  margin: auto;
+}
+
+.btns div button {
+  height: 7vmin;
+  width: 30%;
+  background-color: #252525;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.btns div button:hover {
+  background-color: #2e2d2d;
+}
+
+.img-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: auto;
+  max-width: 99vmin;
+}
+
+.image-container {
+  position: relative;
+  width: 25%;
+}
+
+.image-container img {
+  width: 95%;
+  height: 95%;
+  border-radius: 15px;
+}
+
+.transition-image {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.transition-image:hover {
+  opacity: 1;
+}
