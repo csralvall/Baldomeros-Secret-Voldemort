@@ -391,6 +391,7 @@ def is_victory_from(match_id: int):
 def change_match_status(mid,status):
     Match[mid].Status = status
 
+
 @db_session
 def change_player_rol(pid,rol):
     Player[pid].SecretRol = rol
