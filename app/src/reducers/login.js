@@ -12,6 +12,8 @@ const loginReducer = (
           id: action.payload.id,
         };
       else return state;
+    case "LOGOUT":
+      return { token: 0, logged_in: false, username: "", id: 0 };
     default:
       return state;
   }
