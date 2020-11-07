@@ -41,7 +41,7 @@ describe("SignUp Interface", () => {
   it("should show Sign Up button's text", () => {
     const wrapper = shallow(<SignUp />);
     const button = wrapper.find("div form button");
-    expect(button.text()).toBe("Sign Up!");
+    expect(button.text()).toBe("Sign Up");
   });
 });
 
