@@ -15,4 +15,6 @@ body {
     rgba(92, 34, 34, 1) 38%,
     rgba(101, 85, 106, 1) 76%
   );
+  background-attachment:fixed;
+  height:100%;
 }

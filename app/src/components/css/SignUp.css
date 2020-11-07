@@ -1,0 +1,59 @@
+.sign-up-module {
+  text-align: center;
+}
+
+.sign-up-title {
+  font-family: "Harry P";
+  color: White;
+  font-size: 5rem;
+}
+
+.label-sign-up {
+  color: white;
+  font-family: "Harry P", monospace, sans-serif;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+}
+
+.sign-up-form {
+  text-align: center;
+  font-size: 2rem;
+}
+
+.text-input {
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  margin: auto;
+  max-width: 70vmin;
+  border-radius: 15px;
+  border: none;
+  background-color: #252525;
+  color: white;
+  font-family: "Harry P", monospace, sans-serif;
+}
+
+.button-sign-up-wrapper {
+  padding-top: 3vmin;
+}
+
+.button-sign-up {
+  height: 7vmin;
+  width: 30vmin;
+  background-color: #252525;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.button-sign-up:hover {
+  background-color: #2e2d2d;
+}
+
+.success-sign-up {
+  text-align: center;
+  font-family: "Harry P";
+  color: White;
+  font-size: 2rem;
+}

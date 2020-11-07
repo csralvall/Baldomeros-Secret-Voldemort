@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useHistory } from "react-router-dom";
+import "./css/SignUp.css";
 
 function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [userProps, setUserProps] = useState({});
-  const [isSignUpSuccess, setIsSignUpSuccess] = useState(false);
+  const history = useHistory();
 
   const loaded = useRef(false);
   useEffect(() => {
@@ -49,7 +51,7 @@ function SignUp() {
             alert("Could not Sign Up. Unknown Error.");
           }
         } else {
-          setIsSignUpSuccess(true);
+          history.push("/login");
         }
       })
       .catch(() => {
@@ -66,11 +68,11 @@ function SignUp() {
     });
   };
 
-  const signUpFormJSX = (
-    <div>
-      <h1>Sign Up</h1>
-      <form onSubmit={getUserProps}>
-        <label>
+  return (
+    <div className="sign-up-module">
+      <h1 className="sign-up-title">Sign Up</h1>
+      <form onSubmit={getUserProps} className="sign-up-form">
+        <label className="label-sign-up">
           Username
           <input
             className="text-input"
@@ -80,7 +82,7 @@ function SignUp() {
             required
           />
         </label>
-        <label>
+        <label className="label-sign-up">
           Password
           <input
             className="text-input"
@@ -90,7 +92,7 @@ function SignUp() {
             required
           />
         </label>
-        <label>
+        <label className="label-sign-up">
           E-Mail
           <input
             className="text-input"
@@ -100,12 +102,14 @@ function SignUp() {
             required
           />
         </label>
-        <button type="submit">Sign Up!</button>
+        <div className="button-sign-up-wrapper">
+          <button type="submit" className="button-sign-up">
+            Sign Up!
+          </button>
+        </div>
       </form>
     </div>
   );
-
-  return <div>{isSignUpSuccess ? <h1>Success!</h1> : signUpFormJSX}</div>;
 }
 
 export default SignUp;
