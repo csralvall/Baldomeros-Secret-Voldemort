@@ -86,12 +86,13 @@ class TestDeck(unittest.TestCase):
     def test_discard_proclamation(self):
         self.assertTrue(create_deck(self.board))
 
-        self.assertTrue(discard_proclamation(self.board,
-                        get_top_proclamation(self.board)))
+        card = get_top_proclamation(self.board)
+
+        self.assertTrue(discard_proclamation(self.board, card))
 
         self.assertEqual(deck_status(self.board)['Discarded'], 1)
 
-        self.assertEqual(get_discarded_deck(self.board), ['death eater'])
+        self.assertEqual(get_discarded_deck(self.board), [card])
 
 
     def test_discard_bad_proclamation(self):
@@ -120,7 +121,7 @@ class TestDeck(unittest.TestCase):
 
         self.assertEqual(deck_status(self.board)['Discarded'], 0)
 
-        self.assertEqual(deck_status(self.board)['Discarded'], 0)
+        self.assertEqual(deck_status(self.board)['Available'], 17)
 
     def test_refill_deck_bad_board_id(self):
         self.assertTrue(create_deck(self.board))
@@ -140,5 +141,30 @@ class TestDeck(unittest.TestCase):
 
         self.assertRaises(DeckNotFound, deck_status, self.board+1)
 
+
+    def test_select_proclamation(self):
+        self.assertTrue(create_deck(self.board))
+
+        card = get_top_proclamation(self.board)
+
+        self.assertTrue(select_proclamation(self.board, card))
+
+        self.assertEqual(get_selected_deck(self.board), [card])
+
+
+    def test_select_bad_proclamation(self):
+        self.assertTrue(create_deck(self.board))
+
+        self.assertRaises(InvalidProclamation,
+                select_proclamation,self.board,'alja')
+
+
+    def test_select_proclamation_bad_board_id(self):
+        self.assertTrue(create_deck(self.board))
+
+        self.assertRaises(DeckNotFound, select_proclamation,
+                                    self.board+1, 'death eater')
+
 if __name__ == '__main__':
     unittest.main()
+
