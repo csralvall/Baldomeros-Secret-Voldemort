@@ -1,0 +1,28 @@
+nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 10vh;
+}
+
+.nav-links {
+  width: 20rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+  font-family: "Harry P";
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: x-large;
+}
+
+.nav-logo {
+  float: left;
+  height: auto;
+  width: auto;
+  max-height: 7vh;
+}

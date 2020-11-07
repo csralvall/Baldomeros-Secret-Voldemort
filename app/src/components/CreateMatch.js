@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { joinMatch } from "./../actions/match";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import "./CreateMatch.css";
+import "./css/CreateMatch.css";
 import {
   sliderStyle,
   railStyle,
