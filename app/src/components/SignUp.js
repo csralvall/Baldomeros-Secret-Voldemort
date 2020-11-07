@@ -104,7 +104,7 @@ function SignUp() {
         </label>
         <div className="button-sign-up-wrapper">
           <button type="submit" className="button-sign-up">
-            Sign Up!
+            Sign Up
           </button>
         </div>
       </form>
