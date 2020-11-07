@@ -156,16 +156,15 @@ def there_is_space(mid):
 def create_deck(board_id: int):
     if Board.exists(Id=board_id):
         available = []
-        discarded = []
         for i in range(0,6):
             available.append("phoenix")
         for i in range(0,11):
             available.append("death eater")
 
         size = len(available)
-        proclamations = {'available': available, 'discarded': discarded}
+        cards = {'available': available, 'discarded': [], 'selected': []}
         try:
-            Deck(Discarded=0,Available=size,Cards=proclamations,Board=board_id)
+            Deck(Discarded=0,Available=size,Cards=cards,Board=board_id)
             return True
         except Exception:
             return False
@@ -208,6 +207,20 @@ def discard_proclamation(board_id: int, proclamation: str):
             raise InvalidProclamation
     else:
         raise DeckNotFound
+
+@db_session
+def select_proclamation(board_id: int, proclamation: str):
+    if Deck.exists(Board=board_id):
+        valid_proclamations = ['phoenix','death eater']
+        deck = Deck.get(Board=board_id)
+        if proclamation in valid_proclamations:
+            deck.Cards['selected'].append(proclamation)
+            return True
+        else:
+            raise InvalidProclamation
+    else:
+        raise DeckNotFound
+
 
 @db_session
 def refill_deck(board_id: int):
