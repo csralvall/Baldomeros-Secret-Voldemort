@@ -245,6 +245,23 @@ def is_victory_from(match_id: int):
 def change_match_status(mid,status):
     Match[mid].Status = status
 
+@db_session
+def get_player_rol(pid):
+    return SecretRolDiccionary[Player[pid].SecretRol]
+
+@db_session
+def get_player_username(pid):
+    return User[Player[pid].UserId].Username
+
+@db_session
+def get_death_eater_players_in_match(mid):
+    player = get(p for p in Match[mid].Players if p.SecretRol == 1 or p.SecretRol == 0)
+    usernames = list()
+
+    for p in player:
+        usernames.append(get_player_username(p.PlayerId))
+    return usernames.to_dict
+
 #needed for testing
 @db_session
 def delete_data(table): 
@@ -273,3 +290,4 @@ def reset_proclamation(mid):
 @db_session
 def change_last_minister(mid,pos):
     Match[mid].LastMinister = pos
+

@@ -105,3 +105,32 @@ async def vote_candidate(
         return winner
 
 
+@router.get("/{mid}/player/{pid}/rol", tags=["Game"])
+async def player_rol(mid: int, pid: int):
+    
+    if not check_match(mid):
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    if not check_player_in_match(mid,pid):
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    player_rol = get_player_rol(pid)
+    player_username = get_player_username(pid)
+
+    rol = {
+        "username": player_username,
+        "rol": player_rol}
+    
+    return rol
+
+@router.get("/{mid}/death_eaters", tags=["Game"])
+async def death_eaters_in_match(mid: int):
+
+    if not check_match(mid):
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    death_eaters = get_death_eater_players_in_match(mid)
+    
+    return death_eaters
+
+    
