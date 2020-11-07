@@ -1,5 +1,6 @@
 from pony.orm import db_session, select, count, delete
 from server.db.database import *
+from server.db.crud import DeckNotFound, BoardNotFound
 
 @db_session
 def delete_data(table): 
@@ -46,6 +47,17 @@ def get_discarded_deck(board_id: int):
         deck = Board[board_id].Proclamations
         if deck is not None:
             return deck.Cards['discarded']
+        else:
+            raise DeckNotFound
+    else:
+        raise BoardNotFound
+
+@db_session
+def get_selected_deck(board_id: int):
+    if Board.exists(Id=board_id):
+        deck = Board[board_id].Proclamations
+        if deck is not None:
+            return deck.Cards['selected']
         else:
             raise DeckNotFound
     else:
