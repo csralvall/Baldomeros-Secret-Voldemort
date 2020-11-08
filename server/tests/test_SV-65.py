@@ -4,6 +4,8 @@ from server.db.crud import *
 
 from server.main import app
 
+from server.tests.helpers import *
+
 client = TestClient(app)
 
 def test_start_game_5():

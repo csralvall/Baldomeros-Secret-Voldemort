@@ -11,7 +11,7 @@ class Match(db.Entity):
     BoardType = Required(int, min=0, max=2)
     LastMinister = Optional(int)
     Players = Set('Player')
-    Board = Optional('Board')
+    Board = Optional('Board', cascade_delete=True)
     Creator = Required('User')
     
 class Board(db.Entity):
@@ -20,7 +20,15 @@ class Board(db.Entity):
     PhoenixProclamations = Optional(int, min=0, max=5)
     DeathEaterProclamations = Optional(int, min=0, max=6)
     FailedElectionsCount = Optional(int)
+    Proclamations = Optional('Deck', cascade_delete=True)
     Match = Required(Match)
+
+class Deck(db.Entity):
+    Id = PrimaryKey(int, auto=True)
+    Discarded = Required(int, min=0, max=17)
+    Available = Required(int, min=0, max=17)
+    Cards = Required(Json)
+    Board = Required(Board)
 
 class Player(db.Entity):
     PlayerId = PrimaryKey(int, auto=True)
