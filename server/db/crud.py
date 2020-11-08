@@ -2,6 +2,39 @@ from pony.orm import db_session, select, count
 from server.db.database import *
 from server.db.dicts import *
 
+class NotEnoughProclamations(Exception):
+    """ Exception raised when there are only two cards available
+    to take on the deck. """
+    def __init__(
+        self,
+        proclamations,
+        message="proclamations in deck are less than 3"):
+        self.proclamations = proclamations
+        self.message = message
+
+    def __str__(self):
+        return f'Proclamations = {self.proclamations} -> {self.message}'
+
+class DeckNotFound(Exception):
+    """ Exception raised when there is not deck with the parameters passed. """
+    pass
+
+class BoardNotFound(Exception):
+    """ Exception raised when there is not board matching the passed id. """
+    pass
+
+class MatchNotFound(Exception):
+    """ Exception raised when there is not match with the passed id. """
+    pass
+
+class InvalidProclamation(Exception):
+    """ Exception raised when the proclamation passed is invalid """
+    pass
+
+class EmptySelectedProclamations(Exception):
+    """ Exception raised when there aren't selected proclamations to remove """
+    pass
+
 @db_session #Bool
 def user_is_registred(name, upassword):
     try:
@@ -124,6 +157,108 @@ def there_is_space(mid):
         return False
 
 @db_session
+def create_deck(board_id: int):
+    if Board.exists(Id=board_id):
+        available = []
+        for i in range(0,6):
+            available.append("phoenix")
+        for i in range(0,11):
+            available.append("death eater")
+
+        size = len(available)
+        cards = {'available': available, 'discarded': [], 'selected': []}
+        try:
+            Deck(Discarded=0,Available=size,Cards=cards,Board=board_id)
+            return True
+        except Exception:
+            return False
+    else:
+        raise BoardNotFound
+
+@db_session
+def get_selected_card(board_id: int):
+    if Deck.exists(Board=board_id):
+        deck = Deck.get(Board=board_id)
+        if not deck.Cards['selected']:
+            raise EmptySelectedProclamations
+        else:
+            deck.Cards['selected'].reverse()
+            return deck.Cards['selected'].pop()
+    else:
+        raise DeckNotFound
+
+@db_session
+def show_selected_deck(board_id: int):
+    if Board.exists(Id=board_id):
+        deck = Board[board_id].Proclamations
+        if deck is not None:
+            return deck.Cards['selected']
+        else:
+            raise DeckNotFound
+    else:
+        raise BoardNotFound
+    
+@db_session
+def shuffle_deck(board_id: int):
+    import random
+    if Deck.exists(Board=board_id):
+        deck = Deck.get(Board=board_id)
+        available = deck.Cards['available']
+        random.shuffle(available)
+        return True
+    return False
+
+@db_session
+def get_top_proclamation(board_id: int):
+    if Deck.exists(Board=board_id):
+        deck = Deck.get(Board=board_id)
+        if deck.Available > 2:
+            card = deck.Cards['available'].pop()
+            deck.Available -= 1
+            deck.Cards['selected'].append(card)
+            return True
+        else:
+            raise NotEnoughProclamations(deck.Available)
+    else:
+        raise DeckNotFound
+
+@db_session
+def discard_proclamation(board_id: int, proclamation: str):
+    if Deck.exists(Board=board_id):
+        deck = Deck.get(Board=board_id)
+        if proclamation in deck.Cards['selected']:
+            deck.Cards['selected'].remove(proclamation)
+            deck.Cards['discarded'].append(proclamation)
+            deck.Discarded += 1
+            return True
+        else:
+            raise InvalidProclamation
+    else:
+        raise DeckNotFound
+
+@db_session
+def refill_deck(board_id: int):
+    if Deck.exists(Board=board_id):
+        deck = Deck.get(Board=board_id)
+        discarded = deck.Cards['discarded']
+        deck.Cards['available'] += discarded
+        deck.Available = len(deck.Cards['available'])
+        deck.Cards['discarded'] = []
+        deck.Discarded = 0
+        return True
+    else:
+        raise DeckNotFound
+
+@db_session
+def deck_status(board_id: int):
+    if Deck.exists(Board=board_id):
+        deck = Deck.get(Board=board_id)
+        deck_attributes = ['Available', 'Discarded']
+        return deck.to_dict(deck_attributes)
+    else:
+        raise DeckNotFound
+
+@db_session
 def vote_director(player_id: int, vote: str):
     if vote == 'nox':
         Player[player_id].Vote = 0
@@ -141,6 +276,17 @@ def get_minister_username(ID: int):
 @db_session
 def get_match_status(ID: int):
     return Status[Match[ID].Status] 
+
+@db_session
+def get_match_board_id(match_id: int):
+    if Match.exists(Id=match_id):
+        board = Match[match_id].Board
+        if board is not None:
+            return board.Id
+        else:
+            raise BoardNotFound
+    else:
+        raise MatchNotFound
 
 @db_session
 def get_board_status(ID: int):
@@ -245,31 +391,3 @@ def is_victory_from(match_id: int):
 def change_match_status(mid,status):
     Match[mid].Status = status
 
-#needed for testing
-@db_session
-def delete_data(table): 
-    delete(p for p in table)
-
-@db_session
-def delete_user(email, username, password): 
-    user = User.get(Email=email, Username=username, Password=password)
-    if user is not None:
-        user.delete()
-    return user
-
-@db_session
-def make_minister(pid):
-    Player[pid].GovRol = 1
-
-@db_session
-def make_magician(pid):
-    Player[pid].GovRol = 2  
-
-@db_session
-def reset_proclamation(mid):
-    Match[mid].Board.PhoenixProclamations = 0
-    Match[mid].Board.DeathEaterProclamations = 0
-
-@db_session
-def change_last_minister(mid,pos):
-    Match[mid].LastMinister = pos
