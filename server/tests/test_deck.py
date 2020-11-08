@@ -33,7 +33,7 @@ class TestDeck(unittest.TestCase):
 
         self.assertTrue(create_deck(self.board))
 
-        cards = get_available_deck(self.board)
+        cards = show_available_deck(self.board)
 
         self.assertEqual(proclamations, cards)
         self.assertEqual(deck_status(self.board)['Available'], 17)
@@ -53,7 +53,7 @@ class TestDeck(unittest.TestCase):
         self.assertTrue(create_deck(self.board))
         self.assertTrue(shuffle_deck(self.board))
 
-        cards = get_available_deck(self.board)
+        cards = show_available_deck(self.board)
 
         self.assertNotEqual(proclamations_ordered, cards)
 
@@ -65,7 +65,8 @@ class TestDeck(unittest.TestCase):
 
     def test_get_top_proclamation(self):
         self.assertTrue(create_deck(self.board))
-        self.assertEqual(get_top_proclamation(self.board), 'death eater')
+        self.assertTrue(get_top_proclamation(self.board))
+        self.assertEqual(show_selected_deck(self.board), ['death eater'])
         self.assertEqual(deck_status(self.board)['Available'], 16)
 
 
@@ -86,13 +87,17 @@ class TestDeck(unittest.TestCase):
     def test_discard_proclamation(self):
         self.assertTrue(create_deck(self.board))
 
-        card = get_top_proclamation(self.board)
+        self.assertTrue(get_top_proclamation(self.board))
 
-        self.assertTrue(discard_proclamation(self.board, card))
+        self.assertEqual(show_selected_deck(self.board), ['death eater'])
+
+        self.assertTrue(discard_proclamation(self.board, 'death eater'))
 
         self.assertEqual(deck_status(self.board)['Discarded'], 1)
 
-        self.assertEqual(get_discarded_deck(self.board), [card])
+        self.assertEqual(show_discarded_deck(self.board), ['death eater'])
+
+        self.assertEqual(show_selected_deck(self.board), [])
 
 
     def test_discard_bad_proclamation(self):
@@ -112,8 +117,15 @@ class TestDeck(unittest.TestCase):
     def test_refill_deck(self):
         self.assertTrue(create_deck(self.board))
 
-        self.assertTrue(discard_proclamation(self.board,
-                        get_top_proclamation(self.board)))
+        self.assertTrue(get_top_proclamation(self.board))
+
+        self.assertEqual(show_selected_deck(self.board), ['death eater'])
+
+        self.assertTrue(discard_proclamation(self.board, 'death eater'))
+
+        self.assertEqual(show_discarded_deck(self.board), ['death eater'])
+
+        self.assertEqual(show_selected_deck(self.board), [])
 
         self.assertEqual(deck_status(self.board)['Discarded'], 1)
 
@@ -141,29 +153,43 @@ class TestDeck(unittest.TestCase):
 
         self.assertRaises(DeckNotFound, deck_status, self.board+1)
 
-
-    def test_select_proclamation(self):
+    def test_get_selected_card(self):
         self.assertTrue(create_deck(self.board))
 
-        card = get_top_proclamation(self.board)
+        self.assertTrue(get_top_proclamation(self.board))
 
-        self.assertTrue(select_proclamation(self.board, card))
+        self.assertEqual(show_selected_deck(self.board), ['death eater'])
 
-        self.assertEqual(get_selected_deck(self.board), [card])
+        self.assertEqual(get_selected_card(self.board), 'death eater')
 
+        self.assertEqual(show_selected_deck(self.board), [])
 
-    def test_select_bad_proclamation(self):
+    def test_get_selected_card_empty_proclamation(self):
         self.assertTrue(create_deck(self.board))
 
-        self.assertRaises(InvalidProclamation,
-                select_proclamation,self.board,'alja')
+        self.assertRaises(EmptySelectedProclamations,
+                            get_selected_card, self.board)
 
-
-    def test_select_proclamation_bad_board_id(self):
+    def test_get_selected_card_bad_board_id(self):
         self.assertTrue(create_deck(self.board))
 
-        self.assertRaises(DeckNotFound, select_proclamation,
-                                    self.board+1, 'death eater')
+        self.assertRaises(DeckNotFound,
+                            get_selected_card, self.board+1)
+
+    def test_show_selected_deck(self):
+        self.assertTrue(create_deck(self.board))
+
+        self.assertTrue(get_top_proclamation(self.board))
+
+        self.assertEqual(show_selected_deck(self.board), ['death eater'])
+
+    def test_show_selected_deck_bad_board_id(self):
+        self.assertRaises(BoardNotFound,
+                            show_selected_deck, self.board+1)
+        
+    def test_show_selected_deck_not_created_deck(self):
+        self.assertRaises(DeckNotFound,
+                            show_selected_deck, self.board)
 
 if __name__ == '__main__':
     unittest.main()

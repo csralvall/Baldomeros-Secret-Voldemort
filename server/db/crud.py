@@ -31,6 +31,10 @@ class InvalidProclamation(Exception):
     """ Exception raised when the proclamation passed is invalid """
     pass
 
+class EmptySelectedProclamations(Exception):
+    """ Exception raised when there aren't selected proclamations to remove """
+    pass
+
 @db_session #Bool
 def user_is_registred(name, upassword):
     try:
@@ -170,6 +174,29 @@ def create_deck(board_id: int):
             return False
     else:
         raise BoardNotFound
+
+@db_session
+def get_selected_card(board_id: int):
+    if Deck.exists(Board=board_id):
+        deck = Deck.get(Board=board_id)
+        if not deck.Cards['selected']:
+            raise EmptySelectedProclamations
+        else:
+            deck.Cards['selected'].reverse()
+            return deck.Cards['selected'].pop()
+    else:
+        raise DeckNotFound
+
+@db_session
+def show_selected_deck(board_id: int):
+    if Board.exists(Id=board_id):
+        deck = Board[board_id].Proclamations
+        if deck is not None:
+            return deck.Cards['selected']
+        else:
+            raise DeckNotFound
+    else:
+        raise BoardNotFound
     
 @db_session
 def shuffle_deck(board_id: int):
@@ -188,7 +215,8 @@ def get_top_proclamation(board_id: int):
         if deck.Available > 2:
             card = deck.Cards['available'].pop()
             deck.Available -= 1
-            return card
+            deck.Cards['selected'].append(card)
+            return True
         else:
             raise NotEnoughProclamations(deck.Available)
     else:
@@ -197,9 +225,9 @@ def get_top_proclamation(board_id: int):
 @db_session
 def discard_proclamation(board_id: int, proclamation: str):
     if Deck.exists(Board=board_id):
-        valid_proclamations = ['phoenix','death eater']
         deck = Deck.get(Board=board_id)
-        if proclamation in valid_proclamations:
+        if proclamation in deck.Cards['selected']:
+            deck.Cards['selected'].remove(proclamation)
             deck.Cards['discarded'].append(proclamation)
             deck.Discarded += 1
             return True
@@ -207,20 +235,6 @@ def discard_proclamation(board_id: int, proclamation: str):
             raise InvalidProclamation
     else:
         raise DeckNotFound
-
-@db_session
-def select_proclamation(board_id: int, proclamation: str):
-    if Deck.exists(Board=board_id):
-        valid_proclamations = ['phoenix','death eater']
-        deck = Deck.get(Board=board_id)
-        if proclamation in valid_proclamations:
-            deck.Cards['selected'].append(proclamation)
-            return True
-        else:
-            raise InvalidProclamation
-    else:
-        raise DeckNotFound
-
 
 @db_session
 def refill_deck(board_id: int):

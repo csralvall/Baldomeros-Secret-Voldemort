@@ -31,7 +31,7 @@ def change_last_minister(mid,pos):
     Match[mid].LastMinister = pos
 
 @db_session
-def get_available_deck(board_id: int):
+def show_available_deck(board_id: int):
     if Board.exists(Id=board_id):
         deck = Board[board_id].Proclamations
         if deck is not None:
@@ -42,22 +42,11 @@ def get_available_deck(board_id: int):
         raise BoardNotFound
 
 @db_session
-def get_discarded_deck(board_id: int):
+def show_discarded_deck(board_id: int):
     if Board.exists(Id=board_id):
         deck = Board[board_id].Proclamations
         if deck is not None:
             return deck.Cards['discarded']
-        else:
-            raise DeckNotFound
-    else:
-        raise BoardNotFound
-
-@db_session
-def get_selected_deck(board_id: int):
-    if Board.exists(Id=board_id):
-        deck = Board[board_id].Proclamations
-        if deck is not None:
-            return deck.Cards['selected']
         else:
             raise DeckNotFound
     else:
