@@ -45,6 +45,7 @@ async def join_game(mid: int, user: int):
 
             else: 
 
+
                 raise HTTPException(status_code=404, detail="couldnt add the user")
         else:
             raise HTTPException(status_code=404, detail="game already started")
@@ -105,3 +106,23 @@ async def vote_candidate(
         return winner
 
 
+@router.patch("/{mid}")
+async def start_game(mid: int, user: int): 
+
+    if check_match(mid):
+
+        if check_host(user):
+
+            num = get_num_players(mid)
+
+            set_roles(num,mid)
+            set_gob_roles(num,mid)
+            change_match_status(mid,1)
+
+            return {"game": "game created succesfully"}
+
+        else:
+            raise HTTPException(status_code=404, detail="only the host can start the game") 
+
+    else:
+        raise HTTPException(status_code=404, detail="this game does not exist") 

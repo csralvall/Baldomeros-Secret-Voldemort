@@ -273,3 +273,58 @@ def reset_proclamation(mid):
 @db_session
 def change_last_minister(mid,pos):
     Match[mid].LastMinister = pos
+
+
+
+
+@db_session
+def check_host(user_id):
+    try: 
+        u = Match.exists(Creator=user_id)
+        return u 
+    except Exception:
+        return False
+
+@db_session
+def get_player_rol(pid):   
+    return Player[pid].SecretRol
+
+
+@db_session
+def get_num_players(match_id: int): 
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            n = n + 1 
+    return n  
+  
+
+@db_session
+def set_roles(num: int, match_id: int):
+    fenix = (num // 2) + 1  
+    death = (num - fenix) - 1
+    players = Match[match_id].Players   
+
+    for p in players:
+        if (fenix > 0):
+            p.SecretRol = 2
+            fenix = fenix - 1
+        elif (death > 0):
+            p.SecretRol = 1
+            death = death - 1
+        else:
+            p.SecretRol = 0
+
+@db_session
+def set_gob_roles(num: int, match_id: int):
+    magicians = num - 1
+    players = Match[match_id].Players   
+
+    for p in players:
+        if (magicians > 0):
+            p.GovRol = 2
+            magicians = magicians - 1
+        else:
+            p.GovRol = 0
+
