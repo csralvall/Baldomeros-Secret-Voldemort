@@ -397,6 +397,10 @@ def change_player_rol(pid,rol):
     Player[pid].SecretRol = rol
 
 @db_session
+def change_player_rol(pid,rol):
+    Player[pid].SecretRol = rol
+
+@db_session
 def get_player_rol(pid):
     return SecretRolDiccionary[Player[pid].SecretRol]
 
