@@ -246,21 +246,31 @@ def change_match_status(mid,status):
     Match[mid].Status = status
 
 @db_session
+def change_player_rol(pid,rol):
+    Player[pid].SecretRol = rol
+
+@db_session
 def get_player_rol(pid):
     return SecretRolDiccionary[Player[pid].SecretRol]
 
 @db_session
+def get_user_username(uid):
+    return User[uid].Username
+
+@db_session
 def get_player_username(pid):
-    return User[Player[pid].UserId].Username
+    return (User[(Player[pid].UserId).Id].Username)
 
 @db_session
 def get_death_eater_players_in_match(mid):
-    player = get(p for p in Match[mid].Players if p.SecretRol == 1 or p.SecretRol == 0)
-    usernames = list()
+    players_death_eaters = select(p for p in Match[mid].Players if p.SecretRol == 1)
+    deatheaters = list()
+    player_voldemort = select(p for p in Match[mid].Players if p.SecretRol == 0).first()
+    voldemort = get_player_username(player_voldemort.PlayerId)
 
-    for p in player:
-        usernames.append(get_player_username(p.PlayerId))
-    return usernames.to_dict
+    for p in players_death_eaters:
+        deatheaters.append(get_player_username(p.PlayerId))
+    return {"Death Eater": deatheaters, "Voldemort": voldemort}
 
 #needed for testing
 @db_session
