@@ -391,7 +391,6 @@ def is_victory_from(match_id: int):
 def change_match_status(mid,status):
     Match[mid].Status = status
 
-
 @db_session
 def change_player_rol(pid,rol):
     Player[pid].SecretRol = rol
@@ -422,33 +421,4 @@ def get_death_eater_players_in_match(mid):
     for p in players_death_eaters:
         deatheaters.append(get_player_username(p.PlayerId))
     return {"Death Eater": deatheaters, "Voldemort": voldemort}
-
-#needed for testing
-@db_session
-def delete_data(table): 
-    delete(p for p in table)
-
-@db_session
-def delete_user(email, username, password): 
-    user = User.get(Email=email, Username=username, Password=password)
-    if user is not None:
-        user.delete()
-    return user
-
-@db_session
-def make_minister(pid):
-    Player[pid].GovRol = 1
-
-@db_session
-def make_magician(pid):
-    Player[pid].GovRol = 2  
-
-@db_session
-def reset_proclamation(mid):
-    Match[mid].Board.PhoenixProclamations = 0
-    Match[mid].Board.DeathEaterProclamations = 0
-
-@db_session
-def change_last_minister(mid,pos):
-    Match[mid].LastMinister = pos
 
