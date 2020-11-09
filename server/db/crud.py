@@ -392,6 +392,7 @@ def change_match_status(mid,status):
     Match[mid].Status = status
 
 @db_session
+
 def check_host(user_id):
     try: 
         u = Match.exists(Creator=user_id)
@@ -524,6 +525,25 @@ def get_player_username(pid):
     return (User[(Player[pid].UserId).Id].Username)
 
 @db_session
+
+def change_player_rol(pid,rol):
+    Player[pid].SecretRol = rol
+
+
+@db_session
+def get_player_rol(pid):
+    return SecretRolDiccionary[Player[pid].SecretRol]
+
+@db_session
+def get_user_username(uid):
+    return User[uid].Username
+
+@db_session
+def get_player_username(pid):
+    return (User[(Player[pid].UserId).Id].Username)
+
+@db_session
+
 def get_death_eater_players_in_match(mid):
     players_death_eaters = select(p for p in Match[mid].Players if p.SecretRol == 1)
     deatheaters = list()
