@@ -271,7 +271,10 @@ def vote_director(player_id: int, vote: str):
 @db_session
 def get_minister_username(ID: int): 
     minister = Match[ID].Players.filter(lambda p: p.GovRol == 1).first()
-    return minister.UserId.Username 
+    if minister is not None:
+        return minister.UserId.Username
+    else:
+        return "No minister yet"
 
 @db_session
 def get_match_status(ID: int):
@@ -445,7 +448,7 @@ def get_num_minister(match_id: int): #to helpers
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
-            if (p.GovRol == 0):
+            if (p.GovRol == 1):
                 n = n + 1 
     return n    
 
@@ -492,7 +495,7 @@ def set_gob_roles(match_id: int):
     
     for p in players:
         if (p.Position == k):
-            p.GovRol = 0
+            p.GovRol = 1
         else:
             p.GovRol = 2
 
