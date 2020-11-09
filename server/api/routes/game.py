@@ -96,6 +96,7 @@ async def vote_candidate(
         player_votes = get_player_votes(mid)
 
         if 'missing vote' not in player_votes.values():
+            set_next_director(mid)
             set_next_minister(mid)
             if compute_election_result(mid) == 'lumos':
                 enact_proclamation(mid,'death eater')
@@ -160,35 +161,14 @@ async def start_game(mid: int, user: int):
 
     else:
         raise HTTPException(status_code=404, detail="this game does not exist") 
-        
-        
-@router.get("/{mid}/player/{pid}/rol", tags=["Game"])
-async def player_rol(mid: int, pid: int):
     
-    if not check_match(mid):
-        raise HTTPException(status_code=404, detail="Match not found")
+@router.get("/{mid}/directors", tags=["Game"])
+async def posible_directors(mid:int):
 
-    if not check_player_in_match(mid,pid):
-        raise HTTPException(status_code=404, detail="Player not found")
-
-    player_rol = get_player_rol(pid)
-    player_username = get_player_username(pid)
-
-    rol = {
-        "username": player_username,
-        "rol": player_rol}
-    
-    return rol
-  
-
-@router.get("/{mid}/death_eaters", tags=["Game"])
-async def death_eaters_in_match(mid: int):
 
     if not check_match(mid):
         raise HTTPException(status_code=404, detail="Match not found")
 
-    death_eaters = get_death_eater_players_in_match(mid)
-    
-    return death_eaters
+    posible_directors = get_posible_directors(mid)
 
-    
+    return posible_directors

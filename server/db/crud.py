@@ -85,7 +85,7 @@ def add_match(minp,maxp,creator):
             MinPlayers=minp,
             Status=0,
             BoardType=0, #hardcoded
-            LastMinister = 0, #Changes when the match starts
+            CurrentMinister = 0, #Changes when the match starts
             Creator = creator)
         return newmatch
     except Exception:
@@ -329,12 +329,29 @@ def set_next_minister(match_id: int):
     if Match.exists(Id=match_id):
         query = Match[match_id].Players.order_by(Player.Position)
         players = [x for x in query]
-        last_minister = Match[match_id].LastMinister
+        last_minister = Match[match_id].CurrentMinister
         players[last_minister].GovRol = 2
         current_minister = (last_minister + 1) % len(players)
         players[current_minister].GovRol = 1
-        Match[match_id].LastMinister = current_minister
+        Match[match_id].CurrentMinister = current_minister
         return current_minister
+
+@db_session
+def set_next_director(mid):
+    if (Match.exists(Id=mid) and Match[mid].CurrentDirector is not None and Match[mid].CandidateDirector is not None):
+        query = Match[mid].Players.order_by(Player.Position)
+        players = [x for x in query]
+        last_director = Match[mid].CurrentDirector
+        players[last_director].GovRol = 4 #Ex Director.
+        current_director = Match[mid].CandidateDirector
+        players[current_director].GovRol = 2
+        Match[mid].CurrentDirector = current_director
+        return current_director
+
+@db_session
+def set_next_candidate_director(mid,pos):
+    if Match.exists(Id=mid):
+        Match[mid].CandidateDirector = pos
 
 @db_session
 def compute_election_result(match_id: int):
@@ -427,7 +444,7 @@ def get_num_magicians(match_id: int): #to helpers
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
-            if (p.GovRol == 2):
+            if (p.GovRol == 2 or p.GovRol == 3 or p.GovRol == 4):
                 n = n + 1 
     return n    
 
@@ -491,7 +508,7 @@ def set_gob_roles(match_id: int):
     import random
     players = Match[match_id].Players   
     k = random.randint(0,(Match[match_id].MaxPlayers - 1))
-    Match[match_id].LastMinister = k
+    Match[match_id].CurrentMinister = k
     
     for p in players:
         if (p.Position == k):
@@ -523,9 +540,17 @@ def get_player_username(pid):
 def change_player_rol(pid,rol):
     Player[pid].SecretRol = rol
 
+@db_session
+def get_posible_directors(mid):
+    players_alive_in_match = select(p for p in Match[mid].Players if p.IsDead == False)
+    posible_directors = list()
+    for p in players_alive_in_match:
+        if (p.GovRol != 3 and p.GovRol != 4):
+            posible_directors.append(get_player_username(p.PlayerId))
+
+    return {"posible directors": posible_directors}
 
 @db_session
-
 def get_death_eater_players_in_match(mid):
     players_death_eaters = select(p for p in Match[mid].Players if p.SecretRol == 1)
     deatheaters = list()

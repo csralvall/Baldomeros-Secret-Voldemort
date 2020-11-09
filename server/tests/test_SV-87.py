@@ -82,6 +82,11 @@ class TestSV87(unittest.TestCase):
         self.assertEqual(get_death_eater_players_in_match(self.matchid),{'Voldemort':'example2', 'Death Eater': ['example3']})
         self.assertNotEqual(get_death_eater_players_in_match(self.matchid),{'Voldemort':'example3', 'Death Eater': ['example2']})
         
+    def test_get_death_eater_players_in_match2(self):
+        change_player_rol(self.player3id,1) 
+        change_player_rol(self.player4id,1) 
+        self.assertEqual(get_death_eater_players_in_match(self.matchid),{'Voldemort':'example2', 'Death Eater': ['example3','example4','example5']})
+        
 
 if __name__ == '__main__':
     unittest.main()
