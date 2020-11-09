@@ -488,7 +488,8 @@ def set_gob_roles(match_id: int):
     import random
     players = Match[match_id].Players   
     k = random.randint(0,(Match[match_id].MaxPlayers - 1))
-
+    Match[match_id].LastMinister = k
+    
     for p in players:
         if (p.Position == k):
             p.GovRol = 0
