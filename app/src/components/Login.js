@@ -40,7 +40,7 @@ function Login() {
         const responseData = await response.json();
         if (response.status !== 200) {
           if (response.status === 401) {
-            alert("Username not found");
+            alert("Username or password invalid.");
           } else {
             alert("Could not login. Unknown Error.");
           }
