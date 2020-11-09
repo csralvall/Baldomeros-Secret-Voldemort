@@ -65,9 +65,9 @@ app.include_router(game.router, prefix="/game")
 #   return {"game": "your game"}
 
 
-@app.patch("/game/{gid}")
-async def start_game():
-  return {"game": "started game"}
+# @app.patch("/game/{gid}")
+# async def start_game():
+#   return {"game": "started game"}
 
 @app.get("/game/{gid}/players")
 async def get_game_players():

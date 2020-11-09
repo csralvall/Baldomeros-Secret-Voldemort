@@ -45,6 +45,7 @@ async def join_game(mid: int, user: int):
 
             else: 
 
+
                 raise HTTPException(status_code=404, detail="couldnt add the user")
         else:
             raise HTTPException(status_code=404, detail="game already started")
@@ -102,7 +103,7 @@ async def vote_candidate(
 
         winner = is_victory_from(mid)
 
-        return winner
+        return winner 
 
 
 @router.get("/{mid}/player/{pid}/rol", tags=["Game"])
@@ -122,6 +123,63 @@ async def player_rol(mid: int, pid: int):
         "rol": player_rol}
     
     return rol
+
+@router.get("/{mid}/death_eaters", tags=["Game"])
+async def death_eaters_in_match(mid: int):
+
+    if not check_match(mid):
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    death_eaters = get_death_eater_players_in_match(mid)
+    
+    return death_eaters
+
+    
+@router.patch("/{mid}")
+async def start_game(mid: int, user: int): 
+
+    if check_match(mid):
+
+        if check_host(user):
+
+            num = get_num_players(mid)
+            minp = get_min_players(mid)
+
+            if (num >= minp): 
+                set_roles(num,mid)
+                set_gob_roles(mid)
+                change_match_status(mid,1)
+
+                return {"game": "game created successfully"}
+
+            else:
+                raise HTTPException(status_code=404, detail="we need more people to start :)")
+            
+        else:
+            raise HTTPException(status_code=404, detail="only the host can start the game") 
+
+    else:
+        raise HTTPException(status_code=404, detail="this game does not exist") 
+        
+        
+@router.get("/{mid}/player/{pid}/rol", tags=["Game"])
+async def player_rol(mid: int, pid: int):
+    
+    if not check_match(mid):
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    if not check_player_in_match(mid,pid):
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    player_rol = get_player_rol(pid)
+    player_username = get_player_username(pid)
+
+    rol = {
+        "username": player_username,
+        "rol": player_rol}
+    
+    return rol
+  
 
 @router.get("/{mid}/death_eaters", tags=["Game"])
 async def death_eaters_in_match(mid: int):
