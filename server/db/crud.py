@@ -338,7 +338,7 @@ def set_next_minister(match_id: int):
 
 @db_session
 def set_next_director(mid):
-    if Match.exists(Id=mid):
+    if (Match.exists(Id=mid) and Match[mid].CurrentDirector is not None and Match[mid].CandidateDirector is not None):
         query = Match[mid].Players.order_by(Player.Position)
         players = [x for x in query]
         last_director = Match[mid].CurrentDirector
@@ -349,9 +349,9 @@ def set_next_director(mid):
         return current_director
 
 @db_session
-def set_next_candidate_director(mid,pid):
+def set_next_candidate_director(mid,pos):
     if Match.exists(Id=mid):
-        Match[mid].CandidateDirector = pid
+        Match[mid].CandidateDirector = pos
 
 @db_session
 def compute_election_result(match_id: int):
@@ -444,7 +444,7 @@ def get_num_magicians(match_id: int): #to helpers
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
-            if (p.GovRol == 2 and p.GovRol == 3 and p.GovRol == 4):
+            if (p.GovRol == 2 or p.GovRol == 3 or p.GovRol == 4):
                 n = n + 1 
     return n    
 

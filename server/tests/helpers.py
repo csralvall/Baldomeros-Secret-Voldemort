@@ -86,7 +86,7 @@ def get_position(pid):
 
 @db_session
 def get_director_username(ID: int): 
-    director = Match[ID].Players.filter(lambda p: p.GovRol == 2).first()
+    director = Match[ID].Players.filter(lambda p: p.GovRol == 2).first() ##govrol must be == 0.
     return director.UserId.Username 
 
 @db_session
