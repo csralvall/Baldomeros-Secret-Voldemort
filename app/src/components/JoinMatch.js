@@ -2,6 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { joinMatch } from "../actions/match";
+import "./css/Lobby.css";
 
 function JoinMatch() {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ function JoinMatch() {
     })
       .then(async (response) => {
         const responseData = await response.json();
+        console.log(responseData);
         if (response.status !== 200) {
           if (response.status === 404) {
             alert("Could not join");

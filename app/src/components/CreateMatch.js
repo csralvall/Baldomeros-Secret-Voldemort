@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { joinMatch } from "./../actions/match";
+import { joinMatch, createMatchAction } from "./../actions/match";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import "./css/CreateMatch.css";
 import {
@@ -54,11 +54,17 @@ function CreateMatch() {
     )
       .then(async (response) => {
         const responseData = await response.json();
+        console.log(responseData);
         if (response.status !== 200) {
           alert("Could not Create Match. Unknown Error.");
         } else {
+          const dispatchData = {
+            Match_id: responseData.Match_id,
+            Player_id: responseData.Player_id,
+            Host_id: userID,
+          };
           setIsCreateMatchSuccess(true);
-          dispatch(joinMatch(responseData));
+          dispatch(createMatchAction(dispatchData));
           history.push(`/match/${responseData.Match_id}`);
         }
       })
