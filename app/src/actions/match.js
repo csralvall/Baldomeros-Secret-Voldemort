@@ -2,10 +2,21 @@ export const joinMatch = (matchData) => {
   return {
     type: "JOIN",
     payload: {
-      Match_id: matchData.Match_id,
-      Player_id: matchData.Player_id,
-      Host_id: 1,
-      Match_name: "Tom Riddle's game",
+      id: matchData.Match_id,
+      playerId: matchData.Player_id,
+      hostId: -1,
+      name: "Tom Riddle's Game",
+    },
+  };
+};
+export const createMatchAction = (matchData) => {
+  return {
+    type: "CREATE",
+    payload: {
+      id: matchData.Match_id,
+      playerId: matchData.Player_id,
+      hostId: matchData.Host_id,
+      name: "Tom Riddle's Game",
     },
   };
 };

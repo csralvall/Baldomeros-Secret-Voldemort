@@ -38,6 +38,28 @@ function Match({ match }) {
       });
   }, 1000);
 
+  const startGame = async () => {
+    const url = "http://127.0.0.1:8000";
+
+    await fetch(url + "/game/" + game.id + "?user=" + user.id, {
+      method: "PATCH",
+    })
+      .then((response) => {
+        console.log(response);
+        if (response.status !== 200) {
+          if (response.status === 404) {
+            alert("Unable to start");
+          } else {
+            alert("Unknown error");
+          }
+        } else {
+        }
+      })
+      .catch(() => {
+        alert("Network Error");
+      });
+  };
+
   const Election = (
     <div>
       <h1>The current minister is {gameStatus.minister}</h1>
@@ -81,13 +103,32 @@ function Match({ match }) {
     </div>
   );
 
+  const Host = (
+    <div>
+      {user.id === game.hostId ? (
+        <div>
+          <h3>You are the host</h3>
+          <button
+            onClick={() => {
+              startGame();
+            }}
+          >
+            Start Game
+          </button>
+        </div>
+      ) : (
+        <h3>Waiting for Host to start the game</h3>
+      )}
+    </div>
+  );
+
   return (
     <div>
       {game.id === parseInt(match.params.id) ? (
         <div>
           <h1> {game.name} </h1>
           <h4> Game id : {game.id} </h4>
-          <h3> {user.id === game.hostId ? "You are the Host" : ""} </h3>
+          <h3> {gameStatus.matchstatus === "Joinable" ? Host : ""} </h3>
           <h2> {gameStatus.matchstatus === "Joinable" ? PlayerList : ""} </h2>
           <div> {gameStatus.matchstatus === "In Game" ? Election : ""} </div>
           <div> {gameStatus.matchstatus === "In Game" ? Board : ""} </div>

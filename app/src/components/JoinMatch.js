@@ -2,6 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { joinMatch } from "../actions/match";
+import "./css/Lobby.css";
 
 function JoinMatch() {
   const dispatch = useDispatch();
@@ -43,7 +44,7 @@ function JoinMatch() {
         joinGame();
       }}
     >
-      Join Game
+      Join Match
     </button>
   );
 }
