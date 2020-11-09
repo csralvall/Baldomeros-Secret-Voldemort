@@ -18,7 +18,7 @@ describe("Login Interface", () => {
 
   it("should show Login title", () => {
     const title = wrapper.find("div h1");
-    expect(title.text()).toBe("Enter User Info");
+    expect(title.text()).toBe("Login");
   });
   it("should show Login form", () => {
     const form = wrapper.find("div form");
@@ -60,13 +60,13 @@ describe("Login Interface", () => {
   it("Username input must update", () => {
     const userInput = wrapper
       .find("div form input")
-      .findWhere((n) => n.prop("type") === "username");
+      .findWhere((n) => n.prop("id") === "username");
     userInput.simulate("change", { target: { value: "avc" } });
     // Manual re-render. "update" method doesn't work;
     //this appears to be the only way
     const Input = wrapper
       .find("div form input")
-      .findWhere((n) => n.prop("type") === "username");
+      .findWhere((n) => n.prop("id") === "username");
     expect(Input.prop("value")).toBe("avc");
   });
   it("Password input must update", () => {

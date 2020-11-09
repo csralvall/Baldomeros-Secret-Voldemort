@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { login } from "./../actions/login";
+import "./css/Login.css";
 
 function Login() {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ function Login() {
         const responseData = await response.json();
         if (response.status !== 200) {
           if (response.status === 401) {
-            alert("Username not found");
+            alert("Username or password invalid.");
           } else {
             alert("Could not login. Unknown Error.");
           }
@@ -54,28 +55,35 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>Enter User Info</h1>
-      <form onSubmit={autenticateUser}>
-        <label>
+    <div className="log-in-module">
+      <h1 className="log-in-title">Login</h1>
+      <form onSubmit={autenticateUser} className="log-in-form">
+        <label className="label-log-in">
           Username
           <input
-            type="username"
+            className="text-input"
+            type="text"
+            id="username"
             required
             value={userInput.username}
             onChange={changeUsername}
           />
         </label>
-        <label>
+        <label className="label-log-in">
           Password
           <input
+            className="text-input"
             type="password"
             required
             value={userInput.password}
             onChange={changePassword}
           />
         </label>
-        <button type="submit">Login</button>
+        <div className="button-log-in-wrapper">
+          <button type="submit" className="button-log-in">
+            Login
+          </button>
+        </div>
       </form>
     </div>
   );
