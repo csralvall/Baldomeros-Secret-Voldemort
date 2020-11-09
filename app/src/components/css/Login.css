@@ -1,0 +1,61 @@
+.log-in-module {
+  text-align: center;
+}
+
+.log-in-title {
+  font-family: "Harry P";
+  color: White;
+  font-size: 5rem;
+}
+
+.label-log-in {
+  color: white;
+  font-family: "Harry P", monospace, sans-serif;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+}
+
+.log-in-form {
+  text-align: center;
+  font-size: 2rem;
+}
+
+.text-input {
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  margin: auto;
+  max-width: 70vmin;
+  border-radius: 15px;
+  border: none;
+  background-color: #252525;
+  color: white;
+  font-family: "Harry P", monospace, sans-serif;
+}
+
+.button-log-in-wrapper {
+  padding-top: 4vmin;
+}
+
+.button-log-in {
+  height: 3rem;
+  width: 11rem;
+  background-color: #252525;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+  font-family: "Harry P", monospace, sans-serif;
+  font-size: 1.5rem;
+}
+
+.button-log-in:hover {
+  background-color: #2e2d2d;
+}
+
+.success-log-in {
+  text-align: center;
+  font-family: "Harry P";
+  color: White;
+  font-size: 2rem;
+}
