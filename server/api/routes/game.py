@@ -103,29 +103,7 @@ async def vote_candidate(
 
         winner = is_victory_from(mid)
 
-        return winner
-
-
-@router.patch("/{mid}")
-async def start_game(mid: int, user: int): 
-
-    if check_match(mid):
-
-        if check_host(user):
-
-            num = get_num_players(mid)
-
-            set_roles(num,mid)
-            set_gob_roles(mid)
-            change_match_status(mid,1)
-
-            return {"game": "game created succesfully"}
-
-        else:
-            raise HTTPException(status_code=404, detail="only the host can start the game") 
-
-    else:
-        raise HTTPException(status_code=404, detail="this game does not exist") 
+        return winner 
 
 
 @router.get("/{mid}/player/{pid}/rol", tags=["Game"])
@@ -165,13 +143,18 @@ async def start_game(mid: int, user: int):
         if check_host(user):
 
             num = get_num_players(mid)
+            minp = get_min_players(mid)
 
-            set_roles(num,mid)
-            set_gob_roles(num,mid)
-            change_match_status(mid,1)
+            if (num >= minp): 
+                set_roles(num,mid)
+                set_gob_roles(mid)
+                change_match_status(mid,1)
 
-            return {"game": "game created succesfully"}
+                return {"game": "game created successfully"}
 
+            else:
+                raise HTTPException(status_code=404, detail="we need more people to start :)")
+            
         else:
             raise HTTPException(status_code=404, detail="only the host can start the game") 
 

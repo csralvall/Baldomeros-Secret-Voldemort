@@ -427,6 +427,17 @@ def get_num_phoenix(match_id: int): # to helpers
     return n 
 
 @db_session
+def get_num_magicians(match_id: int): #to helpers
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            if (p.GovRol == 2):
+                n = n + 1 
+    return n    
+
+
+@db_session
 def get_num_death(match_id: int): #to helpers
     n = 0       
     if Match.exists(Id=match_id):
@@ -435,6 +446,16 @@ def get_num_death(match_id: int): #to helpers
             if (p.SecretRol == 1):
                 n = n + 1 
     return n     
+
+@db_session
+def get_num_minister(match_id: int): #to helpers
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            if (p.GovRol == 0):
+                n = n + 1 
+    return n    
 
 @db_session
 def get_num_voldemort(match_id: int): #to helpers
@@ -448,11 +469,19 @@ def get_num_voldemort(match_id: int): #to helpers
 
 @db_session
 def set_roles(num: int, match_id: int):
+    import random
     phoenix = (num // 2) + 1  
     death = (num - phoenix) - 1
-    players = Match[match_id].Players   
+    players = Match[match_id].Players  
+    playersids = []
 
     for p in players:
+        playersids.append(p.PlayerId)
+
+    random.shuffle(playersids)
+
+    for id in playersids:
+        p = Player[id]
         if (phoenix > 0):
             p.SecretRol = 2
             phoenix = phoenix - 1
@@ -464,16 +493,23 @@ def set_roles(num: int, match_id: int):
 
 @db_session
 def set_gob_roles(match_id: int):
+    import random
     players = Match[match_id].Players   
+    k = random.randint(0,(Match[match_id].MaxPlayers - 1))
 
     for p in players:
-        if (p.Position == 0):
+        if (p.Position == k):
             p.GovRol = 0
         else:
             p.GovRol = 2
+
 def change_player_rol(pid,rol):
     Player[pid].SecretRol = rol
 
+@db_session
+def get_min_players(match_id: int):
+    if Match.exists(Id=match_id):
+        return Match[match_id].MinPlayers
 
 @db_session
 def get_player_rol(pid):

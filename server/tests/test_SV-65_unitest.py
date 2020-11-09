@@ -60,7 +60,17 @@ class TestSV65(unittest.TestCase):
     def test_check_host2(self):
         self.assertFalse(check_host(self.user2id))
 
-# #--------------------------- Test get_num_players ----------------------------  
+#--------------------------- Test get_min_players ----------------------------
+
+    def test_min_players(self):
+        self.assertTrue(get_min_players(self.matchid)==5)
+
+    def test_min_players(self):
+        self.assertFalse(get_min_players(self.matchid)==4)
+
+    def test_min_players(self):
+        self.assertFalse(get_min_players(self.matchid)==6)        
+#--------------------------- Test get_num_players ----------------------------  
 
     def test_get_num_players(self):
         self.assertEqual(get_num_players(self.matchid), 5)
@@ -82,8 +92,5 @@ class TestSV65(unittest.TestCase):
 #--------------------------- Test set_gob_roles ----------------------------    
 
     def test_set_gob_roles(self):
-        self.assertEqual(get_player_gob_rol(self.pid), 0) 
-        self.assertEqual(get_player_gob_rol(self.player2id), 2)
-        self.assertEqual(get_player_gob_rol(self.player3id), 2)
-        self.assertEqual(get_player_gob_rol(self.player4id), 2)
-        self.assertEqual(get_player_gob_rol(self.player5id), 2)            
+        self.assertTrue(get_num_minister(self.matchid)==1) 
+        self.assertTrue(get_num_magicians(self.matchid)==4)
