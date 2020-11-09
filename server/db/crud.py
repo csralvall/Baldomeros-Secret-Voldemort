@@ -392,17 +392,12 @@ def change_match_status(mid,status):
     Match[mid].Status = status
 
 @db_session
-
 def check_host(user_id):
     try: 
         u = Match.exists(Creator=user_id)
         return u 
     except Exception:
         return False
-
-@db_session
-def get_player_gob_rol(pid):   
-    return Player[pid].GovRol
 
 @db_session
 def get_num_players(match_id: int): 
