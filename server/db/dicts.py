@@ -14,7 +14,9 @@ SecretRolDiccionary = {0: "Voldemort",
 
 GovRolDiccionary = {0: "Head Master",
                     1: "Magic Minister",
-                    2: "Magician"}
+                    2: "Magician",
+                    3: "Ex Minister",
+                    4: "Ex Director"}
 
 VoteType = {0: 'nox',
             1: 'lumos',

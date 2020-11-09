@@ -28,7 +28,7 @@ def reset_proclamation(mid):
 
 @db_session
 def change_last_minister(mid,pos):
-    Match[mid].LastMinister = pos
+    Match[mid].CurrentMinister = pos
 
 @db_session
 def show_available_deck(board_id: int):
