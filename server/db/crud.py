@@ -349,6 +349,11 @@ def set_next_director(mid):
         return current_director
 
 @db_session
+def set_next_candidate_director(mid,pid):
+    if Match.exists(Id=mid):
+        Match[mid].CandidateDirector = pid
+
+@db_session
 def compute_election_result(match_id: int):
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
@@ -439,7 +444,7 @@ def get_num_magicians(match_id: int): #to helpers
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
-            if (p.GovRol == 2):
+            if (p.GovRol == 2 and p.GovRol == 3 and p.GovRol == 4):
                 n = n + 1 
     return n    
 
@@ -540,7 +545,7 @@ def get_posible_directors(mid):
     players_alive_in_match = select(p for p in Match[mid].Players if p.IsDead == False)
     posible_directors = list()
     for p in players_alive_in_match:
-        if (p.GovRol != 3 or p.GovRol != 4):
+        if (p.GovRol != 3 and p.GovRol != 4):
             posible_directors.append(get_player_username(p.PlayerId))
 
     return {"posible directors": posible_directors}

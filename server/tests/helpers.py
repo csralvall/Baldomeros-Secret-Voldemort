@@ -19,7 +19,19 @@ def make_minister(pid):
 
 @db_session
 def make_magician(pid):
-    Player[pid].GovRol = 2  
+    Player[pid].GovRol = 2
+
+@db_session
+def make_director(pid):
+    Player[pid].GovRol = 0
+
+@db_session
+def set_current_minister(mid,pos):
+    Match[mid].CurrentMinister = pos
+
+@db_session
+def set_current_director(mid,pos):
+    Match[mid].CurrentDirector = pos 
 
 @db_session
 def reset_proclamation(mid):
@@ -29,6 +41,14 @@ def reset_proclamation(mid):
 @db_session
 def change_last_minister(mid,pos):
     Match[mid].CurrentMinister = pos
+
+@db_session
+def change_last_director(mid,pos):
+    Match[mid].Currentdirector = pos
+
+@db_session
+def change_last_director_govrol(pid):
+    Player[pid].GovRol = 4
 
 @db_session
 def show_available_deck(board_id: int):
@@ -60,3 +80,15 @@ def show_deck(board_id: int):
         print(f'Discarded: {deck.Discarded}')
         return deck.Cards
 
+@db_session
+def get_position(pid):
+    return Player[pid].Position
+
+@db_session
+def get_director_username(ID: int): 
+    director = Match[ID].Players.filter(lambda p: p.GovRol == 2).first()
+    return director.UserId.Username 
+
+@db_session
+def kill_player(pid):
+    Player[pid].IsDead = True
