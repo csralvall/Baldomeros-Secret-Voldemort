@@ -289,6 +289,9 @@ def check_host(user_id):
 def get_player_rol(pid):   
     return Player[pid].SecretRol
 
+@db_session
+def get_player_gob_rol(pid):   
+    return Player[pid].GovRol
 
 @db_session
 def get_num_players(match_id: int): 
@@ -298,18 +301,47 @@ def get_num_players(match_id: int):
         for p in players:
             n = n + 1 
     return n  
-  
+
+@db_session
+def get_num_phoenix(match_id: int): # to helpers
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            if (p.SecretRol == 2):
+                n = n + 1 
+    return n 
+
+@db_session
+def get_num_death(match_id: int): #to helpers
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            if (p.SecretRol == 1):
+                n = n + 1 
+    return n     
+
+@db_session
+def get_num_voldemort(match_id: int): #to helpers
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            if (p.SecretRol == 0):
+                n = n + 1 
+    return n 
 
 @db_session
 def set_roles(num: int, match_id: int):
-    fenix = (num // 2) + 1  
-    death = (num - fenix) - 1
+    phoenix = (num // 2) + 1  
+    death = (num - phoenix) - 1
     players = Match[match_id].Players   
 
     for p in players:
-        if (fenix > 0):
+        if (phoenix > 0):
             p.SecretRol = 2
-            fenix = fenix - 1
+            phoenix = phoenix - 1
         elif (death > 0):
             p.SecretRol = 1
             death = death - 1
@@ -317,14 +349,12 @@ def set_roles(num: int, match_id: int):
             p.SecretRol = 0
 
 @db_session
-def set_gob_roles(num: int, match_id: int):
-    magicians = num - 1
+def set_gob_roles(match_id: int):
     players = Match[match_id].Players   
 
     for p in players:
-        if (magicians > 0):
-            p.GovRol = 2
-            magicians = magicians - 1
-        else:
+        if (p.Position == 0):
             p.GovRol = 0
+        else:
+            p.GovRol = 2
 

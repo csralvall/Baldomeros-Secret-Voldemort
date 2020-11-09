@@ -116,7 +116,7 @@ async def start_game(mid: int, user: int):
             num = get_num_players(mid)
 
             set_roles(num,mid)
-            set_gob_roles(num,mid)
+            set_gob_roles(mid)
             change_match_status(mid,1)
 
             return {"game": "game created succesfully"}
