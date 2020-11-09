@@ -45,7 +45,7 @@ function JoinMatch() {
         joinGame();
       }}
     >
-      Join Game
+      Join Match
     </button>
   );
 }
