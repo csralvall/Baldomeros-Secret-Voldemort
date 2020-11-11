@@ -3,7 +3,7 @@ from server.db.database import *
 from server.db.dicts import *
 
 class NotEnoughProclamations(Exception):
-    """ Exception raised when there are only two cards available
+    """ Raised when there are only two cards available
     to take on the deck. """
     def __init__(
         self,
@@ -15,24 +15,32 @@ class NotEnoughProclamations(Exception):
     def __str__(self):
         return f'Proclamations = {self.proclamations} -> {self.message}'
 
-class DeckNotFound(Exception):
-    """ Exception raised when there is not deck with the parameters passed. """
+class ResourceNotFound(Exception):
+    """ Raised when the resource searched does not exist. """
     pass
 
-class BoardNotFound(Exception):
-    """ Exception raised when there is not board matching the passed id. """
+class DeckNotFound(ResourceNotFound):
+    """ Raised when there is not deck with the parameters passed. """
     pass
 
-class MatchNotFound(Exception):
-    """ Exception raised when there is not match with the passed id. """
+class BoardNotFound(ResourceNotFound):
+    """ Raised when there is not board with the parameters passed. """
+    pass
+
+class MatchNotFound(ResourceNotFound):
+    """ Raised when there is not match with the parameters passed. """
+    pass
+
+class PlayerNotFound(ResourceNotFound):
+    """ Raised when there is not player with the parameters passed. """
     pass
 
 class InvalidProclamation(Exception):
-    """ Exception raised when the proclamation passed is invalid """
+    """ Raised when the proclamation passed is invalid """
     pass
 
 class EmptySelectedProclamations(Exception):
-    """ Exception raised when there aren't selected proclamations to remove """
+    """ Raised when there aren't selected proclamations to remove """
     pass
 
 @db_session #Bool
@@ -158,45 +166,45 @@ def there_is_space(mid):
 
 @db_session
 def create_deck(board_id: int):
-    if Board.exists(Id=board_id):
-        available = []
-        for i in range(0,6):
-            available.append("phoenix")
-        for i in range(0,11):
-            available.append("death eater")
-
-        size = len(available)
-        cards = {'available': available, 'discarded': [], 'selected': []}
-        try:
-            Deck(Discarded=0,Available=size,Cards=cards,Board=board_id)
-            return True
-        except Exception:
-            return False
-    else:
+    if not Board.exists(Id=board_id):
         raise BoardNotFound
+
+    available = []
+    for i in range(0,6):
+        available.append("phoenix")
+    for i in range(0,11):
+        available.append("death eater")
+
+    size = len(available)
+    cards = {'available': available, 'discarded': [], 'selected': []}
+    try:
+        Deck(Discarded=0,Available=size,Cards=cards,Board=board_id)
+        return True
+    except Exception:
+        return False
 
 @db_session
 def get_selected_card(board_id: int):
-    if Deck.exists(Board=board_id):
-        deck = Deck.get(Board=board_id)
-        if not deck.Cards['selected']:
-            raise EmptySelectedProclamations
-        else:
-            deck.Cards['selected'].reverse()
-            return deck.Cards['selected'].pop()
-    else:
+    if not Deck.exists(Board=board_id):
         raise DeckNotFound
+
+    deck = Deck.get(Board=board_id)
+    if not deck.Cards['selected']:
+        raise EmptySelectedProclamations
+
+    deck.Cards['selected'].reverse()
+    return deck.Cards['selected'].pop()
 
 @db_session
 def show_selected_deck(board_id: int):
-    if Board.exists(Id=board_id):
-        deck = Board[board_id].Proclamations
-        if deck is not None:
-            return deck.Cards['selected']
-        else:
-            raise DeckNotFound
-    else:
+    if not Board.exists(Id=board_id):
         raise BoardNotFound
+
+    deck = Board[board_id].Proclamations
+    if deck is None:
+        raise DeckNotFound
+
+    return deck.Cards['selected']
     
 @db_session
 def shuffle_deck(board_id: int):
@@ -282,29 +290,35 @@ def get_match_status(ID: int):
 
 @db_session
 def get_match_board_id(match_id: int):
-    if Match.exists(Id=match_id):
-        board = Match[match_id].Board
-        if board is not None:
-            return board.Id
-        else:
-            raise BoardNotFound
-    else:
+    if not Match.exists(Id=match_id):
         raise MatchNotFound
 
+    board = Match[match_id].Board
+
+    if board is None:
+        raise BoardNotFound
+
+    return board.Id
+
 @db_session
-def get_board_status(ID: int):
+def get_board_status(board_id: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+
     board_attr = ["PhoenixProclamations", "DeathEaterProclamations"]
-    board_status = Match[ID].Board.to_dict(board_attr)
-    board_status['boardtype'] = BoardType[Match[ID].Board.BoardType]
+    board_status = Board[board_id].to_dict(board_attr)
+    board_status['spell'] = spells[Board[board_id].AvailableSpell]
+    board_status['status'] = board_states[Board[board_id].BoardStatus]
+    board_status['boardtype'] = BoardType[Board[board_id].BoardType]
+
     return board_status    
 
 @db_session
 def check_match(mid):
     return Match.exists(Id=mid)
 
-
 @db_session
-def get_player_votes(match_id: int): 
+def get_all_player_status(match_id: int): 
     def replace(vote: int):
         result = 'missing vote'
         if vote == 0:
@@ -313,9 +327,16 @@ def get_player_votes(match_id: int):
             result = 'lumos'
         return result
 
-    if Match.exists(Id=match_id):
-        players = Match[match_id].Players.order_by(Player.Position)
-        return {x.UserId.Username: replace(x.Vote) for x in players}        
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+        
+    players = Match[match_id].Players.order_by(Player.Position)
+    status = {
+        p.UserId.Username: {"vote": replace(p.Vote), "isDead": p.IsDead}
+        for p in players
+    }        
+
+    return status
 
 @db_session
 def get_player_id(match_id: int, user_id: int):
@@ -560,4 +581,22 @@ def get_death_eater_players_in_match(mid):
     for p in players_death_eaters:
         deatheaters.append(get_player_username(p.PlayerId))
     return {"Death Eater": deatheaters, "Voldemort": voldemort}
+
+@db_session
+def use_avada_kedavra(board_id: int, player_id: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+
+    if not Player.exists(Id=player_id):
+        raise PlayerNotFound
+
+    Board[board_id].AvailableSpell = NO_SPELL
+    Player[player_id].isDead = True
+
+@db_session
+def get_player_id_from_username(match_id: int, username: str):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    players = Match[match_id].Players
+    return get(p.PlayerId for p in players if p.UserId.Username == username)
 
