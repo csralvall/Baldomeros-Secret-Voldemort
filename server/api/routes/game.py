@@ -6,105 +6,58 @@ from typing import Optional
 
 router = APIRouter()
 
-@router.post("/new", tags=["Game"])
-async def create_match(minp: int, maxp: int, uhid: int):
-  
-    newmatch = add_match_db(minp,maxp,uhid)
-
-    if (newmatch is not None): 
-        return newmatch
-    else:
-        raise HTTPException(status_code=404, detail="couldnt create the game")  
-
-
-@router.post("/{mid}", tags=["Game"])
-async def join_game(mid: int, user: int): 
-
-    pid = get_player_id(mid,user)
-    if pid is not None:
-        playerdic = {
-            "Match_id": mid,
-            "Player_id": pid
-        }
-        return playerdic
-        
-    if there_is_space(mid):
-        if get_match_status(mid) == "Joinable":
-            playerobj = add_user_in_match(user, mid, 5) #hardcodeado position should be there
-
-            if (playerobj is not None):
-
-                playerdic = {
-                    "Match_id": mid,
-                    "Player_id": playerobj.to_dict("PlayerId")["PlayerId"]
-                }
-                if not there_is_space(mid):
-                    change_match_status(mid, 1)
-                    
-                return playerdic
-
-            else: 
-
-
-                raise HTTPException(status_code=404, detail="couldnt add the user")
-        else:
-            raise HTTPException(status_code=404, detail="game already started")
-
-    else: 
-        raise HTTPException(status_code=404, detail="there is no space")
-
-
 @router.get("/{mid}", tags=["Game"])
 async def game_status(mid: int):
 
-    if check_match(mid):
-
-        minister = get_minister_username(mid)
-        players = get_player_votes(mid)
-        matchstatus = get_match_status(mid)
-        boardstatus = get_board_status(mid)
-
-
-        status = {
-            'minister': minister,
-            'matchstatus': matchstatus,
-            'players': players}
-
-        status.update(boardstatus) 
-
-        status = {k.lower(): v for k, v in status.items()}
-
-        return status
-    else:
+    if not check_match(mid):
         raise HTTPException(status_code=404, detail="this match does not exist")
+
+    minister = get_minister_username(mid)
+    player_status = get_all_player_status(mid)
+    matchstatus = get_match_status(mid)
+    board_id = get_match_board_id(mid)
+    board_status = get_board_status(board_id)
+
+    board_status = {k.lower(): v for k, v in board_status.items()}
+
+    status = {
+        'minister': minister,
+        'matchstatus': matchstatus,
+        'playerstatus': player_status,
+        'boardstatus': board_status
+    }
+
+    return status
 
 
 @router.put("/{mid}/player/{pid}", tags=["Game"], status_code=200)
 async def vote_candidate(
-        mid: int = Path(..., title="The ID of the current match"),
-        pid: int = Path(..., title="The ID of the player who votes"),
-        vote: str = Query(..., regex="^(nox|lumos)$")):
+    mid: int = Path(..., title="The ID of the current match"),
+    pid: int = Path(..., title="The ID of the player who votes"),
+    vote: str = Query(..., regex="^(nox|lumos)$")):
 
-        if not check_match(mid):
-            raise HTTPException(status_code=404, detail="Match not found")
+    if not check_match(mid):
+        raise HTTPException(status_code=404, detail="Match not found")
 
-        if not check_player_in_match(mid,pid):
-            raise HTTPException(status_code=404, detail="Player not found")
+    if not check_player_in_match(mid,pid):
+        raise HTTPException(status_code=404, detail="Player not found")
 
-        vote_director(pid, vote)
+    vote_director(pid, vote)
 
-        player_votes = get_player_votes(mid)
+    player_status = get_all_player_status(mid)
 
-        if 'missing vote' not in player_votes.values():
-            set_next_director(mid)
-            set_next_minister(mid)
-            if compute_election_result(mid) == 'lumos':
-                enact_proclamation(mid,'death eater')
-            restore_election(mid)
+    player_votes = { k: v['vote'] for k, v in player_status.items() }
 
-        winner = is_victory_from(mid)
+    if 'missing vote' not in player_votes.values():
+        set_next_director(mid)
+        set_next_minister(mid)
+        if compute_election_result(mid) == 'lumos':
+            enact_proclamation(mid,'death eater')
+        restore_election(mid)
 
-        return winner 
+    winner = is_victory_from(mid)
+
+    return winner 
 
 
 @router.get("/{mid}/player/{pid}/rol", tags=["Game"])
@@ -139,32 +92,26 @@ async def death_eaters_in_match(mid: int):
 @router.patch("/{mid}")
 async def start_game(mid: int, user: int): 
 
-    if check_match(mid):
-
-        if check_host(user):
-
-            num = get_num_players(mid)
-            minp = get_min_players(mid)
-
-            if (num >= minp): 
-                set_roles(num,mid)
-                set_gob_roles(mid)
-                change_match_status(mid,1)
-
-                return {"game": "game created successfully"}
-
-            else:
-                raise HTTPException(status_code=404, detail="we need more people to start :)")
-            
-        else:
-            raise HTTPException(status_code=404, detail="only the host can start the game") 
-
-    else:
+    if not check_match(mid):
         raise HTTPException(status_code=404, detail="this game does not exist") 
-    
+
+    if not check_host(user):
+        raise HTTPException(status_code=404, detail="only the host can start the game") 
+
+    num = get_num_players(mid)
+    minp = get_min_players(mid)
+
+    if not num >= minp: 
+        raise HTTPException(status_code=404, detail="we need more people to start :)")
+
+    set_roles(num,mid)
+    set_gob_roles(mid)
+    change_match_status(mid,1)
+
+    return {"game": "game created successfully"}
+        
 @router.get("/{mid}/directors", tags=["Game"])
 async def posible_directors(mid:int):
-
 
     if not check_match(mid):
         raise HTTPException(status_code=404, detail="Match not found")
@@ -172,3 +119,18 @@ async def posible_directors(mid:int):
     posible_directors = get_posible_directors(mid)
 
     return posible_directors
+
+@router.patch("/{mid}/board/avada-kedavra", tags=["Game"])
+async def use_avada_kedavra(
+    mid: int = Path(..., title="The ID of the current match"),
+    username: str = Query(..., title="Name of player who receives the spell")):
+
+    try: # no need of check_match thanks to exceptions
+        player_id = get_player_id_from_username(mid, username)
+        board_id = get_match_board_id(mid)
+        avada_kedavra(board_id, player_id)
+    except ResourceNotFound:
+        raise HTTPException(status_code=404, detail="Resource not found")
+
+    return f"{username} is dead"
+
