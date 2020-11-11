@@ -137,7 +137,6 @@ def test_vote_not_allowed_vote():
     )
 
     assert response.status_code == 200
-    #assert response.json() == get_player_votes(gid)['foo']
 
 def test_vote_not_allowed_vote():
     delete_data(Board)
@@ -158,7 +157,6 @@ def test_vote_not_allowed_vote():
     )
 
     assert response.status_code == 422
-    #assert response.json() == get_player_votes(gid)['foo']
 
 def test_vote_empty():
     delete_data(Board)
