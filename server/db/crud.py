@@ -308,7 +308,7 @@ def get_board_status(board_id: int):
     board_attr = ["PhoenixProclamations", "DeathEaterProclamations"]
     board_status = Board[board_id].to_dict(board_attr)
     board_status['spell'] = spells[Board[board_id].AvailableSpell]
-    board_status['status'] = board_states[Board[board_id].BoardStatus]
+    board_status['status'] = ingame_status[Board[board_id].BoardStatus]
     board_status['boardtype'] = BoardType[Board[board_id].BoardType]
 
     return board_status    
@@ -583,15 +583,15 @@ def get_death_eater_players_in_match(mid):
     return {"Death Eater": deatheaters, "Voldemort": voldemort}
 
 @db_session
-def use_avada_kedavra(board_id: int, player_id: int):
+def avada_kedavra(board_id: int, player_id: int):
     if not Board.exists(Id=board_id):
         raise BoardNotFound
 
-    if not Player.exists(Id=player_id):
+    if not Player.exists(PlayerId=player_id):
         raise PlayerNotFound
 
+    Player[player_id].IsDead = True
     Board[board_id].AvailableSpell = NO_SPELL
-    Player[player_id].isDead = True
 
 @db_session
 def get_player_id_from_username(match_id: int, username: str):

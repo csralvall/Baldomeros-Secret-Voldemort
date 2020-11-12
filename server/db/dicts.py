@@ -29,7 +29,7 @@ AVADA_KEDAVRA = 1
 IMPERIO = 2
 CRUCIO = 3
 
-board_states = ("nomination", "election", "minister selection", "director selection", "use spell")
+ingame_status = ("nomination", "election", "minister selection", "director selection", "use spell")
 
 NOMINATION = 0
 ELECTION = 1
