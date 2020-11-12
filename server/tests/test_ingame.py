@@ -130,6 +130,12 @@ class TestInMatch(unittest.TestCase):
         make_minister(self.player1id)
         self.assertEqual(get_minister_username(self.matchid),"example2")
 
+    def test_get_minister_nominister(self):
+        make_magician(self.playeridcreator)
+        make_magician(self.player1id)
+        self.assertEqual(get_minister_username(self.matchid),"No minister yet")
+
+
     #------------------------get_match_status//change_match_status----------------------
     #won't receive a wrong matchid bc we check that before calling it
     def test_get_mstatus_ok(self):

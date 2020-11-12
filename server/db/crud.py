@@ -43,6 +43,14 @@ class EmptySelectedProclamations(Exception):
     """ Raised when there aren't selected proclamations to remove """
     pass
 
+class BadIngameStatus(Exception):
+    """ Exception raised when the ingame status passed is invalid"""
+    pass
+
+class NoDirector(Exception):
+    """ Exception raised when tried to make the director ex-director but there is no director now"""
+    pass
+
 @db_session #Bool
 def user_is_registred(name, upassword):
     try:
@@ -92,6 +100,7 @@ def add_match(minp,maxp,creator):
         newmatch = Match(MaxPlayers=maxp,
             MinPlayers=minp,
             Status=0,
+            IngameStatus =0,
             BoardType=0, #hardcoded
             CurrentMinister = 0, #Changes when the match starts
             Creator = creator)
@@ -220,7 +229,7 @@ def shuffle_deck(board_id: int):
 def get_top_proclamation(board_id: int):
     if Deck.exists(Board=board_id):
         deck = Deck.get(Board=board_id)
-        if deck.Available > 2:
+        if deck.Available > 0:
             card = deck.Cards['available'].pop()
             deck.Available -= 1
             deck.Cards['selected'].append(card)
@@ -229,6 +238,19 @@ def get_top_proclamation(board_id: int):
             raise NotEnoughProclamations(deck.Available)
     else:
         raise DeckNotFound
+
+@db_session
+def get_top_three_proclamation(board_id:int):
+    if Deck.exists(Board=board_id):
+        deck = Deck.get(Board=board_id)
+        if deck.Available > 2:
+            for i in range(0,3):
+                get_top_proclamation(board_id)
+            return True
+        else:
+            raise NotEnoughProclamations(deck.Available)
+    else:
+        raise DeckNotFound        
 
 @db_session
 def discard_proclamation(board_id: int, proclamation: str):
@@ -279,10 +301,30 @@ def vote_director(player_id: int, vote: str):
 @db_session
 def get_minister_username(ID: int): 
     minister = Match[ID].Players.filter(lambda p: p.GovRol == 1).first()
-    if minister is not None:
-        return minister.UserId.Username
-    else:
+    if minister is None:
         return "No minister yet"
+    return minister.UserId.Username
+
+
+@db_session
+def get_director_username(ID: int):
+    director = Match[ID].Players.filter(lambda p: p.GovRol == 0).first()
+    if director is None:
+        return "No director yet"
+    return director.UserId.Username 
+
+@db_session
+def change_ingame_status(match_id: int, status: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    if not (status >= NOMINATION and status <= CAST_SPELLING) :
+        raise BadIngameStatus
+    Match[match_id].IngameStatus=status
+
+@db_session
+def get_ingame_status(mid: int):
+    return ingame_status[Match[mid].IngameStatus]
+
 
 @db_session
 def get_match_status(ID: int):
@@ -351,23 +393,38 @@ def set_next_minister(match_id: int):
         query = Match[match_id].Players.order_by(Player.Position)
         players = [x for x in query]
         last_minister = Match[match_id].CurrentMinister
-        players[last_minister].GovRol = 2
+        players[last_minister].GovRol = 3#exminister
         current_minister = (last_minister + 1) % len(players)
         players[current_minister].GovRol = 1
         Match[match_id].CurrentMinister = current_minister
         return current_minister
 
 @db_session
-def set_next_director(mid):
-    if (Match.exists(Id=mid) and Match[mid].CurrentDirector is not None and Match[mid].CandidateDirector is not None):
-        query = Match[mid].Players.order_by(Player.Position)
-        players = [x for x in query]
-        last_director = Match[mid].CurrentDirector
-        players[last_director].GovRol = 4 #Ex Director.
-        current_director = Match[mid].CandidateDirector
-        players[current_director].GovRol = 2
-        Match[mid].CurrentDirector = current_director
-        return current_director
+def change_to_exdirector(mid):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    query = Match[mid].Players.order_by(Player.Position)
+    players = [x for x in query]
+    director = Match[mid].CurrentDirector
+    if director == NO_DIRECTOR:
+        raise NoDirector
+    players[director].GovRol = 4 #Ex Director.
+    Match[mid].CurrentDirector = NO_DIRECTOR
+
+# needs to be changed so it does tthis in two separate locations
+# @db_session
+# def set_next_director(mid):
+#     if (Match.exists(Id=mid) and Match[mid].CurrentDirector is not None and Match[mid].CandidateDirector is not None):
+#         query = Match[mid].Players.order_by(Player.Position)
+#         players = [x for x in query]
+#         last_director = Match[mid].CurrentDirector
+#         players[last_director].GovRol = 4 #Ex Director.
+#         current_director = Match[mid].CandidateDirector
+#         players[current_director].GovRol = 0
+#         Match[mid].CurrentDirector = current_director
+#         return current_director
+
+
 
 @db_session
 def set_next_candidate_director(mid,pos):

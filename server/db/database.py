@@ -8,6 +8,7 @@ class Match(db.Entity):
     MaxPlayers = Required(int, min=5, max=10)
     MinPlayers = Required(int, min=5, max=10)
     Status = Required(int, min=0, max=2)
+    IngameStatus = Required(int, min=0, max=4)
     BoardType = Required(int, min=0, max=2)
     CandidateDirector = Optional(int)
     CurrentMinister = Optional(int)

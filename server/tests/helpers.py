@@ -85,10 +85,5 @@ def get_position(pid):
     return Player[pid].Position
 
 @db_session
-def get_director_username(ID: int): 
-    director = Match[ID].Players.filter(lambda p: p.GovRol == 2).first() ##govrol must be == 0.
-    return director.UserId.Username 
-
-@db_session
 def kill_player(pid):
     Player[pid].IsDead = True

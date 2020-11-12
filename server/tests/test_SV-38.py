@@ -21,6 +21,8 @@ def test_gamestatus_ok():
 
     gidaux = add_match_db("5", "5", auxid)
     gidauxid = gidaux["Match_id"]
+    bid = get_match_board_id(gidauxid)
+    create_deck(bid)
 
     response = client.get(
         f"/game/{gidauxid}"
