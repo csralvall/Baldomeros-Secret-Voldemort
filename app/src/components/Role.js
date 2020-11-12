@@ -14,7 +14,6 @@ import malfoyPadre from "../media/roles/malfoyPadre.png";
 import draco from "../media/roles/draco.png";
 import voldemort from "../media/roles/voldemort.png";
 import snapeDeathEater from "../media/roles/snapeDeathEater.png";
-import nox from "../media/cards/nox.png";
 
 import "./css/Role.css";
 
