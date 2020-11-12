@@ -3,7 +3,6 @@ import { Provider } from "react-redux";
 import Enzyme, { mount } from "enzyme";
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
 import { createStore } from "redux";
-import Vote from "../components/Vote";
 import reducers from "../reducers/index";
 import AvadaKedavra from "../components/AvadaKedavra";
 
@@ -15,9 +14,9 @@ describe("Cast Avada Kedavra", () => {
     <Provider store={store}>
       <AvadaKedavra
         playerList={{
-          a: { vote: "x", isDead: false },
-          b: { vote: "x", isDead: false },
-          c: { vote: "x", isDead: true },
+          "Tom Riddle": { vote: "x", isDead: false },
+          "Harry Potter": { vote: "x", isDead: false },
+          Dumbledore: { vote: "x", isDead: true },
         }}
       />
     </Provider>
@@ -36,7 +35,7 @@ describe("Cast Avada Kedavra", () => {
     button.simulate("click");
     const list = wrapper.find("div Modal div h4");
     expect(list).toHaveLength(2);
-    expect(list.at(0).text()).toBe("a");
-    expect(list.at(1).text()).toBe("b");
+    expect(list.at(0).text()).toBe("Tom Riddle");
+    expect(list.at(1).text()).toBe("Harry Potter");
   });
 });
