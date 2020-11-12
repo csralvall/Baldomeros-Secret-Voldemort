@@ -22,6 +22,8 @@ class Board(db.Entity):
     PhoenixProclamations = Optional(int, min=0, max=5)
     DeathEaterProclamations = Optional(int, min=0, max=6)
     FailedElectionsCount = Optional(int)
+    AvailableSpell = Optional(int, min=0, max=4, default=0)
+    BoardStatus = Optional(int, min=0, max=4, default=0)
     Proclamations = Optional('Deck', cascade_delete=True)
     Match = Required(Match)
 
@@ -41,7 +43,6 @@ class Player(db.Entity):
     Vote = Optional(int, min=0, max=2)
     UserId = Optional('User')
     MatchId = Optional('Match')
-    Vote = Optional(int, min=0, max=2)
 
 class User(db.Entity):
     Id = PrimaryKey(int, auto=True)

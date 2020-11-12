@@ -49,41 +49,46 @@ class TestInMatch(unittest.TestCase):
     
     #-------------------------get_player_votes ------------------------
     def test_getpv_OK_return(self):
-        self.assertIsNotNone(get_player_votes(self.matchid))
+        self.assertIsNotNone(get_all_player_status(self.matchid))
 
     def test_getpv_fail_mid(self):
-        self.assertIsNone(get_player_votes(99999999))#can fail if match has this id
+        self.assertRaises(MatchNotFound, get_all_player_status, 99999999)#can fail if match has this id
 
 
     def test_getpv_OK_votes(self):
         vote_director(self.playeridcreator, 'lumos')
         vote_director(self.player1id, 'nox')
-        votes = get_player_votes(self.matchid)
+        player_status = get_all_player_status(self.matchid)
+        votes = { k: v['vote'] for k, v in player_status.items() }
         self.assertEqual(votes, {'example': 'lumos', 'example2': 'nox'})
         
     def test_getpv_OK_votes2(self):
         vote_director(self.playeridcreator, 'nox')
         vote_director(self.player1id, 'lumos')
-        votes = get_player_votes(self.matchid)
+        player_status = get_all_player_status(self.matchid)
+        votes = { k: v['vote'] for k, v in player_status.items() }
         self.assertEqual(votes, {'example': 'nox', 'example2': 'lumos'})
 
     def test_getpv_different_match(self):
         restore_election(self.matchid2)
         vote_director(self.player1id, 'nox')
-        votes = get_player_votes(self.matchid2)
+        player_status = get_all_player_status(self.matchid2)
+        votes = { k: v['vote'] for k, v in player_status.items() }
         self.assertEqual(votes,{'example3': 'missing vote'})
 
     #-------------------------restore_election ------------------------
     def test_restore_ok(self):
         vote_director(self.playeridcreator, 'lumos')
         restore_election(self.matchid)
-        votes = get_player_votes(self.matchid)
+        player_status = get_all_player_status(self.matchid)
+        votes = { k: v['vote'] for k, v in player_status.items() }
         self.assertEqual(votes, {'example': 'missing vote', 'example2': 'missing vote'})
 
     def test_restore_fail_mid(self):
         vote_director(self.playeridcreator, 'lumos')
         restore_election(9999999)#can fail if match has this id
-        votes = get_player_votes(self.matchid)
+        player_status = get_all_player_status(self.matchid)
+        votes = { k: v['vote'] for k, v in player_status.items() }
         self.assertNotEqual(votes, {'example': 'missing vote', 'example2': 'missing vote'})
 
     #--------------12 tests ^-------------------------
@@ -94,14 +99,16 @@ class TestInMatch(unittest.TestCase):
         restore_election(self.matchid)
         vote_director(self.playeridcreator,'nox')
         vote_director(self.player1id,'lumos')
-        votes = get_player_votes(self.matchid)
+        player_status = get_all_player_status(self.matchid)
+        votes = { k: v['vote'] for k, v in player_status.items() }
         self.assertEqual(votes, {'example': 'nox', 'example2': 'lumos'})
 
     def test_vote_fail(self):
         restore_election(self.matchid)
         vote_director(self.player1id,'blabla')
         vote_director(self.playeridcreator,'blablabla')
-        votes = get_player_votes(self.matchid)
+        player_status = get_all_player_status(self.matchid)
+        votes = { k: v['vote'] for k, v in player_status.items() }
         self.assertEqual(votes, {'example': 'missing vote', 'example2': 'missing vote'})
 
 
@@ -142,7 +149,13 @@ class TestInMatch(unittest.TestCase):
     
     def test_get_bstatus_ok(self):
         reset_proclamation(self.matchid)
-        self.assertEqual(get_board_status(self.matchid), {'PhoenixProclamations': 0, 'DeathEaterProclamations': 0, 'boardtype': '5-6'})
+        board = {'DeathEaterProclamations': 0,
+                'PhoenixProclamations': 0,
+                'boardtype': '5-6',
+                'spell': None,
+                'status': 'nomination'}
+        board_id = get_match_board_id(self.matchid)
+        self.assertEqual(get_board_status(board_id), board)
 
     def test_enact_proclamation(self):
         reset_proclamation(self.matchid)
@@ -150,12 +163,26 @@ class TestInMatch(unittest.TestCase):
         enact_proclamation(self.matchid, "phoenix")
         enact_proclamation(self.matchid, "phoenix")
         enact_proclamation(self.matchid, "death eater")
-        self.assertEqual(get_board_status(self.matchid), {'PhoenixProclamations': 3, 'DeathEaterProclamations': 1, 'boardtype': '5-6'})
+        board = {'DeathEaterProclamations': 1,
+                'PhoenixProclamations': 3,
+                'boardtype': '5-6',
+                'spell': None,
+                'status': 'nomination'}
+
+        board_id = get_match_board_id(self.matchid)
+
+        self.assertEqual(get_board_status(board_id), board)
 
     def test_enact_proclamation_fail(self):
         reset_proclamation(self.matchid)
         enact_proclamation(self.matchid, "death")
-        self.assertEqual(get_board_status(self.matchid), {'PhoenixProclamations': 0, 'DeathEaterProclamations': 0, 'boardtype': '5-6'})
+        board = {'DeathEaterProclamations': 0,
+                'PhoenixProclamations': 0,
+                'boardtype': '5-6',
+                'spell': None,
+                'status': 'nomination'}
+        board_id = get_match_board_id(self.matchid)
+        self.assertEqual(get_board_status(board_id), board)
 
     #------------------------get_phoenix_proclamations----------------------
     #won't receive a wrong matchid bc we check that before calling it

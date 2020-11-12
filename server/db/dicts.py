@@ -18,6 +18,22 @@ GovRolDiccionary = {0: "Head Master",
                     3: "Ex Minister",
                     4: "Ex Director"}
 
-VoteType = {0: 'nox',
-            1: 'lumos',
-            2: 'missing vote'}
+VoteType = {0: "nox",
+            1: "lumos",
+            2: "missing vote"}
+
+spells = (None, "Avada Kedavra", "Imperio", "Crucio")
+
+NO_SPELL = 0
+AVADA_KEDAVRA = 1
+IMPERIO = 2
+CRUCIO = 3
+
+ingame_status = ("nomination", "election", "minister selection", "director selection", "use spell")
+
+NOMINATION = 0
+ELECTION = 1
+MINISTER_SELECTION = 2
+DIRECTOR_SELECTION = 3
+USE_SPELL = 4
+

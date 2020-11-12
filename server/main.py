@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from server.db.crud import *
 
-from server.api.routes import authentication, game
+from server.api.routes import authentication, game, lobby
 
 app = FastAPI()
 
@@ -48,6 +48,8 @@ async def change_user_password():
 # OPEN GAMES
 
 app.include_router(game.router, prefix="/game")
+
+app.include_router(lobby.router, prefix="/game")
 #app.include_router(newgame.router)
 #app.include_router(joinmatch.router)
 #app.include_router(gamestatus.router)
