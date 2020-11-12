@@ -24,7 +24,7 @@ function Lobby() {
 
   return (
     <div>
-      <img src={logo} className="logo" />
+      <img src={logo} className="logo" alt="" />
       <div className="btns">
         {user.logged_in ? (
           <div>
@@ -61,52 +61,52 @@ function Lobby() {
       </div>
       <div className="img-tiles">
         <div className="image-container">
-          <img src={harry2} />
-          <img className="transition-image" src={voldermort} />
+          <img src={harry2} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={ron} />
-          <img className="transition-image" src={voldermort} />
+          <img src={ron} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={hermione} />
-          <img className="transition-image" src={voldermort} />
+          <img src={hermione} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={malfoyPadre} />
-          <img className="transition-image" src={voldermort} />
+          <img src={malfoyPadre} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={dumbledore} />
-          <img className="transition-image" src={voldermort} />
+          <img src={dumbledore} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={weasley1} />
-          <img className="transition-image" src={voldermort} />
+          <img src={weasley1} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={umbridge} />
-          <img className="transition-image" src={voldermort} />
+          <img src={umbridge} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={sirius} />
-          <img className="transition-image" src={voldermort} />
+          <img src={sirius} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={weasley2} />
-          <img className="transition-image" src={voldermort} />
+          <img src={weasley2} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={draco} />
-          <img className="transition-image" src={voldermort} />
+          <img src={draco} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={snapePhoenix} />
-          <img className="transition-image" src={voldermort} />
+          <img src={snapePhoenix} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
         <div className="image-container">
-          <img src={bellatrix} />
-          <img className="transition-image" src={voldermort} />
+          <img src={bellatrix} alt="" />
+          <img className="transition-image" src={voldermort} alt="" />
         </div>
       </div>
     </div>
