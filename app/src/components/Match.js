@@ -2,20 +2,32 @@ import React, { useState } from "react";
 import useInterval from "react-useinterval";
 import { useSelector } from "react-redux";
 import Vote from "./Vote";
+import AvadaKedavra from "./AvadaKedavra";
 
 function Match({ match }) {
   const game = useSelector((state) => state.match);
   const user = useSelector((state) => state.user);
   const [gameStatus, setGameStatus] = useState({
-    minister: "",
-    players: {},
+    boardstatus: {
+      boardtype: "",
+      deatheaterproclamations: 0,
+      phoenixproclamations: 0,
+      spell: null,
+      status: "",
+    },
     matchstatus: "",
-    phoenixproclamations: 0,
-    deatheaterproclamations: 0,
-    board_type: "5-6",
+    minister: "",
+    playerstatus: {},
   });
 
-  useInterval(async () => {
+  function getPlayerVote() {
+    if (gameStatus.matchstatus !== "")
+      if (!gameStatus.playerstatus[user.username].isDead)
+        return gameStatus.playerstatus[user.username].vote;
+    return "";
+  }
+
+  const gamestatus = useInterval(async () => {
     const url = "http://127.0.0.1:8000";
 
     await fetch(url + `/game/${game.id}`, {
@@ -63,22 +75,23 @@ function Match({ match }) {
   const Election = (
     <div>
       <h1>The current minister is {gameStatus.minister}</h1>
-      {Object.entries(gameStatus.players).map((player) => (
+      {Object.entries(gameStatus.playerstatus).map((player) => (
         <h4>
-          {player[0]} voted {player[1]}
+          {player[1].isDead ? "" : player[0] + " voted " + player[1].vote}
         </h4>
       ))}
-      <div>
-        {gameStatus.players[user.username] === "missing vote" ? <Vote /> : ""}
-      </div>
+      <div>{getPlayerVote() === "missing vote" ? <Vote /> : ""}</div>
     </div>
   );
 
   const Board = (
     <div>
-      <h1>Phoenix Proclamations : {gameStatus.phoenixproclamations}/5</h1>
       <h1>
-        Death Eaters Proclamations : {gameStatus.deatheaterproclamations}/6
+        Phoenix Proclamations : {gameStatus.boardstatus.phoenixproclamations}/5
+      </h1>
+      <h1>
+        Death Eaters Proclamations :{" "}
+        {gameStatus.boardstatus.deatheaterproclamations}/6
       </h1>
     </div>
   );
@@ -86,7 +99,8 @@ function Match({ match }) {
   const Winner = (
     <div>
       <h1>
-        {gameStatus.deatheaterproclamations > gameStatus.phoenixproclamations
+        {gameStatus.boardstatus.deatheaterproclamations >
+        gameStatus.boardstatus.phoenixproclamations
           ? "Death Eaters"
           : "Order of the Phoenix"}{" "}
         team won the match
@@ -97,7 +111,7 @@ function Match({ match }) {
   const PlayerList = (
     <div>
       <h1>Players joined:</h1>
-      {Object.entries(gameStatus.players).map((player) => (
+      {Object.entries(gameStatus.playerstatus).map((player) => (
         <h4>{player[0]}</h4>
       ))}
     </div>
@@ -131,6 +145,22 @@ function Match({ match }) {
           <h3> {gameStatus.matchstatus === "Joinable" ? Host : ""} </h3>
           <h2> {gameStatus.matchstatus === "Joinable" ? PlayerList : ""} </h2>
           <div> {gameStatus.matchstatus === "In Game" ? Election : ""} </div>
+          <div>
+            {
+              /* {gameStatus.boardstatus.spell === "Avada-Kedavra" &&
+            gameStatus.minister === user.username ? (
+              <AvadaKedavra playerList={gameStatus.playerstatus} />
+            ) : (
+              ""
+            )} */
+              gameStatus.boardstatus.deatheaterproclamations === 5 &&
+              gameStatus.minister === user.username ? (
+                <AvadaKedavra playerList={gameStatus.playerstatus} />
+              ) : (
+                ""
+              )
+            }
+          </div>
           <div> {gameStatus.matchstatus === "In Game" ? Board : ""} </div>
           <div> {gameStatus.matchstatus === "Finished" ? Winner : ""} </div>
         </div>
