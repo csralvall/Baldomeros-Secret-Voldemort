@@ -14,6 +14,7 @@ import malfoyPadre from "../media/roles/malfoyPadre.png";
 import draco from "../media/roles/draco.png";
 import voldemort from "../media/roles/voldemort.png";
 import snapeDeathEater from "../media/roles/snapeDeathEater.png";
+import nox from "../media/cards/nox.png";
 
 import "./css/Role.css";
 
@@ -28,6 +29,11 @@ function Role() {
   const playerID = useSelector((state) => state.match.playerId);
   const [role, setRole] = useState("");
   const [roleImg, setRoleImg] = useState();
+  const [deathEaterUsernames, setDeathEaterUsernames] = useState({
+    "Death Eater": {},
+    Voldemort: "",
+  });
+
   const [open, setOpen] = useState(false);
   const [isFirstTime, setIsFirstTime] = useState(true);
 
@@ -35,6 +41,7 @@ function Role() {
   useEffect(() => {
     if (loaded.current) {
       getRole();
+      getDeathEatersUsernames();
     } else {
       loaded.current = true;
     }
@@ -58,7 +65,6 @@ function Role() {
         } else {
           setRole(responseData.rol);
           setRoleImg(getRoleImg(responseData.rol));
-          console.log(responseData.rol);
         }
       })
       .catch(() => {
@@ -79,7 +85,7 @@ function Role() {
         Math.random() * deathEatersImgArray.length
       );
       return deathEatersImgArray[randomIndex];
-    } else if (role === "Order of the Phoenix") {
+    } else if (role === "Order of The Phoenix") {
       const orderOfThePhoenixImgArray = [
         harry2,
         ron,
@@ -97,6 +103,42 @@ function Role() {
       return voldemort;
     }
   };
+
+  const getDeathEatersUsernames = async () => {
+    const url = "http://127.0.0.1:8000";
+
+    await fetch(url + `/game/${matchID}/death_eaters`, {
+      method: "GET",
+    })
+      .then(async (response) => {
+        const responseData = await response.json();
+        if (response.status !== 200) {
+          if (response.status === 404) {
+            alert("Match or player don't exist");
+          } else {
+            alert("Could not get Death Eaters. Unknown Error.");
+          }
+        } else {
+          setDeathEaterUsernames(responseData);
+        }
+      })
+      .catch(() => {
+        alert("Network Error");
+      });
+  };
+
+  const deathEatersJSX = (
+    <div className="other-death-eater-info">
+      <h1>Death Eaters:</h1>
+      {Object.values(deathEaterUsernames["Death Eater"]).map((name) => (
+        <h1 className="death-eater-role-username">{name}</h1>
+      ))}
+      <h1>Voldemort:</h1>
+      <h1 className="voldemort-role-username">
+        {deathEaterUsernames["Voldemort"]}
+      </h1>
+    </div>
+  );
 
   return (
     <div>
@@ -125,6 +167,7 @@ function Role() {
       >
         <div>
           <img src={roleImg} className="role-img" alt="logo" />
+          {role === "Order of The Phoenix" ? "" : deathEatersJSX}
         </div>
       </Modal>
     </div>
@@ -132,4 +175,3 @@ function Role() {
 }
 
 export default Role;
-
