@@ -120,17 +120,25 @@ async def posible_directors(mid:int):
 
     return posible_directors
 
-@router.patch("/{mid}/board/avada-kedavra", tags=["Game"])
+@router.patch("/{match_id}/board/avada-kedavra", tags=["Game"])
 async def use_avada_kedavra(
-    mid: int = Path(..., title="The ID of the current match"),
-    username: str = Query(..., title="Name of player who receives the spell")):
+    match_id: int = Path(..., title="The ID of the current match"),
+    playername: str = Query(..., title="Name of player who receives the spell")):
 
-    try: # no need of check_match thanks to exceptions
-        player_id = get_player_id_from_username(mid, username)
-        board_id = get_match_board_id(mid)
+    if not check_match(match_id):
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    minister = get_minister_username(match_id)
+
+    if minister == playername:
+        raise HTTPException(status_code=403, detail="You can't kill yourself")
+
+    try:
+        player_id = get_player_id_from_username(match_id, playername)
+        board_id = get_match_board_id(match_id)
         avada_kedavra(board_id, player_id)
     except ResourceNotFound:
         raise HTTPException(status_code=404, detail="Resource not found")
 
-    return f"{username} is dead"
+    return f"{playername} is dead"
 
