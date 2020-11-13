@@ -119,7 +119,6 @@ function Role() {
           }
         } else {
           setDeathEaterUsernames(responseData);
-          console.log(responseData);
         }
       })
       .catch(() => {
