@@ -11,13 +11,18 @@ if (process.env.NODE_ENV === "test") {
 
 function AvadaKedavra({ playerList }) {
   const matchID = useSelector((state) => state.match.id);
-  const playerID = useSelector((state) => state.match.playerId);
+  const username = useSelector((state) => state.user.username);
   const [victim, setVictim] = useState(0);
   const [open, setOpen] = useState(false);
 
   function isPlayerDead(player) {
     return !player[1].isDead;
   }
+
+  function isNotMe(player) {
+    return username !== player[0];
+  }
+
   //flag for voting when the vote is the same as the last
   const loaded = useRef(false);
   useEffect(() => {
@@ -80,6 +85,7 @@ function AvadaKedavra({ playerList }) {
         <div>
           {Object.entries(playerList)
             .filter(isPlayerDead)
+            .filter(isNotMe)
             .map((player) => (
               <h4
                 onClick={() => {

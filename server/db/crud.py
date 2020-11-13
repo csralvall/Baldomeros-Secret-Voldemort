@@ -528,7 +528,7 @@ def set_roles(num: int, match_id: int):
 def set_gob_roles(match_id: int):
     import random
     players = Match[match_id].Players   
-    k = random.randint(0,(Match[match_id].MaxPlayers - 1))
+    k = random.randint(0,(get_num_players(match_id) - 1))
     Match[match_id].CurrentMinister = k
     
     for p in players:
