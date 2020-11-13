@@ -2,11 +2,14 @@ from server.db.crud import *
 
 from server.db.dicts import *
 
-from fastapi import APIRouter, HTTPException, Query, Path
+from fastapi import APIRouter, HTTPException, Query, Path, Body
 
 from typing import Optional, List
 
+from pydantic import BaseModel
+
 router = APIRouter()
+
 
 @router.get("/{mid}", tags=["Game"])
 async def game_status(mid: int):
@@ -20,7 +23,6 @@ async def game_status(mid: int):
     matchstatus = get_match_status(mid)
     board_id = get_match_board_id(mid)
     board_status = get_board_status(board_id)
-    ingame_status=get_ingame_status(mid)
     hand = show_selected_deck(board_id)
     winner = check_winner(mid)
 
@@ -34,7 +36,6 @@ async def game_status(mid: int):
         'winner': winner,
         'playerstatus': player_status,
         'boardstatus': board_status,
-        'ingamestatus': ingame_status,
         'hand': hand
     }
 
@@ -64,9 +65,8 @@ async def vote_candidate(
             successful_director_election(mid)
             change_ingame_status(mid, MINISTER_SELECTION)#minister selects cards stage
         else :
-            pass
-            set_next_minister_failed_election(mid)
             failed_director_election(mid)
+            set_next_minister_failed_election(mid)
             change_ingame_status(mid, NOMINATION)# new minister chooses new director
         restore_election(mid)     
 
@@ -156,8 +156,8 @@ async def use_avada_kedavra(
         board_id = get_match_board_id(match_id)
         avada_kedavra(board_id, player_id)
         change_ingame_status(match_id, NOMINATION)#minister selects director stage
-        set_next_minister(match_id)
         change_to_exdirector(match_id)
+        set_next_minister(match_id)
     except ResourceNotFound:
         raise HTTPException(status_code=404, detail="Resource not found")
     except NoDirector:
@@ -166,7 +166,7 @@ async def use_avada_kedavra(
 
 
 @router.post("/{mid}/proclamation/{pid}", tags=["Game"])
-async def receive_cards(mid: int, pid: int, selected: List[str], discarded: str):
+async def receive_cards(mid: int, pid: int, discarded: str, selected: List[str]=Body(...)):
 
     if not check_match(mid):
         raise HTTPException(status_code=404, detail="this match does not exist")
@@ -179,26 +179,33 @@ async def receive_cards(mid: int, pid: int, selected: List[str], discarded: str)
     minister = get_minister_username(mid)
     director = get_director_username(mid)
 
-    if username == minister and len(selected) == 2:
+    if username == minister:
+        if not get_ingame_status(mid) == ingame_status[MINISTER_SELECTION]:
+            raise HTTPException(status_code=404, detail="We are not in the minister selection stage.")    
+        if not len(selected) == 2:
+            raise HTTPException(status_code=404, detail="The number of proclamation selected doesn't match the number of proclamations expected from minister.")    
         try:
             discard_proclamation(bid, discarded)
-            if not selected.sort() == show_selected_deck(bid).sort():
+            if not sorted(selected) == sorted(show_selected_deck(bid)):
                 raise InvalidProclamation
         except InvalidProclamation:
             raise HTTPException(status_code=404, detail="The proclamation selected doesn't match the proclamations passed.")    
 
         change_ingame_status(mid, DIRECTOR_SELECTION)#director selects cards stage
 
-    elif user == director and len(selected) == 1:
+    elif username == director:
+        if not get_ingame_status(mid) == ingame_status[DIRECTOR_SELECTION]:
+            raise HTTPException(status_code=404, detail="We are not in the director selection stage.")    
+        if not len(selected) == 1:
+            raise HTTPException(status_code=404, detail="The number of proclamation selected doesn't match the number of proclamations expected from director.")    
         try:
             discard_proclamation(bid, discarded)
+            selected_card = get_selected_card(bid)
         except InvalidProclamation:
             raise HTTPException(status_code=404, detail="The proclamation discarded doesn't match the proclamations passed.")    
         except DeckNotFound:
             raise HTTPException(status_code=404, detail="Deck not found")
-        try:
-            selected_card = get_selected_card(bid)
-        except:
+        except EmptySelectedProclamations:
             raise HTTPException(status_code=404, detail="There is no cards selected")
         if not selected_card == selected[0]:
             raise HTTPException(status_code=404, detail="The proclamation selected doesn't match the proclamations passed.")    
@@ -206,15 +213,17 @@ async def receive_cards(mid: int, pid: int, selected: List[str], discarded: str)
         enact_proclamation(mid, selected_card)
         winner = is_victory_from(mid)
 
+        #-----------------------------------CAMBIAR--------------------------------------------------------
         #cambiar este if por funcion de si hay hechizo
         # tambien habilitar el hechizo adentro(puede ser todo en una funcion)
-        if get_death_eater_proclamations > 2:
-            change_ingame_status(mid, USE_SPELL)#spell stage
-        else:
-            change_ingame_status(mid, NOMINATION)#minister selects director stage
-            set_next_minister(mid)
-            change_to_exdirector(mid)
-
+        # if get_death_eater_proclamations > 2:
+        #     change_ingame_status(mid, USE_SPELL)#spell stage
+        # else:
+        #cambiar indentacion a esto para que quede en el else cuando se agregue lo de hechizos
+        change_ingame_status(mid, NOMINATION)#minister selects director stage
+        change_to_exdirector(mid)
+        set_next_minister(mid)
+        
         try:
             get_top_three_proclamation(bid)
         except NotEnoughProclamations:
@@ -226,6 +235,7 @@ async def receive_cards(mid: int, pid: int, selected: List[str], discarded: str)
 
     else:
         raise HTTPException(status_code=404, detail="This user is not the director or the minister.")
-
+    
+    winner = check_winner(mid)
     return winner 
 

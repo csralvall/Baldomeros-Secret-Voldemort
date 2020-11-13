@@ -100,7 +100,6 @@ def add_match(minp,maxp,creator):
         newmatch = Match(MaxPlayers=maxp,
             MinPlayers=minp,
             Status=0,
-            IngameStatus =0,
             BoardType=0, #hardcoded
             CurrentMinister = 0, #Changes when the match starts
             CandidateDirector = NO_DIRECTOR,
@@ -320,13 +319,15 @@ def get_director_username(ID: int):
 def change_ingame_status(match_id: int, status: int):
     if not Match.exists(Id=match_id):
         raise MatchNotFound
+    bid= get_match_board_id(match_id)
     if not (status >= NOMINATION and status <= USE_SPELL) :
         raise BadIngameStatus
-    Match[match_id].IngameStatus=status
+    Board[bid].BoardStatus=status
 
 @db_session
-def get_ingame_status(mid: int):
-    return ingame_status[Match[mid].IngameStatus]
+def get_ingame_status(match_id: int):
+    bid= get_match_board_id(match_id)
+    return ingame_status[Board[bid].BoardStatus]
 
 
 @db_session
@@ -504,6 +505,8 @@ def get_death_eater_proclamations(match_id):
 @db_session
 def is_victory_from(match_id: int):
     if Match.exists(Id=match_id):
+        if not Match[match_id].Winner == "no winner yet":
+            return Match[match_id].Winner
         winner = "no winner yet"
         if get_death_eater_proclamations(match_id) == 6:
             winner = "death eater"
@@ -629,6 +632,7 @@ def set_gob_roles(match_id: int):
         else:
             p.GovRol = 2
 
+@db_session# no estaba la db session, tiene que ir ?
 def change_player_rol(pid,rol):
     Player[pid].SecretRol = rol
 
