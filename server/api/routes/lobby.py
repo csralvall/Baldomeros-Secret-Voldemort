@@ -34,7 +34,8 @@ async def join_game(mid: int, user: int):
     if not get_match_status(mid) == "Joinable":
         raise HTTPException(status_code=404, detail="game already started")
 
-    playerobj = add_user_in_match(user, mid, 5) #hardcodeado position should be there
+    positionp = get_num_players(mid)
+    playerobj = add_user_in_match(user, mid, positionp)
 
     if playerobj is None:
         raise HTTPException(status_code=404, detail="couldnt add the user")
@@ -43,8 +44,6 @@ async def join_game(mid: int, user: int):
         "Match_id": mid,
         "Player_id": playerobj.to_dict("PlayerId")["PlayerId"]
     }
-    if not there_is_space(mid):
-        change_match_status(mid, 1)
-        
+
     return playerdic
 
