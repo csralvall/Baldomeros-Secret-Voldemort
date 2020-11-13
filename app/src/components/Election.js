@@ -26,7 +26,7 @@ function Election({ playerList, minister, director, status, hand }) {
       </h1>
       {Object.entries(playerList).map((player) => (
         <h4>
-          {getPlayerVote(player) === ""
+          {player[1].vote === "missing vote"
             ? player[0] + " is voting"
             : player[0] + " voted"}
         </h4>
@@ -42,8 +42,8 @@ function Election({ playerList, minister, director, status, hand }) {
           ? "Director is choosing proclamations"
           : "Minister is choosing proclamations"}
       </h1>
-      {(director === user.username && status === "minister selection") ||
-      (minister === user.username && status === "director selection") ? (
+      {(director === user.username && status === "director selection") ||
+      (minister === user.username && status === "minister selection") ? (
         <LegislativeSession hand={hand} />
       ) : (
         ""

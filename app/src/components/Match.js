@@ -18,8 +18,10 @@ function Match({ match }) {
       status: "",
     },
     matchstatus: "",
+    winner: "",
     minister: "",
     playerstatus: {},
+    hand: [],
   });
 
   useInterval(async () => {
@@ -58,16 +60,9 @@ function Match({ match }) {
     </div>
   );
 
-  //This should come with status
   const Winner = (
     <div>
-      <h1>
-        {gameStatus.boardstatus.deatheaterproclamations >
-        gameStatus.boardstatus.phoenixproclamations
-          ? "Death Eaters"
-          : "Order of the Phoenix"}{" "}
-        team won the match
-      </h1>
+      <h1>The winner is {gameStatus.winner}</h1>
     </div>
   );
 

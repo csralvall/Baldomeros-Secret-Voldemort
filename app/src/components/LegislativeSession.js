@@ -14,13 +14,16 @@ function LegislativeSession({ hand }) {
   const [cardPool, setCardPool] = useState([false, false, false]);
   const [open, setOpen] = useState(false);
 
-  const enableCard = (index) => {
+  function enableCard(index) {
     const cardsElected = cardPool;
     cardsElected[index] = !cardsElected[index];
-    if (cardsElected.filter(Boolean).length >= hand.length - 1)
+    if (cardsElected.filter(Boolean).length <= hand.length - 1)
       setCardPool(cardsElected);
-    else alert("You cant choose more than " + hand.length - 1 + " cards");
-  };
+    else {
+      cardsElected[index] = !cardsElected[index];
+      alert("You cant choose more than " + (hand.length - 1) + " cards");
+    }
+  }
 
   const sendLegislativeSession = async () => {
     const url = "http://127.0.0.1:8000";
@@ -74,6 +77,7 @@ function LegislativeSession({ hand }) {
         <div>
           {hand.map((card, index) => (
             <h4
+              key={index}
               onClick={() => {
                 enableCard(index);
               }}
