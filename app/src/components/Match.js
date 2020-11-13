@@ -22,7 +22,7 @@ function Match({ match }) {
     playerstatus: {},
   });
 
-  const gamestatus = useInterval(async () => {
+  useInterval(async () => {
     const url = "http://127.0.0.1:8000";
 
     await fetch(url + `/game/${game.id}`, {
@@ -90,6 +90,7 @@ function Match({ match }) {
               <Election
                 playerList={gameStatus.playerstatus}
                 minister={gameStatus.minister}
+                status={gameStatus.ingamestatus}
               />
             ) : (
               ""
