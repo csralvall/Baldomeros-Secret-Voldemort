@@ -120,6 +120,7 @@ async def posible_directors(mid:int):
 
     return posible_directors
 
+
 @router.patch("/{match_id}/board/avada-kedavra", tags=["Game"])
 async def use_avada_kedavra(
     match_id: int = Path(..., title="The ID of the current match"),
