@@ -16,6 +16,7 @@ class Match(db.Entity):
     Players = Set('Player')
     Board = Optional('Board', cascade_delete=True)
     Creator = Required('User')
+    Winner = Required(str)
     
 class Board(db.Entity):
     Id = PrimaryKey(int, auto=True)

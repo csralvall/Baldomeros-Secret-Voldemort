@@ -18,7 +18,11 @@ def test_vote_avada_kedavra():
     uid1 = get_user("foo", "foo")["Id"]
     uid2 = get_user("bar", "bar")["Id"]
 
-    match_id = add_match_db(5,7,uid1)['Match_id']
+    match = add_match_db(5,7,uid1)
+    match_id = match['Match_id']
+    pid = match['Player_id']    
+    make_director(pid)
+    set_current_director(match_id,0)
 
     add_user_in_match(uid2, match_id, 2)
 

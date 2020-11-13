@@ -103,6 +103,9 @@ def add_match(minp,maxp,creator):
             IngameStatus =0,
             BoardType=0, #hardcoded
             CurrentMinister = 0, #Changes when the match starts
+            CandidateDirector = NO_DIRECTOR,
+            CurrentDirector = NO_DIRECTOR,
+            Winner = "no winner yet",
             Creator = creator)
         return newmatch
     except Exception:
@@ -317,7 +320,7 @@ def get_director_username(ID: int):
 def change_ingame_status(match_id: int, status: int):
     if not Match.exists(Id=match_id):
         raise MatchNotFound
-    if not (status >= NOMINATION and status <= CAST_SPELLING) :
+    if not (status >= NOMINATION and status <= USE_SPELL) :
         raise BadIngameStatus
     Match[match_id].IngameStatus=status
 
@@ -399,9 +402,22 @@ def set_next_minister(match_id: int):
         Match[match_id].CurrentMinister = current_minister
         return current_minister
 
+
+@db_session
+def set_next_minister_failed_election(match_id: int):
+    if Match.exists(Id=match_id):
+        query = Match[match_id].Players.order_by(Player.Position)
+        players = [x for x in query]
+        last_minister = Match[match_id].CurrentMinister
+        players[last_minister].GovRol = 2#magician
+        current_minister = (last_minister + 1) % len(players)
+        players[current_minister].GovRol = 1
+        Match[match_id].CurrentMinister = current_minister
+        return current_minister
+
 @db_session
 def change_to_exdirector(mid):
-    if not Match.exists(Id=match_id):
+    if not Match.exists(Id=mid):
         raise MatchNotFound
     query = Match[mid].Players.order_by(Player.Position)
     players = [x for x in query]
@@ -411,19 +427,32 @@ def change_to_exdirector(mid):
     players[director].GovRol = 4 #Ex Director.
     Match[mid].CurrentDirector = NO_DIRECTOR
 
-# needs to be changed so it does tthis in two separate locations
-# @db_session
-# def set_next_director(mid):
-#     if (Match.exists(Id=mid) and Match[mid].CurrentDirector is not None and Match[mid].CandidateDirector is not None):
-#         query = Match[mid].Players.order_by(Player.Position)
-#         players = [x for x in query]
-#         last_director = Match[mid].CurrentDirector
-#         players[last_director].GovRol = 4 #Ex Director.
-#         current_director = Match[mid].CandidateDirector
-#         players[current_director].GovRol = 0
-#         Match[mid].CurrentDirector = current_director
-#         return current_director
+@db_session
+def successful_director_election(mid):
+    if not Match.exists(Id=mid):
+        raise MatchNotFound
+    query = Match[mid].Players.order_by(Player.Position)
+    players = [x for x in query]
+    candidate_director = Match[mid].CandidateDirector
+    if candidate_director == NO_DIRECTOR:
+        raise NoDirector
+    players[candidate_director].GovRol = 0 #director
+    Match[mid].CandidateDirector = NO_DIRECTOR
+    Match[mid].CurrentDirector = candidate_director
 
+
+@db_session
+def failed_director_election(mid):
+    if not Match.exists(Id=mid):
+        raise MatchNotFound
+    query = Match[mid].Players.order_by(Player.Position)
+    players = [x for x in query]
+    candidate_director = Match[mid].CandidateDirector
+    if candidate_director == NO_DIRECTOR:
+        raise NoDirector
+    players[candidate_director].GovRol = 2#magician
+    Match[mid].CandidateDirector = NO_DIRECTOR
+    Match[mid].CurrentDirector = NO_DIRECTOR
 
 
 @db_session
@@ -483,7 +512,13 @@ def is_victory_from(match_id: int):
             winner = "phoenix"
             Match[match_id].Status = 2
 
+        Match[match_id].Winner = winner
         return winner
+
+@db_session
+def check_winner(match_id: int):
+    if Match.exists(Id=match_id):
+        return Match[match_id].Winner
 
 @db_session
 def change_match_status(mid,status):

@@ -1,6 +1,7 @@
 from pony.orm import db_session, select, count, delete
 from server.db.database import *
 from server.db.crud import DeckNotFound, BoardNotFound
+from server.db.dicts import *
 
 @db_session
 def delete_data(table): 
@@ -24,6 +25,22 @@ def make_magician(pid):
 @db_session
 def make_director(pid):
     Player[pid].GovRol = 0
+
+
+@db_session
+def get_player_gov_rol(pid):
+    return GovRolDiccionary[Player[pid].GovRol]
+
+@db_session
+def get_exdirector_username(mid: int):
+    director = Match[mid].Players.filter(lambda p: p.GovRol == 4).first()
+    if director is None:
+        return "No director yet"
+    return director.UserId.Username 
+
+@db_session
+def set_candidate_director_test(mid, pos):
+    Match[mid].CandidateDirector = pos
 
 @db_session
 def set_current_minister(mid,pos):

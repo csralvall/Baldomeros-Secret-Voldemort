@@ -379,6 +379,40 @@ class TestInMatch(unittest.TestCase):
         self.assertEqual(set_next_minister(self.matchid),0)
         self.assertEqual(get_minister_username(self.matchid), 'example')
 
+    #------------------------set_next_minister_failed_election----------------------
+
+    def test_set_next_minister_failed_election_OK(self):
+        self.assertIsNotNone(set_next_minister_failed_election(self.matchid))
+
+    def test_set_next_minister_failed_election_fail(self):
+        self.assertIsNone(set_next_minister_failed_election(9999999))#can fail if match has this id
+
+    def test_set_next_minister_failed_election_OK2(self):
+        change_last_minister(self.matchid,0)
+        make_magician(self.player1id)
+        make_minister(self.playeridcreator)
+        self.assertEqual(set_next_minister_failed_election(self.matchid),1)# 1 is player1id position 
+
+    def test_set_next_minister_failed_election_OK3(self):
+        change_last_minister(self.matchid,0)
+        make_magician(self.player1id)
+        make_minister(self.playeridcreator)
+        self.assertEqual(set_next_minister_failed_election(self.matchid),1)
+        self.assertEqual(set_next_minister_failed_election(self.matchid),0)
+        self.assertEqual(set_next_minister_failed_election(self.matchid),1)
+        self.assertEqual(set_next_minister_failed_election(self.matchid),0)
+
+    def test_set_next_minister_failed_election_username(self):
+        change_last_minister(self.matchid,0)
+        make_magician(self.player1id)
+        make_minister(self.playeridcreator)
+        self.assertEqual(set_next_minister_failed_election(self.matchid),1)
+        self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister_failed_election(self.matchid),0)
+        self.assertEqual(get_minister_username(self.matchid), 'example')
+
+
+
     #-------------48 test^-------------------
     #------------------------compute_election_result----------------------
 

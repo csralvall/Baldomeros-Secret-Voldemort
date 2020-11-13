@@ -22,6 +22,8 @@ async def game_status(mid: int):
     board_status = get_board_status(board_id)
     ingame_status=get_ingame_status(mid)
     hand = show_selected_deck(board_id)
+    winner = check_winner(mid)
+
     
     board_status = {k.lower(): v for k, v in board_status.items()}
 
@@ -29,6 +31,7 @@ async def game_status(mid: int):
         'minister': minister,
         'director': director,
         'matchstatus': matchstatus,
+        'winner': winner,
         'playerstatus': player_status,
         'boardstatus': board_status,
         'ingamestatus': ingame_status,
@@ -56,25 +59,18 @@ async def vote_candidate(
 
     player_votes = { k: v['vote'] for k, v in player_status.items() }
 
-        if 'missing vote' not in player_votes.values():
-            if compute_election_result(mid) == 'lumos':
-                pass
-                # aca se pasa el director de candidato a ser director de verdad
-                # change_ingame_status(mid, MINISTER_SELECTION)#----------------director selects cards stage
-            else :
-                pass
-                #set_next_minister(mid) NO PUEDE SER ESTA,
-                #  PORQUE NO SE PASA A EX MINISTRO, NUNCA FUE MINISTRO.
-                #borrar al candidato a director, 
-                #FUNCION FAILED ELECTION:
-                #SAQUE EL CANDIDATO A DIRECTOR,
-                #  PASE DE MINISTRO SIN QUE SEA EXMINISTRO
-                # pasar al estado de elegir un NOMINATION
-                # change_ingame_status(mid, NOMINATION)#---------------director selects cards stage
-            restore_election(mid)
+    if 'missing vote' not in player_votes.values():
+        if compute_election_result(mid) == 'lumos':
+            successful_director_election(mid)
+            change_ingame_status(mid, MINISTER_SELECTION)#minister selects cards stage
+        else :
+            pass
+            set_next_minister_failed_election(mid)
+            failed_director_election(mid)
+            change_ingame_status(mid, NOMINATION)# new minister chooses new director
+        restore_election(mid)     
 
-    winner = is_victory_from(mid)
-
+    winner = check_winner(mid)
     return winner 
 
 
@@ -159,10 +155,15 @@ async def use_avada_kedavra(
         player_id = get_player_id_from_username(match_id, playername)
         board_id = get_match_board_id(match_id)
         avada_kedavra(board_id, player_id)
+        change_ingame_status(match_id, NOMINATION)#minister selects director stage
+        set_next_minister(match_id)
+        change_to_exdirector(match_id)
     except ResourceNotFound:
         raise HTTPException(status_code=404, detail="Resource not found")
-
+    except NoDirector:
+        raise HTTPException(status_code=404, detail="There is no director")
     return f"{playername} is dead"
+
 
 @router.post("/{mid}/proclamation/{pid}", tags=["Game"])
 async def receive_cards(mid: int, pid: int, selected: List[str], discarded: str):
@@ -174,9 +175,7 @@ async def receive_cards(mid: int, pid: int, selected: List[str], discarded: str)
         raise HTTPException(status_code=404, detail="Player not found")
 
     username = get_player_username(pid)
-
     bid = get_match_board_id(mid)
-
     minister = get_minister_username(mid)
     director = get_director_username(mid)
 
@@ -191,14 +190,12 @@ async def receive_cards(mid: int, pid: int, selected: List[str], discarded: str)
         change_ingame_status(mid, DIRECTOR_SELECTION)#director selects cards stage
 
     elif user == director and len(selected) == 1:
-        
         try:
             discard_proclamation(bid, discarded)
         except InvalidProclamation:
             raise HTTPException(status_code=404, detail="The proclamation discarded doesn't match the proclamations passed.")    
         except DeckNotFound:
             raise HTTPException(status_code=404, detail="Deck not found")
-            
         try:
             selected_card = get_selected_card(bid)
         except:
@@ -207,8 +204,10 @@ async def receive_cards(mid: int, pid: int, selected: List[str], discarded: str)
             raise HTTPException(status_code=404, detail="The proclamation selected doesn't match the proclamations passed.")    
         
         enact_proclamation(mid, selected_card)
+        winner = is_victory_from(mid)
 
-        #cambiar este if por la funcion de si hay hechizo:
+        #cambiar este if por funcion de si hay hechizo
+        # tambien habilitar el hechizo adentro(puede ser todo en una funcion)
         if get_death_eater_proclamations > 2:
             change_ingame_status(mid, USE_SPELL)#spell stage
         else:
@@ -228,6 +227,5 @@ async def receive_cards(mid: int, pid: int, selected: List[str], discarded: str)
     else:
         raise HTTPException(status_code=404, detail="This user is not the director or the minister.")
 
-    discard_proclamation(bid, discarded)
-    return OK
+    return winner 
 
