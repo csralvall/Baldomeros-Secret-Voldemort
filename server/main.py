@@ -46,10 +46,10 @@ async def change_user_password():
 # USER
 
 # OPEN GAMES
+app.include_router(lobby.router, prefix="/game")
 
 app.include_router(game.router, prefix="/game")
 
-app.include_router(lobby.router, prefix="/game")
 #app.include_router(newgame.router)
 #app.include_router(joinmatch.router)
 #app.include_router(gamestatus.router)

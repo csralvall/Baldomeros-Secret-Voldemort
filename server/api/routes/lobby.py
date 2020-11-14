@@ -47,3 +47,9 @@ async def join_game(mid: int, user: int):
 
     return playerdic
 
+
+@router.get("/list", tags=["Game"])
+async def list_games():
+    return list_games_db()
+      
+      

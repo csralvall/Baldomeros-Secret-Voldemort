@@ -704,3 +704,43 @@ def get_player_id_from_username(match_id: int, username: str):
         raise MatchNotFound
     players = Match[match_id].Players
     return get(p.PlayerId for p in players if p.UserId.Username == username)
+
+@db_session
+def get_max_players(match_id: int):
+    if Match.exists(Id=match_id):
+        return Match[match_id].MaxPlayers
+
+@db_session
+def set_game_decorated(match_id: int): 
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+
+    creator = Match[match_id].Creator
+    minp = get_min_players(match_id)
+    maxp = get_max_players(match_id) 
+    match = match_id
+
+    game = {
+        "Nombre_partida": creator.to_dict("Username")["Username"],
+        "Min_and_Max": (minp,maxp),
+        "Match_id": match
+    }
+    return game
+        
+@db_session
+def list_games_db():
+
+    matches = select(p for p in Match)
+    decorated_matches = []
+
+    for p in matches:
+        if (p.Status == 0):
+
+            mid = p.Id
+            game_decorated = set_game_decorated(mid)
+
+            decorated_matches.append(game_decorated)
+    
+    return decorated_matches
+
+
