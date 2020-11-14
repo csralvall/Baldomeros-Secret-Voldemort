@@ -1,7 +1,15 @@
 
+DEATH_EATER_WINNER = "death eater"
+PHOENIX_WINNER = "phoenix"
+NO_WINNER_YET = "no winner yet"
+
 Status = {0: "Joinable",
           1: "In Game",
           2: "Finished"}
+
+JOINABLE = 0
+IN_GAME = 1
+FINISHED = 2
 
 BoardType = {0: "5-6",
              1: "7-8",
@@ -11,6 +19,10 @@ BoardType = {0: "5-6",
 SecretRolDiccionary = {0: "Voldemort",
                        1: "Death Eater",
                        2: "Order of The Phoenix"}
+
+VOLDEMORT = 0
+DEATH_EATER = 1
+PHOENIX = 2
 
 GovRolDiccionary = {0: "Head Master",
                     1: "Magic Minister",
