@@ -6,7 +6,6 @@ from fastapi import APIRouter, HTTPException, Query, Path, Body
 
 from typing import Optional, List
 
-from pydantic import BaseModel
 
 router = APIRouter()
 
