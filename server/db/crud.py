@@ -36,11 +36,19 @@ class PlayerNotFound(ResourceNotFound):
     pass
 
 class InvalidProclamation(Exception):
-    """ Raised when the proclamation passed is invalid """
+    """ Raised when the proclamation passed is invalid. """
     pass
 
 class EmptySelectedProclamations(Exception):
-    """ Raised when there aren't selected proclamations to remove """
+    """ Raised when there aren't selected proclamations to remove. """
+    pass
+
+class BadIngameStatus(Exception):
+    """ Raised when the ingame status passed is invalid. """
+    pass
+
+class NoDirector(Exception):
+    """ Raised when moving director to ex-director, but there is no current director. """
     pass
 
 @db_session #Bool
@@ -94,6 +102,9 @@ def add_match(minp,maxp,creator):
             Status=0,
             BoardType=0, #hardcoded
             CurrentMinister = 0, #Changes when the match starts
+            CandidateDirector = NO_DIRECTOR,
+            CurrentDirector = NO_DIRECTOR,
+            Winner = "no winner yet",
             Creator = creator)
         return newmatch
     except Exception:
@@ -220,7 +231,7 @@ def shuffle_deck(board_id: int):
 def get_top_proclamation(board_id: int):
     if Deck.exists(Board=board_id):
         deck = Deck.get(Board=board_id)
-        if deck.Available > 2:
+        if deck.Available > 0:
             card = deck.Cards['available'].pop()
             deck.Available -= 1
             deck.Cards['selected'].append(card)
@@ -229,6 +240,17 @@ def get_top_proclamation(board_id: int):
             raise NotEnoughProclamations(deck.Available)
     else:
         raise DeckNotFound
+
+@db_session
+def get_top_three_proclamation(board_id:int):
+    if not Deck.exists(Board=board_id):
+        raise DeckNotFound        
+    deck = Deck.get(Board=board_id)
+    if not deck.Available > 2:
+        raise NotEnoughProclamations(deck.Available)
+    for i in range(0,3):
+        get_top_proclamation(board_id)
+    return True
 
 @db_session
 def discard_proclamation(board_id: int, proclamation: str):
@@ -279,10 +301,32 @@ def vote_director(player_id: int, vote: str):
 @db_session
 def get_minister_username(ID: int): 
     minister = Match[ID].Players.filter(lambda p: p.GovRol == 1).first()
-    if minister is not None:
-        return minister.UserId.Username
-    else:
+    if minister is None:
         return "No minister yet"
+    return minister.UserId.Username
+
+
+@db_session
+def get_director_username(ID: int):
+    director = Match[ID].Players.filter(lambda p: p.GovRol == 0).first()
+    if director is None:
+        return "No director yet"
+    return director.UserId.Username 
+
+@db_session
+def change_ingame_status(match_id: int, status: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    if not (status >= NOMINATION and status <= USE_SPELL) :
+        raise BadIngameStatus
+    bid= get_match_board_id(match_id)
+    Board[bid].BoardStatus=status
+
+@db_session
+def get_ingame_status(match_id: int):
+    bid= get_match_board_id(match_id)
+    return ingame_status[Board[bid].BoardStatus]
+
 
 @db_session
 def get_match_status(ID: int):
@@ -351,23 +395,64 @@ def set_next_minister(match_id: int):
         query = Match[match_id].Players.order_by(Player.Position)
         players = [x for x in query]
         last_minister = Match[match_id].CurrentMinister
-        players[last_minister].GovRol = 2
+        players[last_minister].GovRol = 3#exminister
+        current_minister = (last_minister + 1) % len(players)
+        players[current_minister].GovRol = 1
+        Match[match_id].CurrentMinister = current_minister
+        return current_minister
+
+
+@db_session
+def set_next_minister_failed_election(match_id: int):
+    if Match.exists(Id=match_id):
+        query = Match[match_id].Players.order_by(Player.Position)
+        players = [x for x in query]
+        last_minister = Match[match_id].CurrentMinister
+        players[last_minister].GovRol = 2#magician
         current_minister = (last_minister + 1) % len(players)
         players[current_minister].GovRol = 1
         Match[match_id].CurrentMinister = current_minister
         return current_minister
 
 @db_session
-def set_next_director(mid):
-    if (Match.exists(Id=mid) and Match[mid].CurrentDirector is not None and Match[mid].CandidateDirector is not None):
-        query = Match[mid].Players.order_by(Player.Position)
-        players = [x for x in query]
-        last_director = Match[mid].CurrentDirector
-        players[last_director].GovRol = 4 #Ex Director.
-        current_director = Match[mid].CandidateDirector
-        players[current_director].GovRol = 2
-        Match[mid].CurrentDirector = current_director
-        return current_director
+def change_to_exdirector(mid):
+    if not Match.exists(Id=mid):
+        raise MatchNotFound
+    query = Match[mid].Players.order_by(Player.Position)
+    players = [x for x in query]
+    director = Match[mid].CurrentDirector
+    if director == NO_DIRECTOR:
+        raise NoDirector
+    players[director].GovRol = 4 #Ex Director.
+    Match[mid].CurrentDirector = NO_DIRECTOR
+
+@db_session
+def successful_director_election(mid):
+    if not Match.exists(Id=mid):
+        raise MatchNotFound
+    query = Match[mid].Players.order_by(Player.Position)
+    players = [x for x in query]
+    candidate_director = Match[mid].CandidateDirector
+    if candidate_director == NO_DIRECTOR:
+        raise NoDirector
+    players[candidate_director].GovRol = 0 #director
+    Match[mid].CandidateDirector = NO_DIRECTOR
+    Match[mid].CurrentDirector = candidate_director
+
+
+@db_session
+def failed_director_election(mid):
+    if not Match.exists(Id=mid):
+        raise MatchNotFound
+    query = Match[mid].Players.order_by(Player.Position)
+    players = [x for x in query]
+    candidate_director = Match[mid].CandidateDirector
+    if candidate_director == NO_DIRECTOR:
+        raise NoDirector
+    players[candidate_director].GovRol = 2#magician
+    Match[mid].CandidateDirector = NO_DIRECTOR
+    Match[mid].CurrentDirector = NO_DIRECTOR
+
 
 @db_session
 def set_next_candidate_director(mid,pos):
@@ -418,6 +503,8 @@ def get_death_eater_proclamations(match_id):
 @db_session
 def is_victory_from(match_id: int):
     if Match.exists(Id=match_id):
+        if not Match[match_id].Winner == "no winner yet":
+            return Match[match_id].Winner
         winner = "no winner yet"
         if get_death_eater_proclamations(match_id) == 6:
             winner = "death eater"
@@ -426,7 +513,13 @@ def is_victory_from(match_id: int):
             winner = "phoenix"
             Match[match_id].Status = 2
 
+        Match[match_id].Winner = winner
         return winner
+
+@db_session
+def check_winner(match_id: int):
+    if Match.exists(Id=match_id):
+        return Match[match_id].Winner
 
 @db_session
 def change_match_status(mid,status):
@@ -537,6 +630,7 @@ def set_gob_roles(match_id: int):
         else:
             p.GovRol = 2
 
+@db_session# no estaba la db session, tiene que ir ?
 def change_player_rol(pid,rol):
     Player[pid].SecretRol = rol
 

@@ -1,6 +1,7 @@
 from pony.orm import db_session, select, count, delete
 from server.db.database import *
 from server.db.crud import DeckNotFound, BoardNotFound
+from server.db.dicts import *
 
 @db_session
 def delete_data(table): 
@@ -24,6 +25,22 @@ def make_magician(pid):
 @db_session
 def make_director(pid):
     Player[pid].GovRol = 0
+
+
+@db_session
+def get_player_gov_rol(pid):
+    return GovRolDiccionary[Player[pid].GovRol]
+
+@db_session
+def get_exdirector_username(mid: int):
+    director = Match[mid].Players.filter(lambda p: p.GovRol == 4).first()
+    if director is None:
+        return "No director yet"
+    return director.UserId.Username 
+
+@db_session
+def set_candidate_director_test(mid, pos):
+    Match[mid].CandidateDirector = pos
 
 @db_session
 def set_current_minister(mid,pos):
@@ -49,6 +66,14 @@ def change_last_director(mid,pos):
 @db_session
 def change_last_director_govrol(pid):
     Player[pid].GovRol = 4
+
+@db_session
+def change_selected_deck_ph(board_id):
+    deck = Board[board_id].Proclamations
+    for card in deck.Cards['selected']:
+        deck.Cards['selected'].pop()
+    for i in range (0,3):
+        deck.Cards['selected'].append("phoenix")
 
 @db_session
 def show_available_deck(board_id: int):
@@ -83,11 +108,6 @@ def show_deck(board_id: int):
 @db_session
 def get_position(pid):
     return Player[pid].Position
-
-@db_session
-def get_director_username(ID: int): 
-    director = Match[ID].Players.filter(lambda p: p.GovRol == 2).first() ##govrol must be == 0.
-    return director.UserId.Username 
 
 @db_session
 def kill_player(pid):

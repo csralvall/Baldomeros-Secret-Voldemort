@@ -54,31 +54,31 @@ class TestSV87(unittest.TestCase):
 # ------------------------Test Set Next Director ----------------------
 
 
-    def test_set_next_director_OK(self):
-        self.assertIsNotNone(set_next_director(self.matchid))
+    # def test_set_next_director_OK(self):
+    #     self.assertIsNotNone(set_next_director(self.matchid))
 
-    def test_set_next_director_fail(self):
-        self.assertIsNone(set_next_director(9999999))#can fail if match has this id
+    # def test_set_next_director_fail(self):
+    #     self.assertIsNone(set_next_director(9999999))#can fail if match has this id
 
-    def test_set_next_director_OK2(self):
-        change_last_director(self.matchid,1)
-        make_magician(self.player1id)
-        make_director(self.player2id)
-        self.assertEqual(set_next_director(self.matchid),2)
-        set_next_candidate_director(self.matchid,1)
-        self.assertEqual(set_next_director(self.matchid),1)
-        set_next_candidate_director(self.matchid,2)
-        self.assertEqual(set_next_director(self.matchid),2)
-        set_next_candidate_director(self.matchid,4)
-        self.assertEqual(set_next_director(self.matchid),4)
+    # def test_set_next_director_OK2(self):
+    #     change_last_director(self.matchid,1)
+    #     make_magician(self.player1id)
+    #     make_director(self.player2id)
+    #     self.assertEqual(set_next_director(self.matchid),2)
+    #     set_next_candidate_director(self.matchid,1)
+    #     self.assertEqual(set_next_director(self.matchid),1)
+    #     set_next_candidate_director(self.matchid,2)
+    #     self.assertEqual(set_next_director(self.matchid),2)
+    #     set_next_candidate_director(self.matchid,4)
+    #     self.assertEqual(set_next_director(self.matchid),4)
 
-    def test_set_next_director_username(self):
-        change_last_director(self.matchid,1)
-        make_magician(self.player1id)
-        make_director(self.player2id)
-        set_next_candidate_director(self.matchid,2)
-        self.assertEqual(set_next_director(self.matchid),2)
-        self.assertEqual(get_director_username(self.matchid), 'example2')
-        set_next_candidate_director(self.matchid,3)
-        self.assertEqual(set_next_director(self.matchid),3)
-        self.assertEqual(get_director_username(self.matchid), 'example2')    
+    # def test_set_next_director_username(self):
+    #     change_last_director(self.matchid,1)
+    #     make_magician(self.player1id)
+    #     make_director(self.player2id)
+    #     set_next_candidate_director(self.matchid,3)
+    #     self.assertEqual(set_next_director(self.matchid),3)
+    #     self.assertEqual(get_director_username(self.matchid), 'example3')
+    #     set_next_candidate_director(self.matchid,4)
+    #     self.assertEqual(set_next_director(self.matchid),4)
+    #     self.assertEqual(get_director_username(self.matchid), 'example4')    
