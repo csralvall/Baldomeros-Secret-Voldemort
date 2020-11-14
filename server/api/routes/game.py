@@ -18,11 +18,17 @@ async def game_status(mid: int):
 
     minister = get_minister_username(mid)
     director = get_director_username(mid)
+    candidate = get_candidate_director_username(mid)
     player_status = get_all_player_status(mid)
     matchstatus = get_match_status(mid)
     board_id = get_match_board_id(mid)
     board_status = get_board_status(board_id)
-    hand = show_selected_deck(board_id)
+
+    try:
+        hand = show_selected_deck(board_id)
+    except DeckNotFound:
+        hand = []
+
     winner = check_winner(mid)
 
     
@@ -31,6 +37,7 @@ async def game_status(mid: int):
     status = {
         'minister': minister,
         'director': director,
+        'candidate': candidate,
         'matchstatus': matchstatus,
         'winner': winner,
         'playerstatus': player_status,
@@ -222,16 +229,12 @@ async def receive_cards(mid: int, pid: int, discarded: str, selected: List[str]=
         enact_proclamation(mid, selected_card)
         winner = is_victory_from(mid)
 
-        #-----------------------------------CAMBIAR--------------------------------------------------------
-        #cambiar este if por funcion de si hay hechizo
-        # tambien habilitar el hechizo adentro(puede ser todo en una funcion)
-        # if get_death_eater_proclamations > 2:
-        #     change_ingame_status(mid, USE_SPELL)#spell stage
-        # else:
-        #cambiar indentacion a esto para que quede en el else cuando se agregue lo de hechizos
-        change_ingame_status(mid, NOMINATION)#minister selects director stage
-        change_to_exdirector(mid)
-        set_next_minister(mid)
+        if not unlock_spell(mid) == NO_SPELL:
+             change_ingame_status(mid, USE_SPELL)#spell stage
+        else:
+            change_ingame_status(mid, NOMINATION)#minister selects director stage
+            change_to_exdirector(mid)
+            set_next_minister(mid)
         
         try:
             get_top_three_proclamation(bid)
