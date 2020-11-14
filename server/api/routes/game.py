@@ -243,15 +243,19 @@ async def receive_cards(mid: int, pid: int, discarded: str, selected: List[str]=
     winner = check_winner(mid)
     return winner 
 
-@router.patch("/{mid}/director/{pid}", tags=["Game"])
-async def select_director(mid:int, pid:int):
+@router.patch("/{mid}/director", tags=["Game"])
+async def select_director(
+    mid: int = Path(..., title="The ID of the current match"),
+    playername: str = Query(..., title="Name of player who receives the spell")):
 
     if not check_match(mid):
         raise HTTPException(status_code=404, detail="Match not found")
 
+    pid = get_player_id_from_username(mid, playername)
+
     if not check_player_in_match(mid,pid):
         raise HTTPException(status_code=404, detail="Player not found")
-    
+
     try:
         position = get_player_position(pid)
         set_next_candidate_director(mid,position)
