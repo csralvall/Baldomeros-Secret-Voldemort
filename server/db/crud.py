@@ -36,19 +36,19 @@ class PlayerNotFound(ResourceNotFound):
     pass
 
 class InvalidProclamation(Exception):
-    """ Raised when the proclamation passed is invalid """
+    """ Raised when the proclamation passed is invalid. """
     pass
 
 class EmptySelectedProclamations(Exception):
-    """ Raised when there aren't selected proclamations to remove """
+    """ Raised when there aren't selected proclamations to remove. """
     pass
 
 class BadIngameStatus(Exception):
-    """ Exception raised when the ingame status passed is invalid"""
+    """ Raised when the ingame status passed is invalid. """
     pass
 
 class NoDirector(Exception):
-    """ Exception raised when tried to make the director ex-director but there is no director now"""
+    """ Raised when moving director to ex-director, but there is no current director. """
     pass
 
 @db_session #Bool
@@ -243,16 +243,14 @@ def get_top_proclamation(board_id: int):
 
 @db_session
 def get_top_three_proclamation(board_id:int):
-    if Deck.exists(Board=board_id):
-        deck = Deck.get(Board=board_id)
-        if deck.Available > 2:
-            for i in range(0,3):
-                get_top_proclamation(board_id)
-            return True
-        else:
-            raise NotEnoughProclamations(deck.Available)
-    else:
+    if not Deck.exists(Board=board_id):
         raise DeckNotFound        
+    deck = Deck.get(Board=board_id)
+    if deck.Available > 2:
+        raise NotEnoughProclamations(deck.Available)
+    for i in range(0,3):
+        get_top_proclamation(board_id)
+    return True
 
 @db_session
 def discard_proclamation(board_id: int, proclamation: str):
@@ -319,9 +317,9 @@ def get_director_username(ID: int):
 def change_ingame_status(match_id: int, status: int):
     if not Match.exists(Id=match_id):
         raise MatchNotFound
-    bid= get_match_board_id(match_id)
     if not (status >= NOMINATION and status <= USE_SPELL) :
         raise BadIngameStatus
+    bid= get_match_board_id(match_id)
     Board[bid].BoardStatus=status
 
 @db_session
