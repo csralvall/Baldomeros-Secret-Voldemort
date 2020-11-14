@@ -435,7 +435,7 @@ def successful_director_election(mid):
     if not Match.exists(Id=mid):
         raise MatchNotFound
     query = Match[mid].Players.order_by(Player.Position)
-    players = [x for x in query if not x.IsDead ]
+    players = [x for x in query]
     candidate_director = Match[mid].CandidateDirector
     if candidate_director == NO_DIRECTOR:
         raise NoDirector
@@ -704,4 +704,3 @@ def get_player_id_from_username(match_id: int, username: str):
         raise MatchNotFound
     players = Match[match_id].Players
     return get(p.PlayerId for p in players if p.UserId.Username == username)
-
