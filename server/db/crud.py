@@ -765,4 +765,56 @@ def list_games_db():
     
     return decorated_matches
 
+def unlock_spell(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    board = Match[match_id].Board
+    death_eater_proclamations = board.DeathEaterProclamations
+    if board.BoardType == 0:
+        spell = unlock_spell_small_board(death_eater_proclamations)
+    elif board.BoardType == 1:
+        spell = unlock_spell_medium_board(death_eater_proclamations)
+    elif board.BoardType == 2:
+        spell = unlock_spell_big_board(death_eater_proclamations)
+
+    board.AvailableSpell = spell
+
+    return spell
+    
+@db_session
+def unlock_spell_small_board(death_eater_proclamations):
+    if death_eater_proclamations == 3:
+        spell = ADIVINATION
+    elif death_eater_proclamations > 3:
+        spell = AVADA_KEDAVRA
+    else:
+        spell = NO_SPELL
+
+    return spell
+
+@db_session
+def unlock_spell_medium_board(death_eater_proclamations):
+    if death_eater_proclamations == 2:
+        spell = CRUCIO
+    elif death_eater_proclamations == 3:
+        spell = IMPERIO
+    elif death_eater_proclamations > 3:
+        spell = AVADA_KEDAVRA
+    else:
+        spell = NO_SPELL
+
+    return spell
+
+@db_session
+def unlock_spell_big_board(death_eater_proclamations):
+    if death_eater_proclamations in range(1,3):
+        spell = CRUCIO
+    elif death_eater_proclamations == 3:
+        spell = IMPERIO
+    elif death_eater_proclamations > 3:
+        spell = AVADA_KEDAVRA
+    else:
+        spell = NO_SPELL
+
+    return spell
 
