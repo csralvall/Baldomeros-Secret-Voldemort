@@ -40,6 +40,7 @@ function Match({ match }) {
           }
         } else {
           setGameStatus(responseData);
+          console.log(responseData);
         }
       })
       .catch(() => {
@@ -85,7 +86,9 @@ function Match({ match }) {
               <Election
                 playerList={gameStatus.playerstatus}
                 minister={gameStatus.minister}
-                status={gameStatus.ingamestatus}
+                director={gameStatus.director}
+                status={gameStatus.boardstatus.status}
+                hand={gameStatus.hand}
               />
             ) : (
               ""

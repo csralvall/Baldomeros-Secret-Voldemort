@@ -28,11 +28,14 @@ function LegislativeSession({ hand }) {
   const sendLegislativeSession = async () => {
     const url = "http://127.0.0.1:8000";
     const discarded = hand.find((card, index) => !cardPool[index]);
+    const selected = hand.filter((card, index) => cardPool[index]);
+    console.log(selected);
+    console.log(discarded);
     await fetch(
       url + `/game/${game.id}/proclamation/${user.id}?discarded=${discarded}`,
       {
         method: "POST",
-        body: hand.filter((card, index) => cardPool[index]),
+        body: JSON.stringify(selected),
       }
     )
       .then((response) => {
