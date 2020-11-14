@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import Vote from "./Vote";
 import LegislativeSession from "./LegislativeSession";
+import Nomination from "./Nomination";
 
 function Election({ playerList, minister, director, status, hand }) {
   const user = useSelector((state) => state.user);
@@ -12,10 +13,10 @@ function Election({ playerList, minister, director, status, hand }) {
     return "";
   }
 
-  //This has to be a diferent component
-  const Nomination = (
+  const DirectorNomination = (
     <div>
       <h1>Minister {minister} is nominating a Director...</h1>
+      {minister === user.username ? <Nomination /> : ""}
     </div>
   );
 
@@ -58,7 +59,7 @@ function Election({ playerList, minister, director, status, hand }) {
 
   return (
     <div>
-      {status === "nomination" ? Nomination : ""}
+      {status === "nomination" ? DirectorNomination : ""}
       {status === "election" ? VotingPhase : ""}
       {status === "minister selection" || status === "director selection"
         ? Session

@@ -154,3 +154,55 @@ describe("Legislative Session Interface", () => {
     expect(list.at(4).exists()).toBe(false);
   });
 });
+
+describe("Nomination Interface", () => {
+  const store = createStore(reducers);
+  function wrap() {
+    return mount(
+      <Provider store={store}>
+        <Election
+          playerList={{
+            "Tom Riddle": { vote: "Lumos", isDead: false },
+            "Harry Potter": { vote: "Lumos", isDead: false },
+            Dumbledore: { vote: "Nox", isDead: false },
+            "Severus Snape": { vote: "missing Vote", isDead: true },
+          }}
+          minister={"Tom Riddle"}
+          director={"No director yet"}
+          status={"nomination"}
+          hand={["nox", "lumos", "nox"]}
+        />
+      </Provider>
+    );
+  }
+  store.getState().user = {
+    username: "Tom Riddle",
+    id: 1,
+    token: 145,
+    logged_in: true,
+  };
+
+  it("should show who's choosing proclamations", () => {
+    const wrapper = wrap();
+    const list = wrapper.find("div div h1");
+    expect(list.text()).toBe("Minister Tom Riddle is nominating a Director...");
+  });
+
+  it("should show nomination button if you have are Minister", () => {
+    const wrapper = wrap();
+    const button = wrapper.find("div div button");
+    expect(button.exists()).toBe(true);
+  });
+
+  it("shouldn't show nomination buttion if you are not Minister", () => {
+    store.getState().user = {
+      username: "Dumbledore",
+      id: 3,
+      token: 145,
+      logged_in: true,
+    };
+    const wrapper = wrap();
+    const button = wrapper.find("div div button");
+    expect(button.exists()).toBe(false);
+  });
+});
