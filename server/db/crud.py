@@ -397,6 +397,8 @@ def set_next_minister(match_id: int):
         last_minister = Match[match_id].CurrentMinister
         players[last_minister].GovRol = 3#exminister
         current_minister = (last_minister + 1) % len(players)
+        while players[current_minister].IsDead:
+            current_minister = (last_minister + 1) % len(players)
         players[current_minister].GovRol = 1
         Match[match_id].CurrentMinister = current_minister
         return current_minister
@@ -410,6 +412,8 @@ def set_next_minister_failed_election(match_id: int):
         last_minister = Match[match_id].CurrentMinister
         players[last_minister].GovRol = 2#magician
         current_minister = (last_minister + 1) % len(players)
+        while players[current_minister].IsDead:
+            current_minister = (last_minister + 1) % len(players)
         players[current_minister].GovRol = 1
         Match[match_id].CurrentMinister = current_minister
         return current_minister
@@ -431,7 +435,7 @@ def successful_director_election(mid):
     if not Match.exists(Id=mid):
         raise MatchNotFound
     query = Match[mid].Players.order_by(Player.Position)
-    players = [x for x in query]
+    players = [x for x in query if not x.IsDead ]
     candidate_director = Match[mid].CandidateDirector
     if candidate_director == NO_DIRECTOR:
         raise NoDirector
@@ -458,6 +462,13 @@ def failed_director_election(mid):
 def set_next_candidate_director(mid,pos):
     if Match.exists(Id=mid):
         Match[mid].CandidateDirector = pos
+
+@db_session
+def get_player_position(pid):
+    if Player.exists(PlayerId=pid):
+        return Player[pid].Position
+    else:
+        raise PlayerNotFound
 
 @db_session
 def compute_election_result(match_id: int):

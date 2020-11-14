@@ -57,10 +57,15 @@ async def vote_candidate(
 
     player_status = get_all_player_status(mid)
 
+    for k, v in player_status.items():
+        if v['isDead']:
+            player_status.pop(k)
+
     player_votes = { k: v['vote'] for k, v in player_status.items() }
 
     if 'missing vote' not in player_votes.values():
         if compute_election_result(mid) == 'lumos':
+            
             successful_director_election(mid)
             change_ingame_status(mid, MINISTER_SELECTION)#minister selects cards stage
         else :
@@ -237,4 +242,24 @@ async def receive_cards(mid: int, pid: int, discarded: str, selected: List[str]=
     
     winner = check_winner(mid)
     return winner 
+
+@router.patch("/{mid}/director/{pid}", tags=["Game"])
+async def select_director(mid:int, pid:int):
+
+    if not check_match(mid):
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    if not check_player_in_match(mid,pid):
+        raise HTTPException(status_code=404, detail="Player not found")
+    
+    try:
+        position = get_player_position(pid)
+        set_next_candidate_director(mid,position)
+        playername = get_player_username(pid)
+        change_ingame_status(mid, ELECTION)
+    
+    except ResourceNotFound:
+        raise HTTPException(status_code=404, detail="Resource not found")
+
+    return f"{playername} is the candidate to director"
 
