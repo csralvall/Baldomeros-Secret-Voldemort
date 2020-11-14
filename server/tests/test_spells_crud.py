@@ -39,8 +39,49 @@ class TestDeck(unittest.TestCase):
     def test_get_player_id_from_username_not_existing_player(self):
         self.assertEqual(get_player_id_from_username(self.match, "dfa"), None)
 
+    def test_unlock_spell_with_small_board(self):
+        enact_proclamation(self.match, "death eater")
+        enact_proclamation(self.match, "death eater")
+        enact_proclamation(self.match, "death eater")
+        self.assertEqual(unlock_spell(self.match), ADIVINATION)
+        enact_proclamation(self.match, "death eater")
+        self.assertEqual(unlock_spell(self.match), AVADA_KEDAVRA)
+
+    def test_unlock_spell_bad_match_id(self):
+        self.assertRaises(MatchNotFound, unlock_spell, self.match+1)
+
+    def test_unlock_spell_small_board(self):
+        self.assertEqual(unlock_spell_small_board(-1), NO_SPELL)
+        self.assertEqual(unlock_spell_small_board(0), NO_SPELL)
+        self.assertEqual(unlock_spell_small_board(1), NO_SPELL)
+        self.assertEqual(unlock_spell_small_board(2), NO_SPELL)
+        self.assertEqual(unlock_spell_small_board(3), ADIVINATION)
+        self.assertEqual(unlock_spell_small_board(4), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_small_board(5), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_small_board(20), AVADA_KEDAVRA)
+
+    def test_unlock_spell_medium_board(self):
+        self.assertEqual(unlock_spell_medium_board(-1), NO_SPELL)
+        self.assertEqual(unlock_spell_medium_board(0), NO_SPELL)
+        self.assertEqual(unlock_spell_medium_board(1), NO_SPELL)
+        self.assertEqual(unlock_spell_medium_board(2), CRUCIO)
+        self.assertEqual(unlock_spell_medium_board(3), IMPERIO)
+        self.assertEqual(unlock_spell_medium_board(4), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_medium_board(5), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_medium_board(52), AVADA_KEDAVRA)
+
+    def test_unlock_spell_medium_board(self):
+        self.assertEqual(unlock_spell_big_board(-1), NO_SPELL)
+        self.assertEqual(unlock_spell_big_board(0), NO_SPELL)
+        self.assertEqual(unlock_spell_big_board(1), CRUCIO)
+        self.assertEqual(unlock_spell_big_board(2), CRUCIO)
+        self.assertEqual(unlock_spell_big_board(3), IMPERIO)
+        self.assertEqual(unlock_spell_big_board(4), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_big_board(5), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_big_board(52), AVADA_KEDAVRA)
+
     def test_avada_kedavra(self):
-        create_user("bar@bar.com","bar","bar")
+        self.assertTrue(create_user("bar@bar.com","bar","bar"))
         new_userid = get_user("bar","bar")["Id"]
         add_user_in_match(new_userid, self.match, 2)
         player_id = get_player_id(self.match, new_userid)
@@ -52,6 +93,38 @@ class TestDeck(unittest.TestCase):
 
     def test_avada_kedavra_board_not_found(self):
         self.assertRaises(PlayerNotFound, avada_kedavra, self.board, -1)
+
+    def test_is_voldemort_dead(self):
+        self.assertTrue(create_user("bar@bar.com","bar","bar"))
+        new_userid = get_user("bar","bar")["Id"]
+        add_user_in_match(new_userid, self.match, 2)
+        player_id = get_player_id(self.match, new_userid)
+        change_player_rol(player_id, VOLDEMORT)
+        change_player_rol(self.playerid, PHOENIX)
+        self.assertEqual(get_player_rol(player_id),
+                        SecretRolDiccionary[VOLDEMORT])
+        self.assertEqual(get_player_rol(self.playerid),
+                        SecretRolDiccionary[PHOENIX])
+        avada_kedavra(self.board, player_id)
+        self.assertTrue(is_voldemort_dead(self.match))
+
+    def test_is_voldemort_dead_not_setted_voldemort(self):
+        change_player_rol(self.playerid, PHOENIX)
+        self.assertEqual(get_player_rol(self.playerid),
+                        SecretRolDiccionary[PHOENIX])
+        self.assertRaises(VoldemortNotFound, is_voldemort_dead, self.match)
+
+    def test_is_voldemort_dead_match_not_found(self):
+        self.assertRaises(MatchNotFound, is_voldemort_dead, self.match+1)
+
+    def test_set_death_eater_winner(self):
+        set_death_eater_winner(self.match)
+        self.assertEqual(get_match_status(self.match), Status[FINISHED])
+        self.assertEqual(check_winner(self.match), DEATH_EATER_WINNER)
+        
+
+    def test_set_death_eater_winner_match_not_found(self):
+        self.assertRaises(MatchNotFound, set_death_eater_winner, self.match+1)
 
 if __name__ == "__main__":
     unittest.main()

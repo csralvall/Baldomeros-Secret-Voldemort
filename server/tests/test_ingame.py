@@ -135,6 +135,24 @@ class TestInMatch(unittest.TestCase):
         make_magician(self.player1id)
         self.assertEqual(get_minister_username(self.matchid),"No minister yet")
 
+    #------------------------get_candidate_director_username----------------------
+    #won't receive a wrong matchid bc we check that before calling it
+    def test_get_candidate_director_ok(self):
+        set_next_candidate_director(self.matchid,0)
+        self.assertEqual(get_candidate_director_username(self.matchid),"example")
+
+    def test_get_candidate_director_fail(self):
+        make_magician(self.playeridcreator)
+        set_next_candidate_director(self.matchid,1)
+        self.assertNotEqual(get_candidate_director_username(self.matchid),"example")
+
+    def test_get_candidate_director_nominister(self):
+        set_next_candidate_director(self.matchid, NO_DIRECTOR)
+        self.assertEqual(get_candidate_director_username(self.matchid),"No director candidate yet")
+
+    def test_get_candidate_director_bad_match_id(self):
+        self.assertRaises(MatchNotFound, get_candidate_director_username, self.matchid+500)
+
 
     #------------------------get_match_status//change_match_status----------------------
     #won't receive a wrong matchid bc we check that before calling it

@@ -33,6 +33,70 @@ def test_vote_avada_kedavra():
     assert response.status_code == 200
     assert response.json() == "bar is dead"
 
+def test_vote_avada_kedavra_voldemort_kill():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    uid1 = get_user("foo", "foo")["Id"]
+    uid2 = get_user("bar", "bar")["Id"]
+
+    match = add_match_db(5,7,uid1)
+    match_id = match['Match_id']
+    pid = match['Player_id']    
+    make_director(pid)
+    set_current_director(match_id,0)
+
+    add_user_in_match(uid2, match_id, 2)
+
+    bar_player_id = get_player_id(match_id, uid2)
+
+    change_player_rol(pid, PHOENIX)
+    change_player_rol(bar_player_id, VOLDEMORT)
+
+    response = client.patch(
+        f"/game/{match_id}/board/avada-kedavra?playername=bar"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == "bar is dead"
+    assert check_winner(match_id) == DEATH_EATER_WINNER
+    assert get_match_status(match_id) == Status[FINISHED]
+
+def test_vote_avada_kedavra_voldemort_not_set():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    uid1 = get_user("foo", "foo")["Id"]
+    uid2 = get_user("bar", "bar")["Id"]
+
+    match = add_match_db(5,7,uid1)
+    match_id = match['Match_id']
+    pid = match['Player_id']    
+    make_director(pid)
+    set_current_director(match_id,0)
+
+    add_user_in_match(uid2, match_id, 2)
+
+    bar_player_id = get_player_id(match_id, uid2)
+
+    change_player_rol(pid, PHOENIX)
+    change_player_rol(bar_player_id, PHOENIX)
+
+    response = client.patch(
+        f"/game/{match_id}/board/avada-kedavra?playername=bar"
+    )
+
+    assert response.status_code == 500
+    assert response.json()['detail'] == "Voldemort was not set"
+
 def test_vote_avada_kedavra_minister_autokill():
     delete_data(Board)
     delete_data(Player)

@@ -72,12 +72,20 @@ def change_last_director_govrol(pid):
     Player[pid].GovRol = 4
 
 @db_session
-def change_selected_deck_ph(board_id):
+def change_selected_deck_phoenix(board_id):
     deck = Board[board_id].Proclamations
     for card in deck.Cards['selected']:
         deck.Cards['selected'].pop()
     for i in range (0,3):
         deck.Cards['selected'].append("phoenix")
+
+@db_session
+def change_selected_deck_death_eater(board_id):
+    deck = Board[board_id].Proclamations
+    for card in deck.Cards['selected']:
+        deck.Cards['selected'].pop()
+    for i in range (0,3):
+        deck.Cards['selected'].append("death eater")
 
 @db_session
 def show_available_deck(board_id: int):

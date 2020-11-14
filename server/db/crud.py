@@ -35,6 +35,10 @@ class PlayerNotFound(ResourceNotFound):
     """ Raised when there is not player with the parameters passed. """
     pass
 
+class VoldemortNotFound(ResourceNotFound):
+    """ Raised when there is not Voldemort within the game. """
+    pass
+
 class InvalidProclamation(Exception):
     """ Raised when the proclamation passed is invalid. """
     pass
@@ -305,6 +309,16 @@ def get_minister_username(ID: int):
         return "No minister yet"
     return minister.UserId.Username
 
+@db_session
+def get_candidate_director_username(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    query = Match[match_id].Players.order_by(Player.Position)
+    players = [x for x in query]
+    candidate_director = Match[match_id].CandidateDirector
+    if candidate_director == NO_DIRECTOR:
+        return "No director candidate yet"
+    return players[candidate_director].UserId.Username
 
 @db_session
 def get_director_username(ID: int):
@@ -402,7 +416,6 @@ def set_next_minister(match_id: int):
         players[current_minister].GovRol = 1
         Match[match_id].CurrentMinister = current_minister
         return current_minister
-
 
 @db_session
 def set_next_minister_failed_election(match_id: int):
@@ -514,18 +527,36 @@ def get_death_eater_proclamations(match_id):
 @db_session
 def is_victory_from(match_id: int):
     if Match.exists(Id=match_id):
-        if not Match[match_id].Winner == "no winner yet":
+        if not Match[match_id].Winner == NO_WINNER_YET:
             return Match[match_id].Winner
-        winner = "no winner yet"
+        winner = NO_WINNER_YET
         if get_death_eater_proclamations(match_id) == 6:
-            winner = "death eater"
-            Match[match_id].Status = 2
+            winner = DEATH_EATER_WINNER
+            Match[match_id].Status = FINISHED
         elif get_phoenix_proclamations(match_id) == 5:
-            winner = "phoenix"
-            Match[match_id].Status = 2
+            winner = PHOENIX_WINNER
+            Match[match_id].Status = FINISHED
 
         Match[match_id].Winner = winner
         return winner
+
+@db_session
+def is_voldemort_dead(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    players = Match[match_id].Players
+    voldemort =  select(p for p in players if p.SecretRol == VOLDEMORT).first()
+    if voldemort is None:
+        raise VoldemortNotFound
+    return voldemort.IsDead
+
+@db_session
+def set_death_eater_winner(match_id: int): # TODO: test
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    Match[match_id].Winner = DEATH_EATER_WINNER
+    Match[match_id].Status = FINISHED
+    
 
 @db_session
 def check_winner(match_id: int):
@@ -641,7 +672,7 @@ def set_gob_roles(match_id: int):
         else:
             p.GovRol = 2
 
-@db_session# no estaba la db session, tiene que ir ?
+@db_session
 def change_player_rol(pid,rol):
     Player[pid].SecretRol = rol
 
@@ -743,4 +774,57 @@ def list_games_db():
     
     return decorated_matches
 
+@db_session
+def unlock_spell(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    board = Match[match_id].Board
+    death_eater_proclamations = board.DeathEaterProclamations
+    if board.BoardType == 0:
+        spell = unlock_spell_small_board(death_eater_proclamations)
+    elif board.BoardType == 1:
+        spell = unlock_spell_medium_board(death_eater_proclamations)
+    elif board.BoardType == 2:
+        spell = unlock_spell_big_board(death_eater_proclamations)
+
+    board.AvailableSpell = spell
+
+    return spell
+
+@db_session
+def unlock_spell_small_board(death_eater_proclamations):
+    if death_eater_proclamations == 3:
+        spell = ADIVINATION
+    elif death_eater_proclamations > 3:
+        spell = AVADA_KEDAVRA
+    else:
+        spell = NO_SPELL
+
+    return spell
+
+@db_session
+def unlock_spell_medium_board(death_eater_proclamations):
+    if death_eater_proclamations == 2:
+        spell = CRUCIO
+    elif death_eater_proclamations == 3:
+        spell = IMPERIO
+    elif death_eater_proclamations > 3:
+        spell = AVADA_KEDAVRA
+    else:
+        spell = NO_SPELL
+
+    return spell
+
+@db_session
+def unlock_spell_big_board(death_eater_proclamations):
+    if death_eater_proclamations in range(1,3):
+        spell = CRUCIO
+    elif death_eater_proclamations == 3:
+        spell = IMPERIO
+    elif death_eater_proclamations > 3:
+        spell = AVADA_KEDAVRA
+    else:
+        spell = NO_SPELL
+
+    return spell
 
