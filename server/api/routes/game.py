@@ -162,10 +162,15 @@ async def use_avada_kedavra(
         change_ingame_status(match_id, NOMINATION)#minister selects director stage
         change_to_exdirector(match_id)
         set_next_minister(match_id)
+        if is_voldemort_dead(match_id):
+            set_death_eater_winner(match_id)
+    except VoldemortNotFound:
+        raise HTTPException(status_code=500, detail="Voldemort was not set")
     except ResourceNotFound:
         raise HTTPException(status_code=404, detail="Resource not found")
     except NoDirector:
         raise HTTPException(status_code=404, detail="There is no director")
+
     return f"{playername} is dead"
 
 
