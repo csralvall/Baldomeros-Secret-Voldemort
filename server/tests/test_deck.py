@@ -73,7 +73,7 @@ class TestDeck(unittest.TestCase):
     def test_get_top_proclamations_not_enough_cards(self):
         self.assertTrue(create_deck(self.board))
 
-        for i in range(0,15):
+        for i in range(0,17):
             get_top_proclamation(self.board)
 
         self.assertRaises(NotEnoughProclamations,
@@ -83,6 +83,24 @@ class TestDeck(unittest.TestCase):
     def test_get_top_proclamations_bad_board_id(self):
         self.assertRaises(DeckNotFound, get_top_proclamation, self.board+1)
 
+
+    def test_get_top_three_proclamations(self):
+        self.assertTrue(create_deck(self.board))
+        self.assertTrue(get_top_three_proclamation(self.board))
+        self.assertEqual(show_selected_deck(self.board), ['death eater','death eater','death eater'])
+        self.assertEqual(deck_status(self.board)['Available'], 14)
+
+    def test_get_top_three_proclamations_not_enough_cards(self):
+        self.assertTrue(create_deck(self.board))
+
+        for i in range(0,5):
+            get_top_three_proclamation(self.board)
+
+        self.assertRaises(NotEnoughProclamations,
+                get_top_three_proclamation, self.board)
+
+    def test_get_top_three_proclamations_bad_board_id(self):
+        self.assertRaises(DeckNotFound, get_top_three_proclamation, self.board+1)
 
     def test_discard_proclamation(self):
         self.assertTrue(create_deck(self.board))

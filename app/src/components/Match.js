@@ -1,18 +1,27 @@
 import React, { useState } from "react";
 import useInterval from "react-useinterval";
 import { useSelector } from "react-redux";
-import Vote from "./Vote";
+import AvadaKedavra from "./AvadaKedavra";
+import Role from "./Role";
+import Election from "./Election";
+import MatchInfo from "./MatchInfo";
 
 function Match({ match }) {
   const game = useSelector((state) => state.match);
   const user = useSelector((state) => state.user);
   const [gameStatus, setGameStatus] = useState({
-    minister: "",
-    players: {},
+    boardstatus: {
+      boardtype: "",
+      deatheaterproclamations: 0,
+      phoenixproclamations: 0,
+      spell: null,
+      status: "",
+    },
     matchstatus: "",
-    phoenixproclamations: 0,
-    deatheaterproclamations: 0,
-    board_type: "5-6",
+    winner: "",
+    minister: "",
+    playerstatus: {},
+    hand: [],
   });
 
   useInterval(async () => {
@@ -38,87 +47,22 @@ function Match({ match }) {
       });
   }, 1000);
 
-  const startGame = async () => {
-    const url = "http://127.0.0.1:8000";
-
-    await fetch(url + "/game/" + game.id + "?user=" + user.id, {
-      method: "PATCH",
-    })
-      .then((response) => {
-        console.log(response);
-        if (response.status !== 200) {
-          if (response.status === 404) {
-            alert("Unable to start");
-          } else {
-            alert("Unknown error");
-          }
-        } else {
-        }
-      })
-      .catch(() => {
-        alert("Network Error");
-      });
-  };
-
-  const Election = (
-    <div>
-      <h1>The current minister is {gameStatus.minister}</h1>
-      {Object.entries(gameStatus.players).map((player) => (
-        <h4>
-          {player[0]} voted {player[1]}
-        </h4>
-      ))}
-      <div>
-        {gameStatus.players[user.username] === "missing vote" ? <Vote /> : ""}
-      </div>
-    </div>
-  );
-
+  //If this component grows more complex, separate it
   const Board = (
     <div>
-      <h1>Phoenix Proclamations : {gameStatus.phoenixproclamations}/5</h1>
       <h1>
-        Death Eaters Proclamations : {gameStatus.deatheaterproclamations}/6
+        Phoenix Proclamations : {gameStatus.boardstatus.phoenixproclamations}/5
+      </h1>
+      <h1>
+        Death Eaters Proclamations :{" "}
+        {gameStatus.boardstatus.deatheaterproclamations}/6
       </h1>
     </div>
   );
 
   const Winner = (
     <div>
-      <h1>
-        {gameStatus.deatheaterproclamations > gameStatus.phoenixproclamations
-          ? "Death Eaters"
-          : "Order of the Phoenix"}{" "}
-        team won the match
-      </h1>
-    </div>
-  );
-
-  const PlayerList = (
-    <div>
-      <h1>Players joined:</h1>
-      {Object.entries(gameStatus.players).map((player) => (
-        <h4>{player[0]}</h4>
-      ))}
-    </div>
-  );
-
-  const Host = (
-    <div>
-      {user.id === game.hostId ? (
-        <div>
-          <h3>You are the host</h3>
-          <button
-            onClick={() => {
-              startGame();
-            }}
-          >
-            Start Game
-          </button>
-        </div>
-      ) : (
-        <h3>Waiting for Host to start the game</h3>
-      )}
+      <h1>The winner is {gameStatus.winner}</h1>
     </div>
   );
 
@@ -128,9 +72,34 @@ function Match({ match }) {
         <div>
           <h1> {game.name} </h1>
           <h4> Game id : {game.id} </h4>
-          <h3> {gameStatus.matchstatus === "Joinable" ? Host : ""} </h3>
-          <h2> {gameStatus.matchstatus === "Joinable" ? PlayerList : ""} </h2>
-          <div> {gameStatus.matchstatus === "In Game" ? Election : ""} </div>
+          <h3>
+            {gameStatus.matchstatus === "Joinable" ? (
+              <MatchInfo playerList={gameStatus.playerstatus} />
+            ) : (
+              ""
+            )}
+          </h3>
+          <div> {gameStatus.matchstatus == "In Game" ? <Role /> : ""} </div>
+          <div>
+            {gameStatus.matchstatus === "In Game" ? (
+              <Election
+                playerList={gameStatus.playerstatus}
+                minister={gameStatus.minister}
+                status={gameStatus.ingamestatus}
+              />
+            ) : (
+              ""
+            )}
+          </div>
+          <div>
+            {gameStatus.boardstatus.spell === "Avada Kedavra" &&
+            gameStatus.boardstatus.status === "use spell" &&
+            gameStatus.minister === user.username ? (
+              <AvadaKedavra playerList={gameStatus.playerstatus} />
+            ) : (
+              ""
+            )}
+          </div>
           <div> {gameStatus.matchstatus === "In Game" ? Board : ""} </div>
           <div> {gameStatus.matchstatus === "Finished" ? Winner : ""} </div>
         </div>

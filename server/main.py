@@ -95,9 +95,9 @@ async def get_election_info():
 async def get_proclamations():
   return {"game": "proclamations"}
 
-@app.put("/game/{gid}/proclamation")
-async def discard_proclamations():
-  return {"game": "proclamations discarded"}
+# @app.put("/game/{gid}/proclamation")
+# async def discard_proclamations():
+#   return {"game": "proclamations discarded"}
 
 @app.get("/game/{gid}/board")
 async def get_phoenix_proclamations():
