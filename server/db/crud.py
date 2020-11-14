@@ -35,6 +35,10 @@ class PlayerNotFound(ResourceNotFound):
     """ Raised when there is not player with the parameters passed. """
     pass
 
+class VoldemortNotFound(ResourceNotFound):
+    """ Raised when there is not Voldemort within the game. """
+    pass
+
 class InvalidProclamation(Exception):
     """ Raised when the proclamation passed is invalid. """
     pass
@@ -514,18 +518,36 @@ def get_death_eater_proclamations(match_id):
 @db_session
 def is_victory_from(match_id: int):
     if Match.exists(Id=match_id):
-        if not Match[match_id].Winner == "no winner yet":
+        if not Match[match_id].Winner == NO_WINNER_YET:
             return Match[match_id].Winner
-        winner = "no winner yet"
+        winner = NO_WINNER_YET
         if get_death_eater_proclamations(match_id) == 6:
-            winner = "death eater"
-            Match[match_id].Status = 2
+            winner = DEATH_EATER_WINNER
+            Match[match_id].Status = FINISHED
         elif get_phoenix_proclamations(match_id) == 5:
-            winner = "phoenix"
-            Match[match_id].Status = 2
+            winner = PHOENIX_WINNER
+            Match[match_id].Status = FINISHED
 
         Match[match_id].Winner = winner
         return winner
+
+@db_session
+def is_voldemort_dead(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    players = Match[match_id].Players
+    voldemort =  select(p for p in players if p.SecretRol == VOLDEMORT).first()
+    if voldemort is None:
+        raise VoldemortNotFound
+    return voldemort.IsDead
+
+@db_session
+def set_death_eater_winner(match_id: int): # TODO: test
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    Match[match_id].Winner = DEATH_EATER_WINNER
+    Match[match_id].Status = FINISHED
+    
 
 @db_session
 def check_winner(match_id: int):
@@ -641,7 +663,7 @@ def set_gob_roles(match_id: int):
         else:
             p.GovRol = 2
 
-@db_session# no estaba la db session, tiene que ir ?
+@db_session
 def change_player_rol(pid,rol):
     Player[pid].SecretRol = rol
 
