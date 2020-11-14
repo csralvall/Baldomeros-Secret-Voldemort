@@ -246,7 +246,7 @@ def get_top_three_proclamation(board_id:int):
     if not Deck.exists(Board=board_id):
         raise DeckNotFound        
     deck = Deck.get(Board=board_id)
-    if deck.Available > 2:
+    if not deck.Available > 2:
         raise NotEnoughProclamations(deck.Available)
     for i in range(0,3):
         get_top_proclamation(board_id)
