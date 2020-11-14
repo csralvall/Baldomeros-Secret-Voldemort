@@ -31,7 +31,6 @@ async def game_status(mid: int):
 
     winner = check_winner(mid)
 
-    
     board_status = {k.lower(): v for k, v in board_status.items()}
 
     status = {
