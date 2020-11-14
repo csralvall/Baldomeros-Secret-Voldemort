@@ -16,7 +16,7 @@ import draco from "../media/roles/draco.png";
 import voldermort from "../media/roles/voldemort.png";
 import logo from "../media/logos/logo.png";
 import "./css/Lobby.css";
-import JoinMatch from "./JoinMatch.js";
+import MatchList from "./MatchList";
 
 function Lobby() {
   const user = useSelector((state) => state.user);
@@ -36,7 +36,7 @@ function Lobby() {
             >
               Create Match
             </button>
-            <JoinMatch className="btns" />
+            <MatchList className="btns" />
           </div>
         ) : (
           <div>

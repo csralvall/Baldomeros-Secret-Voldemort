@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { joinMatch, createMatchAction } from "./../actions/match";
+import { createMatchAction } from "./../actions/match";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import "./css/CreateMatch.css";
 import {

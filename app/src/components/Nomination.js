@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Modal from "react-modal";
 
