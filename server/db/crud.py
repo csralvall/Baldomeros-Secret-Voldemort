@@ -398,7 +398,7 @@ def set_next_minister(match_id: int):
         players[last_minister].GovRol = 3#exminister
         current_minister = (last_minister + 1) % len(players)
         while players[current_minister].IsDead:
-            current_minister = (last_minister + 1) % len(players)
+            current_minister = (current_minister + 1) % len(players)
         players[current_minister].GovRol = 1
         Match[match_id].CurrentMinister = current_minister
         return current_minister
@@ -413,7 +413,7 @@ def set_next_minister_failed_election(match_id: int):
         players[last_minister].GovRol = 2#magician
         current_minister = (last_minister + 1) % len(players)
         while players[current_minister].IsDead:
-            current_minister = (last_minister + 1) % len(players)
+            current_minister = (current_minister + 1) % len(players)
         players[current_minister].GovRol = 1
         Match[match_id].CurrentMinister = current_minister
         return current_minister

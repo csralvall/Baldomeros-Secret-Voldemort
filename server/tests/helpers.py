@@ -51,6 +51,10 @@ def set_current_director(mid,pos):
     Match[mid].CurrentDirector = pos 
 
 @db_session
+def get_candidate_director(mid):
+    return Match[mid].CandidateDirector
+
+@db_session
 def reset_proclamation(mid):
     Match[mid].Board.PhoenixProclamations = 0
     Match[mid].Board.DeathEaterProclamations = 0
