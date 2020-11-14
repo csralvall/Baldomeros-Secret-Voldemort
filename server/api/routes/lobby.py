@@ -50,12 +50,6 @@ async def join_game(mid: int, user: int):
 
 @router.get("/list", tags=["Game"])
 async def list_games():
-
-    games = list_games_db()
-
-    if (games != []): 
-        return games
-    else:
-        return []
+    return list_games_db()
       
       
