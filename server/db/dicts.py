@@ -34,12 +34,13 @@ VoteType = {0: "nox",
             1: "lumos",
             2: "missing vote"}
 
-spells = (None, "Avada Kedavra", "Imperio", "Crucio")
+spells = (None, "Avada Kedavra", "Imperio", "Crucio", "Adivination")
 
 NO_SPELL = 0
 AVADA_KEDAVRA = 1
 IMPERIO = 2
 CRUCIO = 3
+ADIVINATION = 4
 
 ingame_status = ("nomination", "election", "minister selection", "director selection", "use spell")
 
