@@ -39,6 +39,47 @@ class TestDeck(unittest.TestCase):
     def test_get_player_id_from_username_not_existing_player(self):
         self.assertEqual(get_player_id_from_username(self.match, "dfa"), None)
 
+    def test_unlock_spell_with_small_board(self):
+        enact_proclamation(self.match, "death eater")
+        enact_proclamation(self.match, "death eater")
+        enact_proclamation(self.match, "death eater")
+        self.assertEqual(unlock_spell(self.match), ADIVINATION)
+        enact_proclamation(self.match, "death eater")
+        self.assertEqual(unlock_spell(self.match), AVADA_KEDAVRA)
+
+    def test_unlock_spell_bad_match_id(self):
+        self.assertRaises(MatchNotFound, unlock_spell, self.match+1)
+
+    def test_unlock_spell_small_board(self):
+        self.assertEqual(unlock_spell_small_board(-1), NO_SPELL)
+        self.assertEqual(unlock_spell_small_board(0), NO_SPELL)
+        self.assertEqual(unlock_spell_small_board(1), NO_SPELL)
+        self.assertEqual(unlock_spell_small_board(2), NO_SPELL)
+        self.assertEqual(unlock_spell_small_board(3), ADIVINATION)
+        self.assertEqual(unlock_spell_small_board(4), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_small_board(5), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_small_board(20), AVADA_KEDAVRA)
+
+    def test_unlock_spell_medium_board(self):
+        self.assertEqual(unlock_spell_medium_board(-1), NO_SPELL)
+        self.assertEqual(unlock_spell_medium_board(0), NO_SPELL)
+        self.assertEqual(unlock_spell_medium_board(1), NO_SPELL)
+        self.assertEqual(unlock_spell_medium_board(2), CRUCIO)
+        self.assertEqual(unlock_spell_medium_board(3), IMPERIO)
+        self.assertEqual(unlock_spell_medium_board(4), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_medium_board(5), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_medium_board(52), AVADA_KEDAVRA)
+
+    def test_unlock_spell_medium_board(self):
+        self.assertEqual(unlock_spell_big_board(-1), NO_SPELL)
+        self.assertEqual(unlock_spell_big_board(0), NO_SPELL)
+        self.assertEqual(unlock_spell_big_board(1), CRUCIO)
+        self.assertEqual(unlock_spell_big_board(2), CRUCIO)
+        self.assertEqual(unlock_spell_big_board(3), IMPERIO)
+        self.assertEqual(unlock_spell_big_board(4), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_big_board(5), AVADA_KEDAVRA)
+        self.assertEqual(unlock_spell_big_board(52), AVADA_KEDAVRA)
+
     def test_avada_kedavra(self):
         self.assertTrue(create_user("bar@bar.com","bar","bar"))
         new_userid = get_user("bar","bar")["Id"]
