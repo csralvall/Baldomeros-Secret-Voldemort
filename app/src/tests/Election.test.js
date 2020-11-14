@@ -23,6 +23,7 @@ describe("Voting Phase Interface", () => {
           minister={"Tom Riddle"}
           director={"Dumbledore"}
           status={"election"}
+          candidate={"Dumbledore"}
         />
       </Provider>
     );
@@ -102,6 +103,7 @@ describe("Legislative Session Interface", () => {
           }}
           minister={"Tom Riddle"}
           director={"Dumbledore"}
+          candidate={"Dumbledore"}
           status={"minister selection"}
           hand={["nox", "lumos", "nox"]}
         />
@@ -171,6 +173,7 @@ describe("Nomination Interface", () => {
           director={"No director yet"}
           status={"nomination"}
           hand={["nox", "lumos", "nox"]}
+          candidate={"Dumbledore"}
         />
       </Provider>
     );

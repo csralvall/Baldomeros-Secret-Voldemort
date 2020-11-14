@@ -4,7 +4,7 @@ import Vote from "./Vote";
 import LegislativeSession from "./LegislativeSession";
 import Nomination from "./Nomination";
 
-function Election({ playerList, minister, director, status, hand }) {
+function Election({ playerList, minister, director, candidate, status, hand }) {
   const user = useSelector((state) => state.user);
 
   function getPlayerVote() {
@@ -23,7 +23,7 @@ function Election({ playerList, minister, director, status, hand }) {
   const VotingPhase = (
     <div>
       <h1>
-        Minister {minister} nominated {director} to be Director
+        Minister {minister} nominated {candidate} to be Director
       </h1>
       {Object.entries(playerList).map((player) => (
         <h4>

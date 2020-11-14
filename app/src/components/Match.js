@@ -20,6 +20,7 @@ function Match({ match }) {
     matchstatus: "",
     winner: "",
     minister: "",
+    candidate: "",
     playerstatus: {},
     hand: [],
   });
@@ -87,6 +88,7 @@ function Match({ match }) {
                 playerList={gameStatus.playerstatus}
                 minister={gameStatus.minister}
                 director={gameStatus.director}
+                candidate={gameStatus.candidate}
                 status={gameStatus.boardstatus.status}
                 hand={gameStatus.hand}
               />
