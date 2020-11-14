@@ -789,7 +789,7 @@ def unlock_spell(match_id: int):
     board.AvailableSpell = spell
 
     return spell
-    
+
 @db_session
 def unlock_spell_small_board(death_eater_proclamations):
     if death_eater_proclamations == 3:
