@@ -309,6 +309,16 @@ def get_minister_username(ID: int):
         return "No minister yet"
     return minister.UserId.Username
 
+@db_session
+def get_candidate_director_username(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    query = Match[match_id].Players.order_by(Player.Position)
+    players = [x for x in query]
+    candidate_director = Match[match_id].CandidateDirector
+    if candidate_director == NO_DIRECTOR:
+        return "No director candidate yet"
+    return players[candidate_director].UserId.Username
 
 @db_session
 def get_director_username(ID: int):
@@ -406,7 +416,6 @@ def set_next_minister(match_id: int):
         players[current_minister].GovRol = 1
         Match[match_id].CurrentMinister = current_minister
         return current_minister
-
 
 @db_session
 def set_next_minister_failed_election(match_id: int):
