@@ -774,6 +774,7 @@ def list_games_db():
     
     return decorated_matches
 
+@db_session
 def unlock_spell(match_id: int):
     if not Match.exists(Id=match_id):
         raise MatchNotFound
