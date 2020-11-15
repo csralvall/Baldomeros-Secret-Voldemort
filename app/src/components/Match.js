@@ -5,6 +5,7 @@ import AvadaKedavra from "./AvadaKedavra";
 import Role from "./Role";
 import Election from "./Election";
 import MatchInfo from "./MatchInfo";
+import Board from "./Board";
 
 function Match({ match }) {
   const game = useSelector((state) => state.match);
@@ -49,19 +50,6 @@ function Match({ match }) {
       });
   }, 1000);
 
-  //If this component grows more complex, separate it
-  const Board = (
-    <div>
-      <h1>
-        Phoenix Proclamations : {gameStatus.boardstatus.phoenixproclamations}/5
-      </h1>
-      <h1>
-        Death Eaters Proclamations :{" "}
-        {gameStatus.boardstatus.deatheaterproclamations}/6
-      </h1>
-    </div>
-  );
-
   const Winner = (
     <div>
       <h1>The winner is {gameStatus.winner}</h1>
@@ -105,7 +93,20 @@ function Match({ match }) {
               ""
             )}
           </div>
-          <div> {gameStatus.matchstatus === "In Game" ? Board : ""} </div>
+          <div>
+            {gameStatus.matchstatus === "In Game" ? (
+              <Board
+                phoenixProclamationCount={
+                  gameStatus.boardstatus.phoenixproclamations
+                }
+                deathEaterProclamationCount={
+                  gameStatus.boardstatus.deatheaterproclamations
+                }
+              />
+            ) : (
+              ""
+            )}
+          </div>
           <div> {gameStatus.matchstatus === "Finished" ? Winner : ""} </div>
         </div>
       ) : (

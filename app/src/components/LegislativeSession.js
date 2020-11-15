@@ -32,7 +32,8 @@ function LegislativeSession({ hand }) {
     console.log(selected);
     console.log(discarded);
     await fetch(
-      url + `/game/${game.id}/proclamation/${user.id}?discarded=${discarded}`,
+      url +
+        `/game/${game.id}/proclamation/${game.playerId}?discarded=${discarded}`,
       {
         method: "POST",
         body: JSON.stringify(selected),
