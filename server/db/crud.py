@@ -407,6 +407,9 @@ def get_player_id(match_id: int, user_id: int):
 def set_next_minister(match_id: int):
     if Match.exists(Id=match_id):
         query = Match[match_id].Players.order_by(Player.Position)
+        exMinister = [x for x in query if x.GovRol==3]
+        if len(exMinister):
+            exMinister[0].GovRol = 2
         players = [x for x in query]
         last_minister = Match[match_id].CurrentMinister
         players[last_minister].GovRol = 3#exminister
@@ -440,6 +443,9 @@ def change_to_exdirector(mid):
     director = Match[mid].CurrentDirector
     if director == NO_DIRECTOR:
         raise NoDirector
+    exDirector = [x for x in query if x.GovRol==4]
+    if len(exDirector) > 0:
+        exDirector[0].GovRol = 2
     players[director].GovRol = 4 #Ex Director.
     Match[mid].CurrentDirector = NO_DIRECTOR
 
@@ -702,7 +708,7 @@ def get_posible_directors(mid):
     players_alive_in_match = select(p for p in Match[mid].Players if p.IsDead == False)
     posible_directors = list()
     for p in players_alive_in_match:
-        if (p.GovRol != 3 and p.GovRol != 4):
+        if (p.GovRol != 3 and p.GovRol != 4 and p.GovRol != 1):
             posible_directors.append(get_player_username(p.PlayerId))
 
     return {"posible directors": posible_directors}

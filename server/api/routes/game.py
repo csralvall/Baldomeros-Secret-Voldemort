@@ -63,7 +63,7 @@ async def vote_candidate(
 
     player_status = get_all_player_status(mid)
 
-    for k, v in player_status.items():
+    for k, v in list(player_status.items()):
         if v['isDead']:
             player_status.pop(k)
 
