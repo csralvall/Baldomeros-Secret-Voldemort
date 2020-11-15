@@ -10,20 +10,28 @@
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  max-width: 100vmin;
-  float: right;
+  width: 65vw;
+  top: 0;
+  right: 0;
+  background-color: #252525;
+  position: absolute;
+  border-radius: 15px;
+  padding-top: 3vw;
+  padding-bottom: 3vw;
+  right: 1vw;
 }
 
 .phoenix-board-container {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 90%;
 }
 
 .death-eater-board-container {
+  padding-top: 1vh;
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 90%;
 }
 
 .boards img {

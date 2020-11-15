@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Modal from "react-modal";
+import "./css/Nomination.css";
 
 if (process.env.NODE_ENV === "test") {
   Modal.setAppElement("*");
@@ -88,6 +89,7 @@ function Nomination() {
               onClick={() => {
                 sendCandidate(player);
               }}
+              className="player-name-nomination"
             >
               {player}
             </h4>

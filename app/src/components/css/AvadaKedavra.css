@@ -1,17 +1,5 @@
-.ReactModal__Overlay {
-  opacity: 0;
-  transition: opacity 200ms ease-in-out;
-}
-
-.ReactModal__Overlay--after-open {
-  opacity: 1;
-}
-
-.ReactModal__Overlay--before-close {
-  opacity: 0;
-}
-
-.vote-btn {
+.avada-kedavra-btn {
+  margin-top: 1vh;
   padding-top: 2vw;
   padding-bottom: 2vw;
   padding-left: 4vw;
@@ -25,9 +13,8 @@
   font-family: "Harry P", monospace, sans-serif;
   font-size: 1.5rem;
   outline: none;
-  margin-bottom: 1vw;
 }
 
-.vote-btn:hover {
+.avada-kedavra-btn:hover {
   background-color: #313030;
 }

@@ -25,6 +25,7 @@
   text-decoration: none;
   cursor: pointer;
   border-radius: 15px;
+  outline: none;
 }
 
 .btns div button:hover {

@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import Vote from "./Vote";
 import LegislativeSession from "./LegislativeSession";
 import Nomination from "./Nomination";
+import "./css/Election.css";
 
 function Election({ playerList, minister, director, candidate, status, hand }) {
   const user = useSelector((state) => state.user);
@@ -26,7 +27,7 @@ function Election({ playerList, minister, director, candidate, status, hand }) {
         Minister {minister} nominated {candidate} to be Director
       </h1>
       {Object.entries(playerList).map((player) => (
-        <h4>
+        <h4 className="player-name-election">
           {player[1].vote === "missing vote"
             ? player[0] + " is voting"
             : player[0] + " voted"}
@@ -49,11 +50,13 @@ function Election({ playerList, minister, director, candidate, status, hand }) {
       ) : (
         ""
       )}
-      {Object.entries(playerList).map((player) => (
-        <h4>
-          {player[1].isDead ? "" : player[0] + " voted " + player[1].vote}
-        </h4>
-      ))}
+      {status === "director selection" || status === "minister selection"
+        ? ""
+        : Object.entries(playerList).map((player) => (
+            <h4 className="player-name-election">
+              {player[1].isDead ? "" : player[0] + " voted " + player[1].vote}
+            </h4>
+          ))}
     </div>
   );
 

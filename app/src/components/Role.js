@@ -142,6 +142,7 @@ function Role() {
   return (
     <div>
       <button
+        className="secret-role-btn"
         onClick={() => {
           setOpen(true);
           setIsFirstTime(false);

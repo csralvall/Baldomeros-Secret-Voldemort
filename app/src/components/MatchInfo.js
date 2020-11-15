@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import "./css/MatchInfo.css";
 
 function MatchInfo({ playerList }) {
   const game = useSelector((state) => state.match);
@@ -28,11 +29,15 @@ function MatchInfo({ playerList }) {
   };
 
   return (
-    <div>
+    <div className="joinable-info">
+      <h1 className="player-msg">Players joined</h1>
+      {Object.entries(playerList).map((player) => (
+        <h4 className="player-name">{player[0]}</h4>
+      ))}
       {user.id === game.hostId ? (
         <div>
-          <h3>You are the host</h3>
           <button
+            className="start-btn"
             onClick={() => {
               startGame();
             }}
@@ -43,10 +48,6 @@ function MatchInfo({ playerList }) {
       ) : (
         <h3>Waiting for Host to start the game</h3>
       )}
-      <h1>Players joined:</h1>
-      {Object.entries(playerList).map((player) => (
-        <h4>{player[0]}</h4>
-      ))}
     </div>
   );
 }

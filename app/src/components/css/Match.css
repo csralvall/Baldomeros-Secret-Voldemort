@@ -1,0 +1,52 @@
+.match {
+  color: white;
+  font-family: "Harry P", monospace;
+  position: relative;
+}
+
+.title-and-game-id {
+  background-color: #252525;
+  border-radius: 15px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.match-title {
+  font-size: 5vmin;
+  text-align: center;
+  margin-bottom: 0.3vh;
+}
+
+.game-id {
+  font-size: 3vmin;
+  text-align: center;
+  margin-top: 2vh;
+  color: gray;
+}
+
+.match-left-top {
+  position: absolute;
+  left: 1vw;
+  width: 32vw;
+}
+
+.match-left-bottom {
+  position: absolute;
+  top: 18vmin;
+  left: 1vw;
+  background-color: #252525;
+  border-radius: 15px;
+  padding-top: 1px;
+  padding-bottom: 2vw;
+  width: 32vw;
+  margin-top: 1vw;
+  text-align: center;
+}
+
+.winner-end-screen {
+  font-size: 4rem;
+  position: relative;
+  text-align: center;
+  top: 10vh;
+  width: 100vw;
+}
