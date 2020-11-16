@@ -137,6 +137,7 @@ async def start_game(mid: int, user: int):
     get_top_three_proclamation(bid)
 
     return {"game": "game created successfully"}
+    
         
 @router.get("/{mid}/directors", tags=["Game"])
 async def posible_directors(mid:int):
