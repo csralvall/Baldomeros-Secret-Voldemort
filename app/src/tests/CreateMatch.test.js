@@ -57,7 +57,7 @@ describe("Create Match if Logged In", () => {
   });
   it("should show Create Match button's text", () => {
     const button = wrapper.find("div form button");
-    expect(button.text()).toBe("Create Match");
+    expect(button.text()).toBe("Play");
   });
 });
 

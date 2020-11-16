@@ -33,8 +33,8 @@ describe("Match Info Interface", () => {
       logged_in: true,
     };
     const wrapper = wrap();
-    const title = wrapper.find("div div h3");
-    expect(title.text()).toBe("You are the host");
+    const button = wrapper.find("div div button");
+    expect(button.exists()).toBe(true);
   });
 
   it("should show start game button if you are the host", () => {
@@ -79,7 +79,7 @@ describe("Match Info Interface", () => {
   it("should show player list title", () => {
     const wrapper = wrap();
     const list = wrapper.find("div h1");
-    expect(list.text()).toBe("Players joined:");
+    expect(list.text()).toBe("Players joined");
   });
 
   it("should show player list", () => {

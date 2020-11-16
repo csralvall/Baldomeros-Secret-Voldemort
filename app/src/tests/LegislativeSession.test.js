@@ -32,17 +32,8 @@ describe("Legislative Session", () => {
     const wrapper = wrap();
     const button = wrapper.find("div button");
     button.simulate("click");
-    const cards = wrapper.find("div Modal div h4");
+    const cards = wrapper.find("div Modal div img");
     expect(cards).toHaveLength(3);
-  });
-  it("should show correct cards if modal opens", () => {
-    const wrapper = wrap();
-    const button = wrapper.find("div button");
-    button.simulate("click");
-    const cards = wrapper.find("div Modal div h4");
-    expect(cards.at(0).text()).toBe("nox");
-    expect(cards.at(1).text()).toBe("lumos");
-    expect(cards.at(2).text()).toBe("nox");
   });
 
   //Further testing is impossible, since wrapper wont re-render
