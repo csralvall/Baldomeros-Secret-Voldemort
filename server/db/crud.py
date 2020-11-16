@@ -484,6 +484,18 @@ def set_next_candidate_director(mid,pos):
         Match[mid].CandidateDirector = pos
 
 @db_session
+def check_voldemort(match_id:int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    if get_death_eater_proclamations(match_id)>2:
+        director = get_director_username(match_id)
+        director_player_id = get_player_id_from_username(match_id, director)
+        director_secret_rol= Player[director_player_id].SecretRol
+        return director_secret_rol == VOLDEMORT
+    else:
+        return False
+
+@db_session
 def get_player_position(pid):
     if Player.exists(PlayerId=pid):
         return Player[pid].Position

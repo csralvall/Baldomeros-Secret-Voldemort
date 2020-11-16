@@ -26,6 +26,13 @@ def make_magician(pid):
 def make_director(pid):
     Player[pid].GovRol = 0
 
+@db_session
+def make_voldemort(pid):
+    Player[pid].SecretRol = VOLDEMORT
+
+@db_session
+def make_phoenix(pid):
+    Player[pid].SecretRol = PHOENIX
 
 @db_session
 def get_player_gov_rol(pid):
