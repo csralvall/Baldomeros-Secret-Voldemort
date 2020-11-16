@@ -13,7 +13,6 @@ function MatchInfo({ playerList }) {
       method: "PATCH",
     })
       .then((response) => {
-        console.log(response);
         if (response.status !== 200) {
           if (response.status === 404) {
             alert("Unable to start");

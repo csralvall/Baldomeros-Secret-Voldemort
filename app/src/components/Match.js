@@ -6,6 +6,7 @@ import Role from "./Role";
 import Election from "./Election";
 import MatchInfo from "./MatchInfo";
 import Board from "./Board";
+import Adivination from "./Adivination";
 import "./css/Match.css";
 
 function Match({ match }) {
@@ -43,7 +44,6 @@ function Match({ match }) {
           }
         } else {
           setGameStatus(responseData);
-          console.log(responseData);
         }
       })
       .catch(() => {
@@ -57,6 +57,7 @@ function Match({ match }) {
     </div>
   );
 
+  //This needs a "Spell" component
   return (
     <div>
       {game.id === parseInt(match.params.id) ? (
@@ -103,6 +104,13 @@ function Match({ match }) {
               gameStatus.boardstatus.status === "use spell" &&
               gameStatus.minister === user.username ? (
                 <AvadaKedavra playerList={gameStatus.playerstatus} />
+              ) : (
+                ""
+              )}
+              {gameStatus.boardstatus.spell === "Adivination" &&
+              gameStatus.boardstatus.status === "use spell" &&
+              gameStatus.minister === user.username ? (
+                <Adivination hand={gameStatus.hand} />
               ) : (
                 ""
               )}
