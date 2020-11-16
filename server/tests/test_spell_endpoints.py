@@ -63,7 +63,7 @@ def test_vote_avada_kedavra_voldemort_kill():
 
     assert response.status_code == 200
     assert response.json() == "bar is dead"
-    assert check_winner(match_id) == DEATH_EATER_WINNER
+    assert check_winner(match_id) == PHOENIX_WINNER
     assert get_match_status(match_id) == Status[FINISHED]
 
 def test_vote_avada_kedavra_voldemort_not_set():

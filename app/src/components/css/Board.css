@@ -1,9 +1,9 @@
 :root {
-  --phoenixProclamationBase: 14.2vmin;
-  --phoenixProclamationScalingFactor: 14.9vmin;
-  --deathEaterProclamationBase: 6.7vmin;
-  --deathEaterProclamationScalingFactor: 14.9vmin;
-  --deathEaterProclamationExtraPush: 1vmin;
+  --phoenixProclamationBase: 8.5vw;
+  --phoenixProclamationScalingFactor: 8.65vw;
+  --deathEaterProclamationBase: 4.1vw;
+  --deathEaterProclamationScalingFactor: 19vw;
+  --deathEaterProclamationExtraPush: 0.5vw;
 }
 
 .boards {
@@ -28,7 +28,6 @@
 }
 
 .death-eater-board-container {
-  padding-top: 1vh;
   position: relative;
   width: 90%;
   height: 90%;
@@ -46,8 +45,8 @@
 
 .phoenix-proclamation {
   position: absolute;
-  height: 18vmin;
-  top: 5.9vmin;
+  height: 10vw;
+  top: 3.7vw;
   transition: opacity 0.5s ease;
 }
 
@@ -83,14 +82,14 @@
 
 .death-eater-proclamation {
   position: absolute;
-  max-height: 18vmin;
-  top: 5.9vmin;
+  height: 10vw;
+  top: 3.7vw;
   transition: opacity 0.5s ease;
 }
 
 .smaller-proclamations img {
-  height: 15vmin;
-  top: 8.9vmin !important;
+  height: 9vw;
+  top: 5vw !important;
 }
 
 #death-eater-proclamation-0 {

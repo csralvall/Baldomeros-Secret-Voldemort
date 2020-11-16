@@ -62,6 +62,14 @@ function Match({ match }) {
       {game.id === parseInt(match.params.id) ? (
         <div className="match">
           <div className="match-left-top">
+            {gameStatus.matchstatus !== "Finished" ? (
+              <div className="title-and-game-id">
+                <h1 className="match-title"> {game.name} </h1>
+                <h4 className="game-id"> Game id : {game.id} </h4>
+              </div>
+            ) : (
+              ""
+            )}
             <div className="title-and-game-id">
               <h1 className="match-title"> {game.name} </h1>
               <h4 className="game-id"> Game id : {game.id} </h4>

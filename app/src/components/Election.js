@@ -26,13 +26,17 @@ function Election({ playerList, minister, director, candidate, status, hand }) {
       <h1>
         Minister {minister} nominated {candidate} to be Director
       </h1>
-      {Object.entries(playerList).map((player) => (
-        <h4 className="player-name-election">
-          {player[1].vote === "missing vote"
-            ? player[0] + " is voting"
-            : player[0] + " voted"}
-        </h4>
-      ))}
+      {Object.entries(playerList).map((player) =>
+        player[1].isDead ? (
+          ""
+        ) : (
+          <h4 className="player-name-election">
+            {player[1].vote === "missing vote"
+              ? player[0] + " is voting"
+              : player[0] + " voted"}
+          </h4>
+        )
+      )}
       {getPlayerVote() === "missing vote" ? <Vote /> : ""}
     </div>
   );

@@ -31,15 +31,17 @@ describe("Match Interface", () => {
   it("Should show correct match name", () => {
     store.getState().match = { name: "Game 1", id: 1, hostid: 2 };
     const wrapper = wrap();
-    const matchName = wrapper.find("div div h1");
-    expect(matchName.text()).toBe(" " + store.getState().match.name + " ");
+    const matchName = wrapper.find("div div div div h1");
+    expect(matchName.at(0).text()).toBe(
+      " " + store.getState().match.name + " "
+    );
   });
 
   it("Should show correct match id", () => {
     store.getState().match = { name: "Game 1", id: 1, hostid: 2 };
     const wrapper = wrap();
     const matchId = wrapper.find("div div h4");
-    expect(matchId.text()).toBe(
+    expect(matchId.at(0).text()).toBe(
       " Game id : " + store.getState().match.id + " "
     );
   });

@@ -76,7 +76,7 @@ describe("Voting Phase Interface", () => {
   it("should show player list and if they voted", () => {
     const wrapper = wrap();
     const list = wrapper.find("div h4");
-    expect(list).toHaveLength(4);
+    expect(list).toHaveLength(3);
     expect(list.at(0).text()).toBe("Tom Riddle is voting");
     expect(list.at(1).text()).toBe("Harry Potter voted");
     expect(list.at(2).text()).toBe("Dumbledore voted");
