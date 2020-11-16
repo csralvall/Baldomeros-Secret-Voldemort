@@ -81,14 +81,16 @@ function Adivination({ hand }) {
             />
           ))}
         </div>
-        <button
-          className="send-cards-btn"
-          onClick={() => {
-            endAdivination();
-          }}
-        >
-          Done
-        </button>
+        <div className="send-cards-btn-div">
+          <button
+            className="send-cards-btn"
+            onClick={() => {
+              endAdivination();
+            }}
+          >
+            Done
+          </button>
+        </div>
       </Modal>
     </div>
   );

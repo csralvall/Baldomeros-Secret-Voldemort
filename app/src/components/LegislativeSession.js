@@ -106,14 +106,16 @@ function LegislativeSession({ hand }) {
           ))}
         </div>
         {cardPool.filter(Boolean).length === hand.length - 1 ? (
-          <button
-            className="send-cards-btn"
-            onClick={() => {
-              sendLegislativeSession();
-            }}
-          >
-            Send Cards
-          </button>
+          <div className="send-cards-btn-div">
+            <button
+              className="send-cards-btn"
+              onClick={() => {
+                sendLegislativeSession();
+              }}
+            >
+              Send Cards
+            </button>
+          </div>
         ) : (
           ""
         )}

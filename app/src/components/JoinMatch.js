@@ -34,7 +34,7 @@ function JoinMatch({ matchID }) {
   };
   return (
     <div
-      className="join"
+      className="match-list-btn"
       onClick={() => {
         joinGame();
       }}

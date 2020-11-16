@@ -31,3 +31,9 @@
 .vote-btn:hover {
   background-color: #313030;
 }
+
+.vote-img {
+  width: 17vw;
+  padding-left: 1vw;
+  padding-right: 1vw;
+}

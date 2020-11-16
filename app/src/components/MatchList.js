@@ -51,6 +51,9 @@ function MatchList() {
       </button>
       <Modal
         isOpen={open}
+        onRequestClose={() => {
+          setOpen(false);
+        }}
         closeTimeoutMS={200}
         style={{
           content: {

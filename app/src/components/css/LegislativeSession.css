@@ -14,6 +14,7 @@
   font-size: 1.5rem;
   outline: none;
   margin-bottom: 1vh;
+  margin-top: 1vh;
 }
 
 .choose-proclamations-btn:hover {
@@ -53,11 +54,13 @@
   font-family: "Harry P", monospace, sans-serif;
   font-size: 1.5rem;
   outline: none;
-  margin-bottom: 1vh;
-  left: 10px;
-  margin-left: 35%;
 }
 
 .send-cards-btn:hover {
   background-color: #444343;
+}
+
+.send-cards-btn-div {
+  display: flex;
+  justify-content: center;
 }
