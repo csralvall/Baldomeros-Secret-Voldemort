@@ -53,7 +53,8 @@ def test_death_eater_in_match():
 
     user = get_user("example2", "password")
     uid = user['Id']
-    mid = add_match_db(5,7,uid)['Match_id']
+    match = add_match_db(5,7,uid)
+    mid = match['Match_id']
 
     user2 = get_user("example3", "password")
     user2id = user2['Id']
@@ -69,6 +70,7 @@ def test_death_eater_in_match():
     player4 = add_user_in_match(user4id,mid,4)
     player5 = add_user_in_match(user5id,mid,5)
 
+    player1id = match["Player_id"]
     player2id = player2.to_dict("PlayerId")["PlayerId"]
     player3id = player3.to_dict("PlayerId")["PlayerId"]
     player4id = player4.to_dict("PlayerId")["PlayerId"]
@@ -79,6 +81,14 @@ def test_death_eater_in_match():
     change_player_rol(player4id,2) #phoenix
     change_player_rol(player5id,2) #phoenix
 
+    make_magician(player1id)
+    make_magician(player2id)
+    make_magician(player3id)
+    make_magician(player4id)
+    make_magician(player5id)
+
+    make_minister(player5id)
+
     change_last_director(mid,2) #example3
     change_last_director_govrol(player2id)
     kill_player(player3id) 
@@ -88,4 +98,4 @@ def test_death_eater_in_match():
     )
 
     assert response.status_code == 200
-    assert response.json() == {"posible directors": ['example2','example5','example6']}
+    assert response.json() == {"posible directors": ['example2','example5']}

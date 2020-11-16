@@ -1,12 +1,32 @@
+.create-game {
+  font-family: "Harry P", monospace;
+  color: white;
+  text-align: center;
+  background-color: #252525;
+  max-width: 70vmin;
+  margin: auto;
+  margin-top: 15vh;
+  padding-top: 1vh;
+  padding-bottom: 5vh;
+  padding-left: 3vh;
+  padding-right: 3vh;
+  border-radius: 15px;
+}
+
 .create-game-form {
   display: flex;
-  margin: 0 auto;
-  max-width: 1000px;
+  max-width: 60vw;
+  justify-content: space-around;
+  margin: auto;
+}
+
+.min-max-label {
+  font-size: 1.5rem;
 }
 
 .title {
   text-align: center;
-  padding-bottom: 2vh;
+  font-size: 4rem;
 }
 
 input,
@@ -19,10 +39,17 @@ label {
 }
 
 .create-button {
-  width: 100vmin;
-  background-color: #4caf50;
+  background-color: #2e2d2d;
+  min-width: 28vmin;
   border: none;
   color: white;
   text-decoration: none;
   cursor: pointer;
+  font-family: "Harry P", monospace;
+  font-size: 3rem;
+  border-radius: 15px;
+}
+
+.create-button:hover {
+  background-color: #313030;
 }

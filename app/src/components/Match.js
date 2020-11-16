@@ -5,6 +5,8 @@ import AvadaKedavra from "./AvadaKedavra";
 import Role from "./Role";
 import Election from "./Election";
 import MatchInfo from "./MatchInfo";
+import Board from "./Board";
+import "./css/Match.css";
 
 function Match({ match }) {
   const game = useSelector((state) => state.match);
@@ -49,19 +51,6 @@ function Match({ match }) {
       });
   }, 1000);
 
-  //If this component grows more complex, separate it
-  const Board = (
-    <div>
-      <h1>
-        Phoenix Proclamations : {gameStatus.boardstatus.phoenixproclamations}/5
-      </h1>
-      <h1>
-        Death Eaters Proclamations :{" "}
-        {gameStatus.boardstatus.deatheaterproclamations}/6
-      </h1>
-    </div>
-  );
-
   const Winner = (
     <div>
       <h1>The winner is {gameStatus.winner}</h1>
@@ -71,41 +60,61 @@ function Match({ match }) {
   return (
     <div>
       {game.id === parseInt(match.params.id) ? (
-        <div>
-          <h1> {game.name} </h1>
-          <h4> Game id : {game.id} </h4>
-          <h3>
+        <div className="match">
+          <div className="match-left-top">
+            <div className="title-and-game-id">
+              <h1 className="match-title"> {game.name} </h1>
+              <h4 className="game-id"> Game id : {game.id} </h4>
+            </div>
+          </div>
+          <div className="match-left-bottom">
             {gameStatus.matchstatus === "Joinable" ? (
-              <MatchInfo playerList={gameStatus.playerstatus} />
+              <div className="joinable-div">
+                <MatchInfo playerList={gameStatus.playerstatus} />
+              </div>
             ) : (
               ""
             )}
-          </h3>
-          <div> {gameStatus.matchstatus == "In Game" ? <Role /> : ""} </div>
+            <div>
+              {gameStatus.matchstatus === "In Game" ? (
+                <Election
+                  playerList={gameStatus.playerstatus}
+                  minister={gameStatus.minister}
+                  director={gameStatus.director}
+                  candidate={gameStatus.candidate}
+                  status={gameStatus.boardstatus.status}
+                  hand={gameStatus.hand}
+                />
+              ) : (
+                ""
+              )}
+            </div>
+            <div> {gameStatus.matchstatus == "In Game" ? <Role /> : ""} </div>
+            <div>
+              {gameStatus.boardstatus.spell === "Avada Kedavra" &&
+              gameStatus.boardstatus.status === "use spell" &&
+              gameStatus.minister === user.username ? (
+                <AvadaKedavra playerList={gameStatus.playerstatus} />
+              ) : (
+                ""
+              )}
+            </div>
+          </div>
           <div>
-            {gameStatus.matchstatus === "In Game" ? (
-              <Election
-                playerList={gameStatus.playerstatus}
-                minister={gameStatus.minister}
-                director={gameStatus.director}
-                candidate={gameStatus.candidate}
-                status={gameStatus.boardstatus.status}
-                hand={gameStatus.hand}
+            {gameStatus.matchstatus === "Joinable" ||
+            gameStatus.matchstatus === "In Game" ? (
+              <Board
+                phoenixProclamationCount={
+                  gameStatus.boardstatus.phoenixproclamations
+                }
+                deathEaterProclamationCount={
+                  gameStatus.boardstatus.deatheaterproclamations
+                }
               />
             ) : (
               ""
             )}
           </div>
-          <div>
-            {gameStatus.boardstatus.spell === "Avada Kedavra" &&
-            gameStatus.boardstatus.status === "use spell" &&
-            gameStatus.minister === user.username ? (
-              <AvadaKedavra playerList={gameStatus.playerstatus} />
-            ) : (
-              ""
-            )}
-          </div>
-          <div> {gameStatus.matchstatus === "In Game" ? Board : ""} </div>
           <div> {gameStatus.matchstatus === "Finished" ? Winner : ""} </div>
         </div>
       ) : (

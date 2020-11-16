@@ -1,0 +1,131 @@
+:root {
+  --phoenixProclamationBase: 14.2vmin;
+  --phoenixProclamationScalingFactor: 14.9vmin;
+  --deathEaterProclamationBase: 6.7vmin;
+  --deathEaterProclamationScalingFactor: 14.9vmin;
+  --deathEaterProclamationExtraPush: 1vmin;
+}
+
+.boards {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  width: 65vw;
+  top: 0;
+  right: 0;
+  background-color: #252525;
+  position: absolute;
+  border-radius: 15px;
+  padding-top: 3vw;
+  padding-bottom: 3vw;
+  right: 1vw;
+}
+
+.phoenix-board-container {
+  position: relative;
+  width: 90%;
+  height: 90%;
+}
+
+.death-eater-board-container {
+  padding-top: 1vh;
+  position: relative;
+  width: 90%;
+  height: 90%;
+}
+
+.boards img {
+  border-radius: 5px;
+}
+
+/* Phoenix Board */
+
+.phoenix-board-img {
+  width: 100%;
+}
+
+.phoenix-proclamation {
+  position: absolute;
+  height: 18vmin;
+  top: 5.9vmin;
+  transition: opacity 0.5s ease;
+}
+
+#phoenix-proclamation-0 {
+  left: calc(var(--phoenixProclamationBase));
+}
+#phoenix-proclamation-1 {
+  left: calc(
+    var(--phoenixProclamationBase) + 1 * var(--phoenixProclamationScalingFactor)
+  );
+}
+#phoenix-proclamation-2 {
+  left: calc(
+    var(--phoenixProclamationBase) + 2 * var(--phoenixProclamationScalingFactor)
+  );
+}
+#phoenix-proclamation-3 {
+  left: calc(
+    var(--phoenixProclamationBase) + 3 * var(--phoenixProclamationScalingFactor)
+  );
+}
+#phoenix-proclamation-4 {
+  left: calc(
+    var(--phoenixProclamationBase) + 4 * var(--phoenixProclamationScalingFactor)
+  );
+}
+
+/* Death Eater Board */
+
+.death-eater-board-img {
+  width: 100%;
+}
+
+.death-eater-proclamation {
+  position: absolute;
+  max-height: 18vmin;
+  top: 5.9vmin;
+  transition: opacity 0.5s ease;
+}
+
+.smaller-proclamations img {
+  height: 15vmin;
+  top: 8.9vmin !important;
+}
+
+#death-eater-proclamation-0 {
+  left: var(--deathEaterProclamationBase);
+}
+#death-eater-proclamation-1 {
+  left: calc(
+    var(--deathEaterProclamationBase) + 1 *
+      var(--phoenixProclamationScalingFactor)
+  );
+}
+#death-eater-proclamation-2 {
+  left: calc(
+    var(--deathEaterProclamationBase) + 2 *
+      var(--phoenixProclamationScalingFactor)
+  );
+}
+#death-eater-proclamation-3 {
+  left: calc(
+    var(--deathEaterProclamationBase) + 3 *
+      var(--phoenixProclamationScalingFactor) +
+      var(--deathEaterProclamationExtraPush)
+  );
+}
+#death-eater-proclamation-4 {
+  left: calc(
+    var(--deathEaterProclamationBase) + 4 *
+      var(--phoenixProclamationScalingFactor) +
+      var(--deathEaterProclamationExtraPush)
+  );
+}
+#death-eater-proclamation-5 {
+  left: calc(
+    var(--deathEaterProclamationBase) + 5 *
+      var(--phoenixProclamationScalingFactor) +
+      var(--deathEaterProclamationExtraPush)
+  );
+}

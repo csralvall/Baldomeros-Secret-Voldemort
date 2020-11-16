@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Modal from "react-modal";
+import "./css/LegislativeSession.css";
+import phoenixProclamation from "../media/cards/phoenixProclamation.png";
+import deathEaterProclamation from "../media/cards/deathEaterProclamation.png";
 
 if (process.env.NODE_ENV === "test") {
   Modal.setAppElement("*");
@@ -32,7 +35,8 @@ function LegislativeSession({ hand }) {
     console.log(selected);
     console.log(discarded);
     await fetch(
-      url + `/game/${game.id}/proclamation/${user.id}?discarded=${discarded}`,
+      url +
+        `/game/${game.id}/proclamation/${game.playerId}?discarded=${discarded}`,
       {
         method: "POST",
         body: JSON.stringify(selected),
@@ -54,9 +58,18 @@ function LegislativeSession({ hand }) {
       });
   };
 
+  const getProclamationImg = (proclamation) => {
+    if (proclamation == "phoenix") {
+      return phoenixProclamation;
+    } else {
+      return deathEaterProclamation;
+    }
+  };
+
   return (
     <div>
       <button
+        className="choose-proclamations-btn"
         onClick={() => {
           setOpen(true);
         }}
@@ -65,6 +78,9 @@ function LegislativeSession({ hand }) {
       </button>
       <Modal
         isOpen={open}
+        onRequestClose={() => {
+          setOpen(false);
+        }}
         closeTimeoutMS={200}
         style={{
           content: {
@@ -77,30 +93,32 @@ function LegislativeSession({ hand }) {
           },
         }}
       >
-        <div>
+        <div className="proc-list">
           {hand.map((card, index) => (
-            <h4
+            <img
               key={index}
               onClick={() => {
                 enableCard(index);
               }}
-              className={cardPool[index] ? "Selected" : "NotSelected"}
-            >
-              {card}
-            </h4>
+              src={getProclamationImg(card)}
+              className={
+                cardPool[index] ? "selected-proc" : "not-selected-proc"
+              }
+            />
           ))}
-          {cardPool.filter(Boolean).length === hand.length - 1 ? (
-            <h2
-              onClick={() => {
-                sendLegislativeSession();
-              }}
-            >
-              Send Cards
-            </h2>
-          ) : (
-            ""
-          )}
         </div>
+        {cardPool.filter(Boolean).length === hand.length - 1 ? (
+          <button
+            className="send-cards-btn"
+            onClick={() => {
+              sendLegislativeSession();
+            }}
+          >
+            Send Cards
+          </button>
+        ) : (
+          ""
+        )}
       </Modal>
     </div>
   );

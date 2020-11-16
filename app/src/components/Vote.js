@@ -57,6 +57,7 @@ function Vote() {
   return (
     <div>
       <button
+        className="vote-btn"
         onClick={() => {
           setOpen(true);
         }}

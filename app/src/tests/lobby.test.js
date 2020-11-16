@@ -28,11 +28,11 @@ describe("Lobby if Logged In", () => {
     expect(title.exists()).toBe(true);
   });
   it("should show two buttons", () => {
-    const buttons = wrapper.find("div div div button");
+    const buttons = wrapper.find("div div button");
     expect(buttons).toHaveLength(2);
   });
   it("should show two buttons' text", () => {
-    const buttons = wrapper.find("div div div button");
+    const buttons = wrapper.find("div div button");
     expect(buttons.at(0).text()).toBe("Create Match");
     expect(buttons.at(1).text()).toBe("Join Match");
   });
@@ -58,11 +58,11 @@ describe("Create Match if Not Logged In", () => {
   );
 
   it("should show two buttons", () => {
-    const buttons = wrapper.find("div div div button");
+    const buttons = wrapper.find("div div button");
     expect(buttons).toHaveLength(2);
   });
   it("should show two buttons' text", () => {
-    const buttons = wrapper.find("div div div button");
+    const buttons = wrapper.find("div div button");
     expect(buttons.at(0).text()).toBe("Login");
     expect(buttons.at(1).text()).toBe("Sign Up");
   });

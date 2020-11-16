@@ -89,19 +89,19 @@ function CreateMatch() {
   const createMatchFormJSX = (
     <div>
       {isLogged && !isCreateMatchSuccess ? (
-        <div>
+        <div className="create-game">
           <h1 className="title">Create Match</h1>
           <form onSubmit={getMatchProps} className="create-game-form">
-            <label>
+            <label className="min-max-label">
               Min Players
               <h1>{minMaxPlayers.minPlayers}</h1>
             </label>
-            <label>
+            <label className="min-max-label">
               Max Players
               <h1>{minMaxPlayers.maxPlayers}</h1>
             </label>
             <button className="create-button" type="submit">
-              Create Match
+              Play
             </button>
           </form>
           <Slider

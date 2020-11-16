@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import Modal from "react-modal";
-import "./css/Vote.css";
+import "./css/AvadaKedavra.css";
 
 if (process.env.NODE_ENV === "test") {
   Modal.setAppElement("*");
@@ -62,6 +62,7 @@ function AvadaKedavra({ playerList }) {
   return (
     <div>
       <button
+        className="avada-kedavra-btn"
         onClick={() => {
           setOpen(true);
         }}

@@ -8,7 +8,7 @@
   padding-bottom: 10px;
 }
 
-.btns div {
+.btns-not-logged-in {
   max-width: 50vmin;
   display: flex;
   justify-content: space-around;
@@ -16,18 +16,33 @@
   margin: auto;
 }
 
-.btns div button {
-  height: 7vmin;
-  width: 30%;
+.btns-logged-in {
+  max-width: 50vmin;
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 2vh;
+  margin: auto;
+}
+
+.btns-logged-in button,
+.btns-not-logged-in button {
+  width: 22vmin;
   background-color: #252525;
   border: none;
   color: white;
   text-decoration: none;
   cursor: pointer;
   border-radius: 15px;
+  outline: none;
+  font-family: "Harry P", monospace;
+  font-size: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-.btns div button:hover {
+#lobby-btn:hover {
   background-color: #2e2d2d;
 }
 

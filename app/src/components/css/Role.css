@@ -26,3 +26,23 @@
 .voldemort-role-username {
   margin-left: 10%;
 }
+
+.secret-role-btn {
+  padding-top: 2vw;
+  padding-bottom: 2vw;
+  padding-left: 4vw;
+  padding-right: 4vw;
+  background-color: #2e2d2d;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+  font-family: "Harry P", monospace, sans-serif;
+  font-size: 1.5rem;
+  outline: none;
+}
+
+.secret-role-btn:hover {
+  background-color: #313030;
+}
