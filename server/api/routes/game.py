@@ -71,9 +71,10 @@ async def vote_candidate(
     player_votes = { k: v["vote"] for k, v in player_alive.items() }
     if 'missing vote' not in player_votes.values():
         if compute_election_result(mid) == 'lumos':
-            
             successful_director_election(mid)
             change_ingame_status(mid, MINISTER_SELECTION)#minister selects cards stage
+            if check_voldemort(mid):
+                set_death_eater_winner(mid)
         else :
             failed_director_election(mid)
             set_next_minister_failed_election(mid)

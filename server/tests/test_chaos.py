@@ -158,3 +158,42 @@ class TestChaos(unittest.TestCase):
     def test_failed_election_bad_match_id(self):
         self.assertRaises(MatchNotFound,failed_election,self.match_id+1)
 
+
+    def test_check_voldemort_no_proclamation(self):
+        make_minister(self.player_id_1)
+        set_current_minister(self.match_id, 0)
+        make_director(self.player_id_2)
+        set_current_director(self.match_id,1)
+        self.assertFalse(check_voldemort(self.match_id))
+
+    def test_check_voldemort_no_voldemort(self):
+        make_phoenix(self.player_id_1)
+        make_phoenix(self.player_id_2)
+        make_phoenix(self.player_id_3)
+        make_phoenix(self.player_id_4)
+        make_phoenix(self.player_id_5)
+        make_minister(self.player_id_1)
+        set_current_minister(self.match_id, 0)
+        make_director(self.player_id_2)
+        set_current_director(self.match_id,1)
+        enact_proclamation(self.match_id, "death eater")
+        enact_proclamation(self.match_id, "death eater")
+        enact_proclamation(self.match_id, "death eater")
+        self.assertFalse(check_voldemort(self.match_id))
+
+    def test_check_voldemort_true(self):
+        make_minister(self.player_id_1)
+        set_current_minister(self.match_id, 0)
+        make_director(self.player_id_2)
+        set_current_director(self.match_id,1)
+        make_voldemort(self.player_id_2)
+        enact_proclamation(self.match_id, "death eater")
+        enact_proclamation(self.match_id, "death eater")
+        enact_proclamation(self.match_id, "death eater")
+        self.assertTrue(check_voldemort(self.match_id))
+
+    def test_check_voldemort_wrong_mid(self):
+        self.assertRaises(MatchNotFound,check_voldemort,self.match_id+1)
+
+
+check_voldemort
