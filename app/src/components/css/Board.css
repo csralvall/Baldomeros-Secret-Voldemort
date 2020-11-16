@@ -21,6 +21,13 @@
   right: 1vw;
 }
 
+.chaosCircle {
+  width: 1.6vw;
+  height: 1.6vw;
+  position: absolute;
+  top: 17.7vw;
+}
+
 .phoenix-board-container {
   position: relative;
   width: 90%;
