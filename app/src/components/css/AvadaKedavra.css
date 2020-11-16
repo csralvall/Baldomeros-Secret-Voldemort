@@ -1,5 +1,4 @@
 .avada-kedavra-btn {
-  margin-top: 1vh;
   padding-top: 2vw;
   padding-bottom: 2vw;
   padding-left: 4vw;
@@ -13,8 +12,36 @@
   font-family: "Harry P", monospace, sans-serif;
   font-size: 1.5rem;
   outline: none;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
 }
 
 .avada-kedavra-btn:hover {
   background-color: #313030;
+}
+
+.player-name-avada-kedavra {
+  font-size: 3rem;
+  margin-top: 1vmin;
+  margin-bottom: 1vmin;
+  color: white;
+  font-family: "Harry P", monospace;
+  background-color: #2e2d2d;
+  padding-top: 1rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  padding-bottom: 1rem;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.player-name-avada-kedavra:hover {
+  background-color: #3d3d3d;
+  cursor: pointer;
+}
+
+.avada-kedavra-modal-title {
+  font-family: "Harry P", monospace;
+  font-size: 3rem;
+  text-align: center;
 }

@@ -72,6 +72,9 @@ function AvadaKedavra({ playerList }) {
       <Modal
         isOpen={open}
         closeTimeoutMS={200}
+        onRequestClose={() => {
+          setOpen(false);
+        }}
         style={{
           content: {
             top: "50%",
@@ -92,6 +95,7 @@ function AvadaKedavra({ playerList }) {
                 onClick={() => {
                   setVictim(player[0]);
                 }}
+                className="player-name-avada-kedavra"
               >
                 {player[0]}
               </h4>

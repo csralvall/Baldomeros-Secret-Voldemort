@@ -67,6 +67,9 @@ function Vote() {
       <Modal
         isOpen={open}
         closeTimeoutMS={200}
+        onRequestClose={() => {
+          setOpen(false);
+        }}
         style={{
           content: {
             top: "50%",
@@ -86,7 +89,7 @@ function Vote() {
               setFlag(!voteFlag);
             }}
             style={{ cursor: "pointer" }}
-            className="nav-logo"
+            className="vote-img"
             alt="logo"
           />
           <img
@@ -96,7 +99,7 @@ function Vote() {
               setFlag(!voteFlag);
             }}
             style={{ cursor: "pointer" }}
-            className="nav-logo"
+            className="vote-img"
             alt="logo"
           />
         </div>
