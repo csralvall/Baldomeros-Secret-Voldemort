@@ -45,8 +45,8 @@ function Election({ playerList, minister, director, candidate, status, hand }) {
     <div>
       <h1>
         {status === "director selection"
-          ? "Director is choosing proclamations"
-          : "Minister is choosing proclamations"}
+          ? "Director " + director + " is choosing proclamations"
+          : "Minister " + minister + " is choosing proclamations"}
       </h1>
       {(director === user.username && status === "director selection") ||
       (minister === user.username && status === "minister selection") ? (
