@@ -25,40 +25,38 @@ function Lobby() {
   return (
     <div>
       <img src={logo} className="logo" alt="" />
-      <div className="btns">
-        {user.logged_in ? (
-          <div>
-            <button
-              className="create-match-btn"
-              onClick={() => {
-                history.push("/match/create");
-              }}
-            >
-              Create Match
-            </button>
-            <MatchList className="btns" />
-          </div>
-        ) : (
-          <div>
-            <button
-              className="login-btn"
-              onClick={() => {
-                history.push("/login");
-              }}
-            >
-              Login
-            </button>
-            <button
-              className="sign-up-btn"
-              onClick={() => {
-                history.push("/signup");
-              }}
-            >
-              Sign Up
-            </button>
-          </div>
-        )}
-      </div>
+      {user.logged_in ? (
+        <div className="btns-logged-in">
+          <button
+            id="lobby-btn"
+            onClick={() => {
+              history.push("/match/create");
+            }}
+          >
+            Create Match
+          </button>
+          <MatchList />
+        </div>
+      ) : (
+        <div className="btns-not-logged-in">
+          <button
+            id="lobby-btn"
+            onClick={() => {
+              history.push("/login");
+            }}
+          >
+            Login
+          </button>
+          <button
+            id="lobby-btn"
+            onClick={() => {
+              history.push("/signup");
+            }}
+          >
+            Sign Up
+          </button>
+        </div>
+      )}
       <div className="img-tiles">
         <div className="image-container">
           <img src={harry2} alt="" />
