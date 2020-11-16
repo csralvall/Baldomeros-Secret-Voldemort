@@ -1,0 +1,63 @@
+.choose-proclamations-btn {
+  margin-top: 1vh;
+  padding-top: 2vw;
+  padding-bottom: 2vw;
+  padding-left: 4vw;
+  padding-right: 4vw;
+  background-color: #2e2d2d;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+  font-family: "Harry P", monospace, sans-serif;
+  font-size: 1.5rem;
+  outline: none;
+  margin-bottom: 1vh;
+}
+
+.choose-proclamations-btn:hover {
+  background-color: #313030;
+}
+
+.selected-proc,
+.not-selected-proc {
+  padding: 10px;
+  width: 15vmin;
+  border-radius: 15px;
+  margin-left: 1vmin;
+  margin-right: 1vmin;
+}
+
+.selected-proc:hover,
+.not-selected-proc:hover {
+  cursor: pointer;
+}
+
+.selected-proc {
+  background-color: grey;
+}
+
+.send-cards-btn {
+  margin-top: 1vh;
+  padding-top: 2vw;
+  padding-bottom: 2vw;
+  padding-left: 4vw;
+  padding-right: 4vw;
+  background-color: #2e2d2d;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+  font-family: "Harry P", monospace, sans-serif;
+  font-size: 1.5rem;
+  outline: none;
+  margin-bottom: 1vh;
+  left: 10px;
+  margin-left: 35%;
+}
+
+.send-cards-btn:hover {
+  background-color: #444343;
+}

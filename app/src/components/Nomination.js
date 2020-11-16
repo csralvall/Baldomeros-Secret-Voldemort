@@ -66,12 +66,16 @@ function Nomination() {
           getCandidates();
           setOpen(true);
         }}
+        className="nomination-btn"
       >
         Nominate Director
       </button>
       <Modal
         isOpen={open}
         closeTimeoutMS={200}
+        onRequestClose={() => {
+          setOpen(false);
+        }}
         style={{
           content: {
             top: "50%",
@@ -84,6 +88,7 @@ function Nomination() {
         }}
       >
         <div>
+          <h1 className="nomination-modal-title">Nominate Director</h1>
           {candidates.map((player) => (
             <h4
               onClick={() => {
