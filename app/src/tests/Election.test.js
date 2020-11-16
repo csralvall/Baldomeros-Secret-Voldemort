@@ -120,7 +120,7 @@ describe("Legislative Session Interface", () => {
   it("should show who's choosing proclamations", () => {
     const wrapper = wrap();
     const list = wrapper.find("div div h1");
-    expect(list.text()).toBe("Minister is choosing proclamations");
+    expect(list.text()).toBe("Minister Tom Riddle is choosing proclamations");
   });
 
   it("shouldt show proclamation button if you have to choose proclamations", () => {

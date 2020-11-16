@@ -53,8 +53,8 @@ function Match({ match }) {
   }, 1000);
 
   const Winner = (
-    <div>
-      <h1>The winner is {gameStatus.winner}</h1>
+    <div className="winner-div">
+      <h1 className="winner-msg">The winner is {gameStatus.winner}</h1>
     </div>
   );
 
@@ -63,56 +63,61 @@ function Match({ match }) {
     <div>
       {game.id === parseInt(match.params.id) ? (
         <div className="match">
-          <div className="match-left-top">
-            {gameStatus.matchstatus !== "Finished" ? (
-              <div className="title-and-game-id">
-                <h1 className="match-title"> {game.name} </h1>
-                <h4 className="game-id"> Game id : {game.id} </h4>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <div className="match-left-bottom">
-            {gameStatus.matchstatus === "Joinable" ? (
-              <div className="joinable-div">
-                <MatchInfo playerList={gameStatus.playerstatus} />
-              </div>
-            ) : (
-              ""
-            )}
+          {gameStatus.matchstatus !== "Finished" ? (
             <div>
-              {gameStatus.matchstatus === "In Game" ? (
-                <Election
-                  playerList={gameStatus.playerstatus}
-                  minister={gameStatus.minister}
-                  director={gameStatus.director}
-                  candidate={gameStatus.candidate}
-                  status={gameStatus.boardstatus.status}
-                  hand={gameStatus.hand}
-                />
-              ) : (
-                ""
-              )}
+              <div className="match-left-top">
+                <div className="title-and-game-id">
+                  <h1 className="match-title"> {game.name} </h1>
+                  <h4 className="game-id"> Game id : {game.id} </h4>
+                </div>
+              </div>
+              <div className="match-left-bottom">
+                {gameStatus.matchstatus === "Joinable" ? (
+                  <div className="joinable-div">
+                    <MatchInfo playerList={gameStatus.playerstatus} />
+                  </div>
+                ) : (
+                  ""
+                )}
+                <div>
+                  {gameStatus.matchstatus === "In Game" ? (
+                    <Election
+                      playerList={gameStatus.playerstatus}
+                      minister={gameStatus.minister}
+                      director={gameStatus.director}
+                      candidate={gameStatus.candidate}
+                      status={gameStatus.boardstatus.status}
+                      hand={gameStatus.hand}
+                    />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div>
+                  {" "}
+                  {gameStatus.matchstatus == "In Game" ? <Role /> : ""}{" "}
+                </div>
+                <div>
+                  {gameStatus.boardstatus.spell === "Avada Kedavra" &&
+                  gameStatus.boardstatus.status === "use spell" &&
+                  gameStatus.minister === user.username ? (
+                    <AvadaKedavra playerList={gameStatus.playerstatus} />
+                  ) : (
+                    ""
+                  )}
+                  {gameStatus.boardstatus.spell === "Adivination" &&
+                  gameStatus.boardstatus.status === "use spell" &&
+                  gameStatus.minister === user.username ? (
+                    <Adivination hand={gameStatus.hand} />
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
             </div>
-            <div> {gameStatus.matchstatus == "In Game" ? <Role /> : ""} </div>
-            <div>
-              {gameStatus.boardstatus.spell === "Avada Kedavra" &&
-              gameStatus.boardstatus.status === "use spell" &&
-              gameStatus.minister === user.username ? (
-                <AvadaKedavra playerList={gameStatus.playerstatus} />
-              ) : (
-                ""
-              )}
-              {gameStatus.boardstatus.spell === "Adivination" &&
-              gameStatus.boardstatus.status === "use spell" &&
-              gameStatus.minister === user.username ? (
-                <Adivination hand={gameStatus.hand} />
-              ) : (
-                ""
-              )}
-            </div>
-          </div>
+          ) : (
+            ""
+          )}
           <div>
             {gameStatus.matchstatus === "Joinable" ||
             gameStatus.matchstatus === "In Game" ? (
