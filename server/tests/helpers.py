@@ -124,3 +124,10 @@ def get_position(pid):
 @db_session
 def kill_player(pid):
     Player[pid].IsDead = True
+
+
+@db_session
+def get_failed_election_count(board_id: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+    return Board[board_id].FailedElectionsCount
