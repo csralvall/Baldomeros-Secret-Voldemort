@@ -19,6 +19,7 @@ function Match({ match }) {
       phoenixproclamations: 0,
       spell: null,
       status: "",
+      failcounter: 0,
     },
     matchstatus: "",
     winner: "",
@@ -122,6 +123,7 @@ function Match({ match }) {
                 deathEaterProclamationCount={
                   gameStatus.boardstatus.deatheaterproclamations
                 }
+                chaosCirclePosition={gameStatus.boardstatus.failcounter}
               />
             ) : (
               ""

@@ -3,9 +3,14 @@ import phoenixBoard from "../media/boards/phoenixBoard.png";
 import phoenixProclamation from "../media/cards/phoenixProclamation.png";
 import deathEaterBoard5_6 from "../media/boards/deathEaterBoard5-6.png";
 import deathEaterProclamation from "../media/cards/deathEaterProclamation.png";
+import chaosCircle from "../media/boards/chaosCircle.png";
 import "./css/Board.css";
 
-function Board({ phoenixProclamationCount, deathEaterProclamationCount }) {
+function Board({
+  phoenixProclamationCount,
+  deathEaterProclamationCount,
+  chaosCirclePosition,
+}) {
   const loaded = useRef(false);
   useEffect(() => {
     if (loaded.current) {
@@ -55,6 +60,19 @@ function Board({ phoenixProclamationCount, deathEaterProclamationCount }) {
     0,
     0,
   ]);
+
+  const getChaosCircleX = (i) => {
+    if (i === 0) {
+      return "22.5vw";
+    } else if (i === 1) {
+      return "28.4vw";
+    } else if (i === 2) {
+      return "34.3vw";
+    } else if (i === 3) {
+      return "40.2vw";
+    }
+  };
+
   return (
     <div className="boards">
       <div className="phoenix-board-container">
@@ -146,6 +164,11 @@ function Board({ phoenixProclamationCount, deathEaterProclamationCount }) {
           ></img>
         </span>
       </div>
+      <img
+        src={chaosCircle}
+        style={{ left: getChaosCircleX(chaosCirclePosition) }}
+        className="chaosCircle"
+      />
     </div>
   );
 }

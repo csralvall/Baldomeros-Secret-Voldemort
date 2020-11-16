@@ -141,14 +141,14 @@ describe("Legislative Session Interface", () => {
     expect(button.exists()).toBe(false);
   });
 
-  // it("should show player list and their votes", () => {
-  //   const wrapper = wrap();
-  //   const list = wrapper.find("div h4");
-  //   expect(list).toHaveLength(4);
-  //   expect(list.at(0).text()).toBe("Tom Riddle voted Lumos");
-  //   expect(list.at(1).text()).toBe("Harry Potter voted Lumos");
-  //   expect(list.at(2).text()).toBe("Dumbledore voted Nox");
-  // });
+  it("should show player list and their votes", () => {
+    const wrapper = wrap();
+    const list = wrapper.find("div h4");
+    expect(list).toHaveLength(4);
+    expect(list.at(0).text()).toBe("Tom Riddle voted Lumos");
+    expect(list.at(1).text()).toBe("Harry Potter voted Lumos");
+    expect(list.at(2).text()).toBe("Dumbledore voted Nox");
+  });
 
   it("Shouldn't show dead players in player list", () => {
     const wrapper = wrap();

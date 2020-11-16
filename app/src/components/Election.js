@@ -54,13 +54,11 @@ function Election({ playerList, minister, director, candidate, status, hand }) {
       ) : (
         ""
       )}
-      {status === "director selection" || status === "minister selection"
-        ? ""
-        : Object.entries(playerList).map((player) => (
-            <h4 className="player-name-election">
-              {player[1].isDead ? "" : player[0] + " voted " + player[1].vote}
-            </h4>
-          ))}
+      {Object.entries(playerList).map((player) => (
+        <h4 className="player-name-election">
+          {player[1].isDead ? "" : player[0] + " voted " + player[1].vote}
+        </h4>
+      ))}
     </div>
   );
 
