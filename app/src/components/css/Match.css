@@ -43,10 +43,20 @@
   text-align: center;
 }
 
-.winner-end-screen {
+.winner-div {
   font-size: 4rem;
   position: relative;
   text-align: center;
   top: 10vh;
   width: 100vw;
+  background-color: #252525;
+  border-radius: 15px;
+  padding-top: 1vmin;
+  padding-bottom: 1vmin;
+  padding-right: 1vmin;
+  padding-left: 1vmin;
+}
+
+.winner-msg {
+  font-size: 3rem;
 }
