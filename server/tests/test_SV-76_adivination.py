@@ -30,6 +30,8 @@ def test_adivination_ok():
     user5id = get_user("example5","password")["Id"]
 
     matchid1 = game1['Match_id']
+    bid = get_match_board_id(matchid1)
+
 
     add_user_in_match(user2id, matchid1, 1)
     add_user_in_match(user3id, matchid1, 2)
@@ -49,16 +51,20 @@ def test_adivination_ok():
     make_magician(pid5)
 
     make_minister(pid1)
-    make_director(pid2)    
+    make_director(pid3)    
 
     set_current_minister(matchid1, 0)
-    set_current_director(matchid1, 1)
+    set_current_director(matchid1, 2)
 
     response = client.patch(
         f"/game/{matchid1}/board/adivination"
     )
-
     assert response.status_code == 200
+    assert get_ingame_status(matchid1) == ingame_status[NOMINATION]
+    assert get_board_status(bid)['spell'] == spells[NO_SPELL]
+  
+    assert get_minister_username(matchid1)=="example2"
+    assert get_exdirector_username(matchid1)=="example3"
 
 def test_adivination_bad_match_id():
 
