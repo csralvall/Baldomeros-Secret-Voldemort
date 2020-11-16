@@ -42,12 +42,13 @@ IMPERIO = 2
 CRUCIO = 3
 ADIVINATION = 4
 
-ingame_status = ("nomination", "election", "minister selection", "director selection", "use spell")
+ingame_status = ("nomination", "election", "minister selection", "director selection", "use spell", "chaos")
 
 NOMINATION = 0
 ELECTION = 1
 MINISTER_SELECTION = 2
 DIRECTOR_SELECTION = 3
 USE_SPELL = 4
+CHAOS = 5
 
 NO_DIRECTOR = 99

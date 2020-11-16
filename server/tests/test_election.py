@@ -271,99 +271,84 @@ def test_vote_empty_player_id():
     assert response.status_code == 404
     assert response.json()['detail'] == 'Not Found'
 
-# def test_vote_endpoint():
-#     delete_data(Board)
-#     delete_data(Player)
-#     delete_data(Match)
-#     delete_data(User)
+def test_vote_endpoint():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
 
-#     create_user("foo@gmail.com", "foo", "foo")
-#     create_user("baz@gmail.com", "baz", "baz")
-#     create_user("bar@gmail.com", "bar", "bar")
-#     create_user("zoo@gmail.com", "zoo", "zoo")
-#     create_user("zar@gmail.com", "zar", "zar")
-#     user = get_user("foo", "foo")
-#     baruid = get_user("bar", "bar")['Id']
-#     bazuid = get_user("baz", "baz")['Id']
-#     zoouid = get_user("zoo", "zoo")['Id']
-#     zaruid = get_user("zar", "zar")['Id']
-#     uid = user['Id']
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("baz@gmail.com", "baz", "baz")
+    create_user("bar@gmail.com", "bar", "bar")
+    create_user("zoo@gmail.com", "zoo", "zoo")
+    create_user("zar@gmail.com", "zar", "zar")
+    user = get_user("foo", "foo")
+    baruid = get_user("bar", "bar")['Id']
+    bazuid = get_user("baz", "baz")['Id']
+    zoouid = get_user("zoo", "zoo")['Id']
+    zaruid = get_user("zar", "zar")['Id']
+    uid = user['Id']
 
-#     gid = add_match_db(5,7,uid)['Match_id']
-
-#     add_user_in_match(baruid,gid,1)
-#     add_user_in_match(bazuid,gid,2)
-#     add_user_in_match(zoouid,gid,3)
-#     add_user_in_match(zaruid,gid,4)
-
-#     pid = get_player_id(gid,uid)
-#     barpid = get_player_id(gid,baruid)
-#     bazpid = get_player_id(gid,bazuid)
-#     zoopid = get_player_id(gid,zoouid)
-#     zarpid = get_player_id(gid,zaruid)
-
-#     name_list = ['bar','baz','zoo','zar','foo']
-
-#     for p in name_list:
-#         client.put(f"/game/{gid}/player/{pid}?vote=lumos")
-#         client.put(f"/game/{gid}/player/{barpid}?vote=lumos")
-#         client.put(f"/game/{gid}/player/{bazpid}?vote=lumos")
-#         client.put(f"/game/{gid}/player/{zoopid}?vote=lumos")
-#         client.put(f"/game/{gid}/player/{zarpid}?vote=lumos")
-
-#         assert get_minister_username(gid) == p
-
-#     for p in name_list:
-#         client.put(f"/game/{gid}/player/{pid}?vote=nox")
-#         client.put(f"/game/{gid}/player/{barpid}?vote=nox")
-#         client.put(f"/game/{gid}/player/{bazpid}?vote=nox")
-#         client.put(f"/game/{gid}/player/{zoopid}?vote=nox")
-#         client.put(f"/game/{gid}/player/{zarpid}?vote=nox")
-
-#         assert get_minister_username(gid) == p
+    gid = add_match_db(5,7,uid)['Match_id']
+    bid = get_match_board_id(gid)
+    create_deck(bid)
+    shuffle_deck(bid)
+    get_top_three_proclamation(bid)
 
 
-# def test_vote_endpoint_with_proclamations():
-#     delete_data(Board)
-#     delete_data(Player)
-#     delete_data(Match)
-#     delete_data(User)
+    add_user_in_match(baruid,gid,1)
+    add_user_in_match(bazuid,gid,2)
+    add_user_in_match(zoouid,gid,3)
+    add_user_in_match(zaruid,gid,4)
 
-#     create_user("foo@gmail.com", "foo", "foo")
-#     create_user("baz@gmail.com", "baz", "baz")
-#     create_user("bar@gmail.com", "bar", "bar")
-#     create_user("zoo@gmail.com", "zoo", "zoo")
-#     create_user("zar@gmail.com", "zar", "zar")
-#     user = get_user("foo", "foo")
-#     baruid = get_user("bar", "bar")['Id']
-#     bazuid = get_user("baz", "baz")['Id']
-#     zoouid = get_user("zoo", "zoo")['Id']
-#     zaruid = get_user("zar", "zar")['Id']
-#     uid = user['Id']
+    pid = get_player_id(gid,uid)
+    barpid = get_player_id(gid,baruid)
+    bazpid = get_player_id(gid,bazuid)
+    zoopid = get_player_id(gid,zoouid)
+    zarpid = get_player_id(gid,zaruid)
 
-#     gid = add_match_db(5,7,uid)['Match_id']
+    name_list = ['foo','bar','baz','zoo','zar']
 
-#     add_user_in_match(baruid,gid,1)
-#     add_user_in_match(bazuid,gid,2)
-#     add_user_in_match(zoouid,gid,3)
-#     add_user_in_match(zaruid,gid,4)
+    make_minister(zoopid)
+    set_current_minister(gid,3)
+    i=0
+    for p in name_list:
+        change_ingame_status(gid, ELECTION)
+        set_next_candidate_director(gid,i)
+        assert get_candidate_director_username(gid)== p
+        restore_election(gid)
+        
+        client.put(f"/game/{gid}/player/{pid}?vote=lumos")
+        assert get_candidate_director_username(gid)== p 
+        client.put(f"/game/{gid}/player/{barpid}?vote=lumos")
+        assert get_candidate_director_username(gid)== p 
+        client.put(f"/game/{gid}/player/{bazpid}?vote=lumos")
+        assert get_candidate_director_username(gid)== p 
+        client.put(f"/game/{gid}/player/{zoopid}?vote=lumos")
+        assert get_candidate_director_username(gid)== p 
+        client.put(f"/game/{gid}/player/{zarpid}?vote=lumos")
+        assert get_director_username(gid) == p
+        assert get_ingame_status(gid) == ingame_status[MINISTER_SELECTION]
+        change_to_exdirector(gid)
+        i=i+1
 
-#     pid = get_player_id(gid,uid)
-#     barpid = get_player_id(gid,baruid)
-#     bazpid = get_player_id(gid,bazuid)
-#     zoopid = get_player_id(gid,zoouid)
-#     zarpid = get_player_id(gid,zaruid)
-
-#     name_list = ['bar','baz','zoo','zar','foo']
-
-#     for i in range(0,6):
-#         client.put(f"/game/{gid}/player/{pid}?vote=lumos")
-#         client.put(f"/game/{gid}/player/{barpid}?vote=lumos")
-#         client.put(f"/game/{gid}/player/{bazpid}?vote=lumos")
-#         client.put(f"/game/{gid}/player/{zoopid}?vote=lumos")
-#         client.put(f"/game/{gid}/player/{zarpid}?vote=lumos")
-
-#     assert is_victory_from(gid) == 'death eater'
-#     assert get_match_status(gid) == 'Finished'
-
-
+    i=0
+    for p in name_list:
+        change_ingame_status(gid, ELECTION)
+        set_next_candidate_director(gid,i)
+        assert get_candidate_director_username(gid)== p
+        restore_election(gid)
+        client.put(f"/game/{gid}/player/{pid}?vote=nox")
+        assert get_candidate_director_username(gid)== p 
+        client.put(f"/game/{gid}/player/{barpid}?vote=nox")
+        assert get_candidate_director_username(gid)== p 
+        client.put(f"/game/{gid}/player/{bazpid}?vote=nox")
+        assert get_candidate_director_username(gid)== p 
+        client.put(f"/game/{gid}/player/{zoopid}?vote=nox")
+        assert get_candidate_director_username(gid)== p 
+        client.put(f"/game/{gid}/player/{zarpid}?vote=nox")
+        assert get_director_username(gid) == "No director yet"
+        assert get_ingame_status(gid) == ingame_status[NOMINATION]#cuando agreguemos el ingame status chaos, va a fallar
+        i=i+1
+        assert get_failed_election_count(bid)== i % 3
+        assert i//3 == get_phoenix_proclamations(gid)+ get_death_eater_proclamations(gid)

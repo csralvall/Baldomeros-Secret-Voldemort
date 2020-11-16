@@ -177,7 +177,8 @@ class TestInMatch(unittest.TestCase):
                 'PhoenixProclamations': 0,
                 'boardtype': '5-6',
                 'spell': None,
-                'status': 'nomination'}
+                'status': 'nomination',
+                'failcounter': 0}
         board_id = get_match_board_id(self.matchid)
         self.assertEqual(get_board_status(board_id), board)
 
@@ -187,13 +188,14 @@ class TestInMatch(unittest.TestCase):
         enact_proclamation(self.matchid, "phoenix")
         enact_proclamation(self.matchid, "phoenix")
         enact_proclamation(self.matchid, "death eater")
+        board_id = get_match_board_id(self.matchid)
+        add_failed_election(board_id)
         board = {'DeathEaterProclamations': 1,
                 'PhoenixProclamations': 3,
                 'boardtype': '5-6',
                 'spell': None,
-                'status': 'nomination'}
-
-        board_id = get_match_board_id(self.matchid)
+                'status': 'nomination',
+                'failcounter': 1}
 
         self.assertEqual(get_board_status(board_id), board)
 
@@ -204,7 +206,8 @@ class TestInMatch(unittest.TestCase):
                 'PhoenixProclamations': 0,
                 'boardtype': '5-6',
                 'spell': None,
-                'status': 'nomination'}
+                'status': 'nomination',
+                'failcounter': 0}
         board_id = get_match_board_id(self.matchid)
         self.assertEqual(get_board_status(board_id), board)
 

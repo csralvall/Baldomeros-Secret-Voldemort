@@ -327,6 +327,7 @@ def get_director_username(ID: int):
         return "No director yet"
     return director.UserId.Username 
 
+#cuando agreguemos el caos, hay que cambiar el <= a USE_SPELL a CHAOS
 @db_session
 def change_ingame_status(match_id: int, status: int):
     if not Match.exists(Id=match_id):
@@ -368,7 +369,7 @@ def get_board_status(board_id: int):
     board_status['spell'] = spells[Board[board_id].AvailableSpell]
     board_status['status'] = ingame_status[Board[board_id].BoardStatus]
     board_status['boardtype'] = BoardType[Board[board_id].BoardType]
-
+    board_status['failcounter'] = Board[board_id].FailedElectionsCount
     return board_status    
 
 @db_session
@@ -514,6 +515,45 @@ def restore_election(match_id: int):
         players = Match[match_id].Players
         for p in players:
             p.Vote = 2
+
+@db_session
+def add_failed_election(board_id: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+    Board[board_id].FailedElectionsCount += 1
+    return Board[board_id].FailedElectionsCount
+
+@db_session
+def reset_failed_election(board_id: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+    Board[board_id].FailedElectionsCount = 0
+
+@db_session
+def do_chaos(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    board_id = get_match_board_id(match_id) 
+    proclamation = get_selected_card(board_id)
+    enact_proclamation(match_id, proclamation)
+    reset_failed_election(board_id)
+    is_victory_from(match_id)
+    # change_ingame_status(match_id, CHAOS) #will be added in the next sprint
+    try:
+        get_top_proclamation(board_id)
+    except NotEnoughProclamations:
+        refill_deck(board_id)
+        shuffle_deck(board_id)
+        get_top_proclamation(board_id)
+
+@db_session
+def failed_election(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    board_id = get_match_board_id(match_id)
+    failed_election_count = add_failed_election(board_id)
+    if failed_election_count == 3:
+        do_chaos(match_id)
 
 @db_session
 def enact_proclamation(match_id: int, proclamation: str):
