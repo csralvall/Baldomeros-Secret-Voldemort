@@ -742,6 +742,14 @@ def avada_kedavra(board_id: int, player_id: int):
     Board[board_id].AvailableSpell = NO_SPELL
 
 @db_session
+def adivination(board_id: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+
+    Board[board_id].AvailableSpell = NO_SPELL
+
+
+@db_session
 def get_player_id_from_username(match_id: int, username: str):
     if not Match.exists(Id=match_id):
         raise MatchNotFound

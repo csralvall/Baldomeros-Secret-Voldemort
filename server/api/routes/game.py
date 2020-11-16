@@ -137,7 +137,7 @@ async def start_game(mid: int, user: int):
     get_top_three_proclamation(bid)
 
     return {"game": "game created successfully"}
-    
+
         
 @router.get("/{mid}/directors", tags=["Game"])
 async def posible_directors(mid:int):
@@ -280,3 +280,18 @@ async def select_director(
 
     return f"{playername} is the candidate to director"
 
+
+@router.patch("/{match_id}/board/adivination", tags=["Game"])
+async def use_adivination(match_id: int):
+
+    if not check_match(match_id):
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    change_ingame_status(match_id, NOMINATION)
+    change_to_exdirector(match_id)
+    set_next_minister(match_id)
+
+    board_id = get_match_board_id(match_id)
+    adivination(board_id)
+
+    return 200
