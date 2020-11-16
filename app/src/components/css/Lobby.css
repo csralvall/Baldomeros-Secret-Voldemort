@@ -26,8 +26,7 @@
 
 .btns-logged-in button,
 .btns-not-logged-in button {
-  height: 7vmin;
-  width: 15vmin;
+  width: 22vmin;
   background-color: #252525;
   border: none;
   color: white;
@@ -35,6 +34,12 @@
   cursor: pointer;
   border-radius: 15px;
   outline: none;
+  font-family: "Harry P", monospace;
+  font-size: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 #lobby-btn:hover {
