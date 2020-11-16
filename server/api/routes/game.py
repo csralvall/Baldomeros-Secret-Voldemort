@@ -78,7 +78,7 @@ async def vote_candidate(
             failed_director_election(mid)
             set_next_minister_failed_election(mid)
             change_ingame_status(mid, NOMINATION)# new minister chooses new director
-        restore_election(mid)     
+            failed_election(mid)            
 
     winner = check_winner(mid)
     return winner 
@@ -227,6 +227,7 @@ async def receive_cards(mid: int, pid: int, discarded: str, selected: List[str]=
             raise HTTPException(status_code=404, detail="The proclamation selected doesn't match the proclamations passed.")    
         
         enact_proclamation(mid, selected_card)
+        reset_failed_election(bid)
         winner = is_victory_from(mid)
 
         if selected_card == "death eater":
@@ -270,6 +271,7 @@ async def select_director(
         raise HTTPException(status_code=404, detail="Player not found")
 
     try:
+        restore_election(mid)     
         position = get_player_position(pid)
         set_next_candidate_director(mid,position)
         playername = get_player_username(pid)

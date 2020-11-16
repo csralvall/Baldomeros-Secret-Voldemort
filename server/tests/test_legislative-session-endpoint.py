@@ -329,11 +329,16 @@ def test_receive_cards_director_ok_winner_ph():
     selected_db_1=hand_db[1]
     selected_db_2=hand_db[2]
     discard_proclamation(bid, selected_db_2)
+    assert get_failed_election_count(bid)==0
+    add_failed_election(bid)
+    add_failed_election(bid)
+    assert get_failed_election_count(bid)==2
 
     response = client.post(
         f"/game/{match_id}/proclamation/{pid2}?discarded={discarted_db}",
         json=[selected_db_1]
     )
+    assert get_failed_election_count(bid)==0
     assert response.status_code == 200
     assert response.json() == "phoenix"
 
@@ -373,11 +378,15 @@ def test_receive_cards_director_spell():
     selected_db_1 = hand_db[1]
     selected_db_2 = hand_db[2]
     discard_proclamation(bid, selected_db_2)
+    assert get_failed_election_count(bid)==0
+    add_failed_election(bid)
+    assert get_failed_election_count(bid)==1
 
     response = client.post(
         f"/game/{match_id}/proclamation/{pid2}?discarded={discarted_db}",
         json=[selected_db_1]
     )
+    assert get_failed_election_count(bid)==0
     assert response.status_code == 200
     assert response.json() == NO_WINNER_YET
     assert get_ingame_status(match_id) == ingame_status[USE_SPELL]

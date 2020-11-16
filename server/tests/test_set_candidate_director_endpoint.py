@@ -26,7 +26,6 @@ def test_select_candidate_Player_not_exist():
     response = client.patch(
         f"/game/{mid}/director?playername=asdad"
     )
-
     assert response.status_code == 404
     assert response.json()['detail'] == "Player not found"
 
@@ -97,5 +96,6 @@ def test_select_candidate():
         f"/game/{mid}/director?playername=bar"
     )
 
+    assert get_all_player_status(mid) == {'bar': {'isDead': False, 'vote': 'missing vote'},'foo': {'isDead': False, 'vote': 'missing vote'}}
     assert response.status_code == 200
     assert response.json() == "bar is the candidate to director"

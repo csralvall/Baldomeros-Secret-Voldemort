@@ -302,25 +302,35 @@ def test_vote_empty_player_id():
 #     zoopid = get_player_id(gid,zoouid)
 #     zarpid = get_player_id(gid,zaruid)
 
-#     name_list = ['bar','baz','zoo','zar','foo']
+#     name_list = ['foo','bar','baz','zoo','zar']
 
+#     make_minister(zoopid)
+#     set_current_minister(gid,3)
+#     i=0
 #     for p in name_list:
+#         print(i)
+#         change_ingame_status(gid, ELECTION)
+#         set_next_candidate_director(gid,i)
+#         assert get_candidate_director_username(gid)== p
+#         restore_election(gid)
+        
 #         client.put(f"/game/{gid}/player/{pid}?vote=lumos")
 #         client.put(f"/game/{gid}/player/{barpid}?vote=lumos")
 #         client.put(f"/game/{gid}/player/{bazpid}?vote=lumos")
 #         client.put(f"/game/{gid}/player/{zoopid}?vote=lumos")
 #         client.put(f"/game/{gid}/player/{zarpid}?vote=lumos")
+#         assert get_director_username(gid) == p
+#         assert get_ingame_status(gid) == ingame_status[MINISTER_SELECTION]
+#         i=i+1
 
-#         assert get_minister_username(gid) == p
 
-#     for p in name_list:
-#         client.put(f"/game/{gid}/player/{pid}?vote=nox")
-#         client.put(f"/game/{gid}/player/{barpid}?vote=nox")
-#         client.put(f"/game/{gid}/player/{bazpid}?vote=nox")
-#         client.put(f"/game/{gid}/player/{zoopid}?vote=nox")
-#         client.put(f"/game/{gid}/player/{zarpid}?vote=nox")
+    # for p in name_list:
+    #     client.put(f"/game/{gid}/player/{pid}?vote=nox")
+    #     client.put(f"/game/{gid}/player/{barpid}?vote=nox")
+    #     client.put(f"/game/{gid}/player/{bazpid}?vote=nox")
+    #     client.put(f"/game/{gid}/player/{zoopid}?vote=nox")
+    #     client.put(f"/game/{gid}/player/{zarpid}?vote=nox")
 
-#         assert get_minister_username(gid) == p
 
 
 # def test_vote_endpoint_with_proclamations():
