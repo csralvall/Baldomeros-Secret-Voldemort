@@ -70,6 +70,10 @@ function Match({ match }) {
             ) : (
               ""
             )}
+            <div className="title-and-game-id">
+              <h1 className="match-title"> {game.name} </h1>
+              <h4 className="game-id"> Game id : {game.id} </h4>
+            </div>
           </div>
           <div className="match-left-bottom">
             {gameStatus.matchstatus === "Joinable" ? (
