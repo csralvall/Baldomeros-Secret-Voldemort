@@ -62,13 +62,13 @@ async def vote_candidate(
     vote_director(pid, vote)
 
     player_status = get_all_player_status(mid)
+    player_alive = dict()
 
-    for k, v in list(player_status.items()):
-        if v['isDead']:
-            player_status.pop(k)
+    for k, v in player_status.items():
+        if not v['isDead']:
+            player_alive[k] = {"vote": v['vote'], "isDead": v['isDead']}
 
-    player_votes = { k: v['vote'] for k, v in player_status.items() }
-
+    player_votes = { k: v["vote"] for k, v in player_alive.items() }
     if 'missing vote' not in player_votes.values():
         if compute_election_result(mid) == 'lumos':
             
@@ -169,7 +169,7 @@ async def use_avada_kedavra(
         change_to_exdirector(match_id)
         set_next_minister(match_id)
         if is_voldemort_dead(match_id):
-            set_death_eater_winner(match_id)
+            set_phoenix_winner(match_id)
     except VoldemortNotFound:
         raise HTTPException(status_code=500, detail="Voldemort was not set")
     except ResourceNotFound:
@@ -228,13 +228,18 @@ async def receive_cards(mid: int, pid: int, discarded: str, selected: List[str]=
         enact_proclamation(mid, selected_card)
         winner = is_victory_from(mid)
 
-        if not unlock_spell(mid) == NO_SPELL:
-             change_ingame_status(mid, USE_SPELL)#spell stage
+        if selected_card == "death eater":
+            if not unlock_spell(mid) == NO_SPELL:
+                change_ingame_status(mid, USE_SPELL)#spell stage
+            else:
+                change_ingame_status(mid, NOMINATION)#minister selects director stage
+                change_to_exdirector(mid)
+                set_next_minister(mid)
         else:
             change_ingame_status(mid, NOMINATION)#minister selects director stage
             change_to_exdirector(mid)
             set_next_minister(mid)
-        
+
         try:
             get_top_three_proclamation(bid)
         except NotEnoughProclamations:

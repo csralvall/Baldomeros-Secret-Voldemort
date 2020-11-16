@@ -492,10 +492,10 @@ def get_player_position(pid):
 @db_session
 def compute_election_result(match_id: int):
     if Match.exists(Id=match_id):
-        players = Match[match_id].Players
         lumos = 0
         voting_cutoff = 0.5000001
         result = 'nox'
+        players = select(p for p in Match[match_id].Players if not p.IsDead)
         if not exists(p for p in players if p.Vote == 2):
             total = count(p for p in players)
             lumos = count(p for p in players if p.Vote == 1)
@@ -557,12 +557,18 @@ def is_voldemort_dead(match_id: int):
     return voldemort.IsDead
 
 @db_session
-def set_death_eater_winner(match_id: int): # TODO: test
+def set_death_eater_winner(match_id: int):
     if not Match.exists(Id=match_id):
         raise MatchNotFound
     Match[match_id].Winner = DEATH_EATER_WINNER
     Match[match_id].Status = FINISHED
-    
+
+@db_session
+def set_phoenix_winner(match_id: int): # TODO: test
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    Match[match_id].Winner = PHOENIX_WINNER
+    Match[match_id].Status = FINISHED
 
 @db_session
 def check_winner(match_id: int):
