@@ -54,7 +54,6 @@ function CreateMatch() {
     )
       .then(async (response) => {
         const responseData = await response.json();
-        console.log(responseData);
         if (response.status !== 200) {
           alert("Could not Create Match. Unknown Error.");
         } else {
