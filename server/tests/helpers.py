@@ -8,78 +8,78 @@ def delete_data(table):
     delete(p for p in table)
 
 @db_session
-def delete_user(email, username, password): 
+def delete_user(email: str, username: str, password: str): 
     user = User.get(Email=email, Username=username, Password=password)
     if user is not None:
         user.delete()
     return user
 
 @db_session
-def make_minister(pid):
-    Player[pid].GovRol = 1
+def make_minister(player_id: int):
+    Player[player_id].GovRol = MINISTER
 
 @db_session
-def make_magician(pid):
-    Player[pid].GovRol = 2
+def make_magician(player_id: int):
+    Player[player_id].GovRol = MAGICIAN
 
 @db_session
-def make_director(pid):
-    Player[pid].GovRol = 0
+def make_director(player_id: int):
+    Player[player_id].GovRol = DIRECTOR
 
 @db_session
-def make_voldemort(pid):
-    Player[pid].SecretRol = VOLDEMORT
+def make_voldemort(player_id: int):
+    Player[player_id].SecretRol = VOLDEMORT
 
 @db_session
-def make_phoenix(pid):
-    Player[pid].SecretRol = PHOENIX
+def make_phoenix(player_id: int):
+    Player[player_id].SecretRol = PHOENIX
 
 @db_session
-def get_player_gov_rol(pid):
-    return GovRolDiccionary[Player[pid].GovRol]
+def get_player_gov_rol(player_id: int):
+    return GovRolDiccionary[Player[player_id].GovRol]
 
 @db_session
-def get_exdirector_username(mid: int):
-    director = Match[mid].Players.filter(lambda p: p.GovRol == 4).first()
+def get_exdirector_username(match_id: int):
+    director = Match[match_id].Players.filter(lambda p: p.GovRol == EX_DIRECTOR).first()
     if director is None:
         return "No director yet"
     return director.UserId.Username 
 
 @db_session
-def set_candidate_director_test(mid, pos):
-    Match[mid].CandidateDirector = pos
+def set_candidate_director_test(match_id: int, position: int):
+    Match[match_id].CandidateDirector = position
 
 @db_session
-def set_current_minister(mid,pos):
-    Match[mid].CurrentMinister = pos
+def set_current_minister(match_id: int, position: int):
+    Match[match_id].CurrentMinister = position
 
 @db_session
-def set_current_director(mid,pos):
-    Match[mid].CurrentDirector = pos 
+def set_current_director(match_id: int, position: int):
+    Match[match_id].CurrentDirector = position 
 
 @db_session
-def get_candidate_director(mid):
-    return Match[mid].CandidateDirector
+def get_candidate_director(match_id: int):
+    return Match[match_id].CandidateDirector
 
 @db_session
-def reset_proclamation(mid):
-    Match[mid].Board.PhoenixProclamations = 0
-    Match[mid].Board.DeathEaterProclamations = 0
+def reset_proclamation(match_id: int):
+    Match[match_id].Board.PhoenixProclamations = 0
+    Match[match_id].Board.DeathEaterProclamations = 0
 
 @db_session
-def change_last_minister(mid,pos):
-    Match[mid].CurrentMinister = pos
+def change_last_minister(match_id: int, position: int):
+    Match[match_id].CurrentMinister = position
 
 @db_session
-def change_last_director(mid,pos):
-    Match[mid].Currentdirector = pos
+def change_last_director(match_id: int, position: int):
+    Match[match_id].Currentdirector = position
 
 @db_session
-def change_last_director_govrol(pid):
-    Player[pid].GovRol = 4
+def change_last_director_govrol(player_id: int):
+    Player[player_id].GovRol = EX_DIRECTOR
 
 @db_session
-def change_selected_deck_phoenix(board_id):
+def change_selected_deck_phoenix(board_id: int):
     deck = Board[board_id].Proclamations
     for card in deck.Cards['selected']:
         deck.Cards['selected'].pop()
@@ -87,7 +87,7 @@ def change_selected_deck_phoenix(board_id):
         deck.Cards['selected'].append("phoenix")
 
 @db_session
-def change_selected_deck_death_eater(board_id):
+def change_selected_deck_death_eater(board_id: int):
     deck = Board[board_id].Proclamations
     for card in deck.Cards['selected']:
         deck.Cards['selected'].pop()
@@ -125,12 +125,12 @@ def show_deck(board_id: int):
         return deck.Cards
 
 @db_session
-def get_position(pid):
-    return Player[pid].Position
+def get_positionition(player_id: int):
+    return Player[player_id].positionition
 
 @db_session
-def kill_player(pid):
-    Player[pid].IsDead = True
+def kill_player(player_id: int):
+    Player[player_id].IsDead = True
 
 
 @db_session
