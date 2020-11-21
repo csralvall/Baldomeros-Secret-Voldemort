@@ -16,32 +16,32 @@ async def create_match(minp: int, maxp: int, uhid: int):
     else:
         raise HTTPException(status_code=404, detail="couldnt create the game")  
 
+#se puede cambiar de user a user_id de nombre de variable, por que es el id
+@router.post("/{match_id}", tags=["Game"])
+async def join_game(match_id: int, user: int): 
 
-@router.post("/{mid}", tags=["Game"])
-async def join_game(mid: int, user: int): 
-
-    pid = get_player_id(mid,user)
-    if pid is not None:
+    player_id = get_player_id(match_id,user)
+    if player_id is not None:
         playerdic = {
-            "Match_id": mid,
-            "Player_id": pid
+            "Match_id": match_id,
+            "Player_id": player_id
         }
         return playerdic
         
-    if not there_is_space(mid):
+    if not there_is_space(match_id):
         raise HTTPException(status_code=404, detail="there is no space")
 
-    if not get_match_status(mid) == "Joinable":
+    if not get_match_status(match_id) == "Joinable":
         raise HTTPException(status_code=404, detail="game already started")
 
-    positionp = get_num_players(mid)
-    playerobj = add_user_in_match(user, mid, positionp)
+    positionp = get_num_players(match_id)
+    playerobj = add_user_in_match(user, match_id, positionp)
 
     if playerobj is None:
         raise HTTPException(status_code=404, detail="couldnt add the user")
 
     playerdic = {
-        "Match_id": mid,
+        "Match_id": match_id,
         "Player_id": playerobj.to_dict("PlayerId")["PlayerId"]
     }
 
