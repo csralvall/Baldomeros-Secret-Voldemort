@@ -24,7 +24,7 @@ class Board(db.Entity):
     DeathEaterProclamations = Optional(int, min=0, max=6)
     FailedElectionsCount = Optional(int)
     AvailableSpell = Optional(int, min=0, max=4, default=0)
-    BoardStatus = Optional(int, min=0, max=4, default=0)
+    BoardStatus = Optional(int, min=0, max=4, default=0)#hay que cambiarlo si agregamos caos
     Proclamations = Optional('Deck', cascade_delete=True)
     Match = Required(Match)
 
