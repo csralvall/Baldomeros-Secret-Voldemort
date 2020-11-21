@@ -56,7 +56,7 @@ class NoDirector(Exception):
     pass
 
 @db_session #Bool
-def user_is_registred(name, upassword):
+def user_is_registred(name: str, upassword: str):
     try:
         u = User.get(Username = name, Password = upassword)
         if u:
@@ -67,7 +67,7 @@ def user_is_registred(name, upassword):
         return False
 
 @db_session
-def check_username(username):
+def check_username(username: str):
     try: 
         u = User.exists(Username=username)
         return u 
@@ -75,7 +75,7 @@ def check_username(username):
         return False
 
 @db_session
-def check_email(email):
+def check_email(email: str):
     try: 
         u = User.exists(Email=email)
         return u 
@@ -83,7 +83,7 @@ def check_email(email):
         return False
 
 @db_session #get the User object.
-def get_user(username, password):
+def get_user(username: str, password: str):
     user = User.get(Username=username, Password=password)
     if user is not None:
         user = user.to_dict("Id Username")
@@ -99,16 +99,16 @@ def create_user(email: str, username: str, password: str):
         return False
 
 @db_session
-def add_match(minp,maxp,creator):
+def add_match(minp: int, maxp: str, creator):
     try:
         newmatch = Match(MaxPlayers=maxp,
             MinPlayers=minp,
-            Status=0,
-            BoardType=0, #hardcoded
-            CurrentMinister = 0, #Changes when the match starts
+            Status=JOINABLE,
+            BoardType=SMALL_BOARD, #hardcoded_hay que cambiarlo cuando empieza la partida
+            CurrentMinister = 0, 
             CandidateDirector = NO_DIRECTOR,
             CurrentDirector = NO_DIRECTOR,
-            Winner = "no winner yet",
+            Winner = NO_WINNER_YET,
             Creator = creator)
         return newmatch
     except Exception:
@@ -124,32 +124,32 @@ def add_board(newmatch):
     return newboard
 
 @db_session
-def add_user_in_match(userid, matchid, position):
+def add_user_in_match(userid: int, matchid: int, position: int):
     try:
         mymatch = Match[matchid]
         myuser= User[userid]
     except Exception:
         return None
     newplayer = Player(Position = position,
-        SecretRol = 0, #Changes when the match starts
-        GovRol = 2, #Changes when the match starts
+        SecretRol = VOLDEMORT, 
+        GovRol = MAGICIAN, 
         IsDead = False,
         UserId = myuser,
         MatchId = mymatch)
     return newplayer#need to refactor so it only returns id
 
 @db_session
-def check_player_in_match(gid: int, pid: int):
-    if Match.exists(Id=gid):
-        return exists(p for p in Match[gid].Players if p.PlayerId == pid)
+def check_player_in_match(match_id: int, player_id: int):
+    if Match.exists(Id=match_id):
+        return exists(p for p in Match[match_id].Players if p.PlayerId == player_id)
     return False
 
 @db_session
-def add_match_db(minp, maxp, uhid):
+def add_match_db(minp: int, maxp: int, user_id: int):
     if(minp > maxp):
         return None
     try:
-        creator= User[uhid]
+        creator= User[user_id]
     except Exception:
         return None
     
@@ -157,7 +157,7 @@ def add_match_db(minp, maxp, uhid):
     if match is not None:
         matchId= match.to_dict("Id")["Id"]
         add_board(match)
-        player = add_user_in_match(uhid, matchId, 0)# add the creator to player table 
+        player = add_user_in_match(user_id, matchId, 0)# add the creator to player table 
         player.GovRol = 1
         match_and_player = {
             "Match_id": matchId,
@@ -168,10 +168,10 @@ def add_match_db(minp, maxp, uhid):
         return None
 
 @db_session
-def there_is_space(mid):
+def there_is_space(match_id: int):
     try: 
-        players = Match[mid].Players
-        MaxPlayers = Match[mid].MaxPlayers
+        players = Match[match_id].Players
+        MaxPlayers = Match[match_id].MaxPlayers
         if (len(players) < MaxPlayers):
             return True
         else:
@@ -295,16 +295,16 @@ def deck_status(board_id: int):
 @db_session
 def vote_director(player_id: int, vote: str):
     if vote == 'nox':
-        Player[player_id].Vote = 0
+        Player[player_id].Vote = NOX
     elif vote == 'lumos':
-        Player[player_id].Vote = 1
+        Player[player_id].Vote = LUMOS
     elif vote == 'missing vote':
-        Player[player_id].Vote = 2
+        Player[player_id].Vote = MISSING_VOTE
 
 
 @db_session
-def get_minister_username(ID: int): 
-    minister = Match[ID].Players.filter(lambda p: p.GovRol == 1).first()
+def get_minister_username(match_id: int): 
+    minister = Match[match_id].Players.filter(lambda p: p.GovRol == 1).first()
     if minister is None:
         return "No minister yet"
     return minister.UserId.Username
@@ -321,8 +321,8 @@ def get_candidate_director_username(match_id: int):
     return players[candidate_director].UserId.Username
 
 @db_session
-def get_director_username(ID: int):
-    director = Match[ID].Players.filter(lambda p: p.GovRol == 0).first()
+def get_director_username(match_id: int):
+    director = Match[match_id].Players.filter(lambda p: p.GovRol == 0).first()
     if director is None:
         return "No director yet"
     return director.UserId.Username 
@@ -334,18 +334,18 @@ def change_ingame_status(match_id: int, status: int):
         raise MatchNotFound
     if not (status >= NOMINATION and status <= USE_SPELL) :
         raise BadIngameStatus
-    bid= get_match_board_id(match_id)
-    Board[bid].BoardStatus=status
+    board_id= get_match_board_id(match_id)
+    Board[board_id].BoardStatus=status
 
 @db_session
 def get_ingame_status(match_id: int):
-    bid= get_match_board_id(match_id)
-    return ingame_status[Board[bid].BoardStatus]
+    board_id= get_match_board_id(match_id)
+    return ingame_status[Board[board_id].BoardStatus]
 
 
 @db_session
-def get_match_status(ID: int):
-    return Status[Match[ID].Status] 
+def get_match_status(match_id: int):
+    return Status[Match[match_id].Status] 
 
 @db_session
 def get_match_board_id(match_id: int):
@@ -373,16 +373,17 @@ def get_board_status(board_id: int):
     return board_status    
 
 @db_session
-def check_match(mid):
-    return Match.exists(Id=mid)
+def check_match(match_id: int):
+    return Match.exists(Id=match_id)
 
+#no habria que llamar a el dict de voteType?
 @db_session
 def get_all_player_status(match_id: int): 
     def replace(vote: int):
         result = 'missing vote'
-        if vote == 0:
+        if vote == NOX:
             result = 'nox'
-        elif vote == 1:
+        elif vote == LUMOS:
             result = 'lumos'
         return result
 
@@ -410,14 +411,14 @@ def set_next_minister(match_id: int):
         query = Match[match_id].Players.order_by(Player.Position)
         exMinister = [x for x in query if x.GovRol==3]
         if len(exMinister):
-            exMinister[0].GovRol = 2
+            exMinister[0].GovRol = MAGICIAN
         players = [x for x in query]
         last_minister = Match[match_id].CurrentMinister
-        players[last_minister].GovRol = 3#exminister
+        players[last_minister].GovRol = EX_MINISTER
         current_minister = (last_minister + 1) % len(players)
         while players[current_minister].IsDead:
             current_minister = (current_minister + 1) % len(players)
-        players[current_minister].GovRol = 1
+        players[current_minister].GovRol = MINISTER
         Match[match_id].CurrentMinister = current_minister
         return current_minister
 
@@ -427,64 +428,64 @@ def set_next_minister_failed_election(match_id: int):
         query = Match[match_id].Players.order_by(Player.Position)
         players = [x for x in query]
         last_minister = Match[match_id].CurrentMinister
-        players[last_minister].GovRol = 2#magician
+        players[last_minister].GovRol = MAGICIAN
         current_minister = (last_minister + 1) % len(players)
         while players[current_minister].IsDead:
             current_minister = (current_minister + 1) % len(players)
-        players[current_minister].GovRol = 1
+        players[current_minister].GovRol = MINISTER
         Match[match_id].CurrentMinister = current_minister
         return current_minister
 
 @db_session
-def change_to_exdirector(mid):
-    if not Match.exists(Id=mid):
+def change_to_exdirector(match_id: int):
+    if not Match.exists(Id=match_id):
         raise MatchNotFound
-    query = Match[mid].Players.order_by(Player.Position)
+    query = Match[match_id].Players.order_by(Player.Position)
     players = [x for x in query]
-    director = Match[mid].CurrentDirector
+    director = Match[match_id].CurrentDirector
     if director == NO_DIRECTOR:
         raise NoDirector
     exDirector = [x for x in query if x.GovRol==4]
     if len(exDirector) > 0:
-        exDirector[0].GovRol = 2
-    players[director].GovRol = 4 #Ex Director.
-    Match[mid].CurrentDirector = NO_DIRECTOR
+        exDirector[0].GovRol = MAGICIAN
+    players[director].GovRol = EX_DIRECTOR
+    Match[match_id].CurrentDirector = NO_DIRECTOR
 
 @db_session
-def successful_director_election(mid):
-    if not Match.exists(Id=mid):
+def successful_director_election(match_id: int):
+    if not Match.exists(Id=match_id):
         raise MatchNotFound
-    query = Match[mid].Players.order_by(Player.Position)
+    query = Match[match_id].Players.order_by(Player.Position)
     players = [x for x in query]
-    candidate_director = Match[mid].CandidateDirector
+    candidate_director = Match[match_id].CandidateDirector
     if candidate_director == NO_DIRECTOR:
         raise NoDirector
-    players[candidate_director].GovRol = 0 #director
-    Match[mid].CandidateDirector = NO_DIRECTOR
-    Match[mid].CurrentDirector = candidate_director
+    players[candidate_director].GovRol = DIRECTOR
+    Match[match_id].CandidateDirector = NO_DIRECTOR
+    Match[match_id].CurrentDirector = candidate_director
 
 
 @db_session
-def failed_director_election(mid):
-    if not Match.exists(Id=mid):
+def failed_director_election(match_id: int):
+    if not Match.exists(Id=match_id):
         raise MatchNotFound
-    query = Match[mid].Players.order_by(Player.Position)
+    query = Match[match_id].Players.order_by(Player.Position)
     players = [x for x in query]
-    candidate_director = Match[mid].CandidateDirector
+    candidate_director = Match[match_id].CandidateDirector
     if candidate_director == NO_DIRECTOR:
         raise NoDirector
-    players[candidate_director].GovRol = 2#magician
-    Match[mid].CandidateDirector = NO_DIRECTOR
-    Match[mid].CurrentDirector = NO_DIRECTOR
+    players[candidate_director].GovRol = MAGICIAN
+    Match[match_id].CandidateDirector = NO_DIRECTOR
+    Match[match_id].CurrentDirector = NO_DIRECTOR
 
 
 @db_session
-def set_next_candidate_director(mid,pos):
-    if Match.exists(Id=mid):
-        Match[mid].CandidateDirector = pos
+def set_next_candidate_director(match_id: int, pos: int):
+    if Match.exists(Id=match_id):
+        Match[match_id].CandidateDirector = pos
 
 @db_session
-def check_voldemort(match_id:int):
+def check_voldemort(match_id: int):
     if not Match.exists(Id=match_id):
         raise MatchNotFound
     if get_death_eater_proclamations(match_id)>2:
@@ -496,9 +497,9 @@ def check_voldemort(match_id:int):
         return False
 
 @db_session
-def get_player_position(pid):
-    if Player.exists(PlayerId=pid):
-        return Player[pid].Position
+def get_player_position(player_id: int):
+    if Player.exists(PlayerId=player_id):
+        return Player[player_id].Position
     else:
         raise PlayerNotFound
 
@@ -509,9 +510,9 @@ def compute_election_result(match_id: int):
         voting_cutoff = 0.5000001
         result = 'nox'
         players = select(p for p in Match[match_id].Players if not p.IsDead)
-        if not exists(p for p in players if p.Vote == 2):
+        if not exists(p for p in players if p.Vote == MISSING_VOTE):
             total = count(p for p in players)
-            lumos = count(p for p in players if p.Vote == 1)
+            lumos = count(p for p in players if p.Vote == LUMOS)
             lumos = lumos/total
         else:
             result = 'missing vote'
@@ -526,7 +527,7 @@ def restore_election(match_id: int):
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
-            p.Vote = 2
+            p.Vote = MISSING_VOTE
 
 @db_session
 def add_failed_election(board_id: int):
@@ -579,7 +580,7 @@ def get_phoenix_proclamations(match_id: int):
     return Match[match_id].Board.PhoenixProclamations
 
 @db_session
-def get_death_eater_proclamations(match_id):
+def get_death_eater_proclamations(match_id: int):
     return Match[match_id].Board.DeathEaterProclamations
 
 @db_session
@@ -628,11 +629,11 @@ def check_winner(match_id: int):
         return Match[match_id].Winner
 
 @db_session
-def change_match_status(mid,status):
-    Match[mid].Status = status
+def change_match_status(match_id: int, status: int):
+    Match[match_id].Status = status
 
 @db_session
-def check_host(user_id):
+def check_host(user_id: int):
     try: 
         u = Match.exists(Creator=user_id)
         return u 
@@ -654,7 +655,7 @@ def get_num_phoenix(match_id: int): # to helpers
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
-            if (p.SecretRol == 2):
+            if (p.SecretRol == PHOENIX):
                 n = n + 1 
     return n 
 
@@ -664,7 +665,7 @@ def get_num_magicians(match_id: int): #to helpers
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
-            if (p.GovRol == 2 or p.GovRol == 3 or p.GovRol == 4):
+            if (p.GovRol == MAGICIAN or p.GovRol == EX_MINISTER or p.GovRol == EX_DIRECTOR):
                 n = n + 1 
     return n    
 
@@ -675,7 +676,7 @@ def get_num_death(match_id: int): #to helpers
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
-            if (p.SecretRol == 1):
+            if (p.SecretRol == DEATH_EATER):
                 n = n + 1 
     return n     
 
@@ -685,7 +686,7 @@ def get_num_minister(match_id: int): #to helpers
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
-            if (p.GovRol == 1):
+            if (p.GovRol == MINISTER):
                 n = n + 1 
     return n    
 
@@ -695,7 +696,7 @@ def get_num_voldemort(match_id: int): #to helpers
     if Match.exists(Id=match_id):
         players = Match[match_id].Players
         for p in players:
-            if (p.SecretRol == 0):
+            if (p.SecretRol == VOLDEMORT):
                 n = n + 1 
     return n 
 
@@ -715,13 +716,13 @@ def set_roles(num: int, match_id: int):
     for id in playersids:
         p = Player[id]
         if (phoenix > 0):
-            p.SecretRol = 2
+            p.SecretRol = PHOENIX
             phoenix = phoenix - 1
         elif (death > 0):
-            p.SecretRol = 1
+            p.SecretRol = DEATH_EATER
             death = death - 1
         else:
-            p.SecretRol = 0
+            p.SecretRol = VOLDEMORT
 
 @db_session
 def set_gob_roles(match_id: int):
@@ -732,13 +733,13 @@ def set_gob_roles(match_id: int):
     
     for p in players:
         if (p.Position == k):
-            p.GovRol = 1
+            p.GovRol = MINISTER
         else:
-            p.GovRol = 2
+            p.GovRol = MAGICIAN
 
 @db_session
-def change_player_rol(pid,rol):
-    Player[pid].SecretRol = rol
+def change_player_rol(player_id: int, rol: int):
+    Player[player_id].SecretRol = rol
 
 @db_session
 def get_min_players(match_id: int):
@@ -746,36 +747,37 @@ def get_min_players(match_id: int):
         return Match[match_id].MinPlayers
 
 @db_session
-def get_player_rol(pid):
-    return SecretRolDiccionary[Player[pid].SecretRol]
+def get_player_rol(player_id: int):
+    return SecretRolDiccionary[Player[player_id].SecretRol]
 
 @db_session
-def get_user_username(uid):
-    return User[uid].Username
+def get_user_username(user_id: int):
+    return User[user_id].Username
 
 @db_session
-def get_player_username(pid):
-    return (User[(Player[pid].UserId).Id].Username)
+def get_player_username(player_id: int):
+    return (User[(Player[player_id].UserId).Id].Username)
 
 @db_session
-def change_player_rol(pid,rol):
-    Player[pid].SecretRol = rol
+def change_player_rol(player_id: int, rol: int):
+    Player[player_id].SecretRol = rol
 
+#capaz que se puede hacer que si el board es SMALL, que el if no se fije en el exministro
 @db_session
-def get_posible_directors(mid):
-    players_alive_in_match = select(p for p in Match[mid].Players if p.IsDead == False)
+def get_posible_directors(match_id: int):
+    players_alive_in_match = select(p for p in Match[match_id].Players if p.IsDead == False)
     posible_directors = list()
     for p in players_alive_in_match:
-        if (p.GovRol != 3 and p.GovRol != 4 and p.GovRol != 1):
+        if (p.GovRol != EX_MINISTER and p.GovRol != EX_DIRECTOR and p.GovRol != MINISTER):
             posible_directors.append(get_player_username(p.PlayerId))
 
     return {"posible directors": posible_directors}
 
 @db_session
-def get_death_eater_players_in_match(mid):
-    players_death_eaters = select(p for p in Match[mid].Players if p.SecretRol == 1)
+def get_death_eater_players_in_match(match_id: int):
+    players_death_eaters = select(p for p in Match[match_id].Players if p.SecretRol == DEATH_EATER)
     deatheaters = list()
-    player_voldemort = select(p for p in Match[mid].Players if p.SecretRol == 0).first()
+    player_voldemort = select(p for p in Match[match_id].Players if p.SecretRol == VOLDEMORT).first()
     voldemort = get_player_username(player_voldemort.PlayerId)
 
     for p in players_death_eaters:
@@ -837,10 +839,10 @@ def list_games_db():
     decorated_matches = []
 
     for p in matches:
-        if (p.Status == 0):
+        if (p.Status == JOINABLE):
 
-            mid = p.Id
-            game_decorated = set_game_decorated(mid)
+            match_id = p.Id
+            game_decorated = set_game_decorated(match_id)
 
             decorated_matches.append(game_decorated)
     
@@ -852,11 +854,11 @@ def unlock_spell(match_id: int):
         raise MatchNotFound
     board = Match[match_id].Board
     death_eater_proclamations = board.DeathEaterProclamations
-    if board.BoardType == 0:
+    if board.BoardType == SMALL_BOARD:
         spell = unlock_spell_small_board(death_eater_proclamations)
-    elif board.BoardType == 1:
+    elif board.BoardType == MEDIUM_BOARD:
         spell = unlock_spell_medium_board(death_eater_proclamations)
-    elif board.BoardType == 2:
+    elif board.BoardType == BIG_BOARD:
         spell = unlock_spell_big_board(death_eater_proclamations)
 
     board.AvailableSpell = spell
@@ -864,7 +866,7 @@ def unlock_spell(match_id: int):
     return spell
 
 @db_session
-def unlock_spell_small_board(death_eater_proclamations):
+def unlock_spell_small_board(death_eater_proclamations: int):
     if death_eater_proclamations == 3:
         spell = ADIVINATION
     elif death_eater_proclamations > 3:
@@ -875,7 +877,7 @@ def unlock_spell_small_board(death_eater_proclamations):
     return spell
 
 @db_session
-def unlock_spell_medium_board(death_eater_proclamations):
+def unlock_spell_medium_board(death_eater_proclamations: int):
     if death_eater_proclamations == 2:
         spell = CRUCIO
     elif death_eater_proclamations == 3:
@@ -888,7 +890,7 @@ def unlock_spell_medium_board(death_eater_proclamations):
     return spell
 
 @db_session
-def unlock_spell_big_board(death_eater_proclamations):
+def unlock_spell_big_board(death_eater_proclamations: int):
     if death_eater_proclamations in range(1,3):
         spell = CRUCIO
     elif death_eater_proclamations == 3:
