@@ -63,12 +63,10 @@ async def leave_game(mid: int, user: int):
 
     if not get_match_status(mid) == "Joinable":
         raise HTTPException(status_code=404, detail="game already started")
-    
+
     try:
-        player_eliminated = eliminate_player_from_match(mid, pid)
         playername = get_player_username(pid)
-        if not player_eliminated:
-            raise HTTPException(status_code=404, detail="Player not exist")
+        eliminate_player_from_match(mid, pid)
 
     except ResourceNotFound:
         raise HTTPException(status_code=404, detail="Resource not found")

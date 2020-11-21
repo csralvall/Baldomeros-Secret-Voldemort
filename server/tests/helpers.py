@@ -142,3 +142,15 @@ def get_failed_election_count(board_id: int):
     if not Board.exists(Id=board_id):
         raise BoardNotFound
     return Board[board_id].FailedElectionsCount
+
+@db_session
+def change_status_game(mid):
+    Match[mid].Status = IN_GAME
+
+@db_session
+def get_players_in_match(mid):
+    players = Match[mid].Players
+    players_in_match = list()
+    for p in players:
+        players_in_match.append(p)
+    return players_in_match

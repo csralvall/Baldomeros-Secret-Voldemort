@@ -91,10 +91,12 @@ def get_user(username: str, password: str):
 
 @db_session
 def eliminate_player_from_match(mid, pid):
-    if not Player.exists(PlayerId = pid)
-        return False
+    if not Player.exists(PlayerId = pid):
+        raise PlayerNotFound
+    if not Match.exists(Id = mid):
+        raise MatchNotFound
     Player[pid].delete()
-    return True
+
 
 @db_session
 def create_user(email: str, username: str, password: str):
