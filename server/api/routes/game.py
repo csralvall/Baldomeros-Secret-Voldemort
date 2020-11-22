@@ -131,7 +131,7 @@ async def start_game(match_id: int, user: int):
     #BoardType=SMALL_BOARD, #hardcoded_hay que cambiarlo cuando empieza la partida
     set_roles(num,match_id)
     set_gob_roles(match_id)
-    change_match_status(match_id,1)
+    change_match_status(match_id, IN_GAME)
     board_id = get_match_board_id(match_id)
     create_deck(board_id)
     shuffle_deck(board_id)
