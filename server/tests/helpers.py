@@ -125,8 +125,8 @@ def show_deck(board_id: int):
         return deck.Cards
 
 @db_session
-def get_positionition(player_id: int):
-    return Player[player_id].positionition
+def get_position(player_id: int):
+    return Player[player_id].Position
 
 @db_session
 def kill_player(player_id: int):
