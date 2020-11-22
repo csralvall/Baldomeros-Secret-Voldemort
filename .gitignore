@@ -13,3 +13,4 @@ server/db/database.sqlite
 server/db/__init__.pyc
 server/.cache/v/cache/lastfailed
 server/__init__.pyc
+.coverage
