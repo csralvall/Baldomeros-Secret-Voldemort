@@ -19,6 +19,10 @@ def make_minister(player_id: int):
     Player[player_id].GovRol = MINISTER
 
 @db_session
+def make_ex_minister(player_id: int):
+    Player[player_id].GovRol = EX_MINISTER
+
+@db_session
 def make_magician(player_id: int):
     Player[player_id].GovRol = MAGICIAN
 
