@@ -738,6 +738,17 @@ def set_gob_roles(match_id: int):
             p.GovRol = MAGICIAN
 
 @db_session
+def set_board_type(board_id: int, number_of_players: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+    if number_of_players<=6:
+        Board[board_id].BoardType = SMALL_BOARD
+    elif number_of_players<=8:
+        Board[board_id].BoardType = MEDIUM_BOARD
+    elif number_of_players<=10:
+        Board[board_id].BoardType = BIG_BOARD
+
+@db_session
 def change_player_rol(player_id: int, rol: int):
     Player[player_id].SecretRol = rol
 
@@ -762,15 +773,18 @@ def get_player_username(player_id: int):
 def change_player_rol(player_id: int, rol: int):
     Player[player_id].SecretRol = rol
 
-#capaz que se puede hacer que si el board es SMALL, que el if no se fije en el exministro
 @db_session
 def get_posible_directors(match_id: int):
     players_alive_in_match = select(p for p in Match[match_id].Players if p.IsDead == False)
     posible_directors = list()
-    for p in players_alive_in_match:
-        if (p.GovRol != EX_MINISTER and p.GovRol != EX_DIRECTOR and p.GovRol != MINISTER):
-            posible_directors.append(get_player_username(p.PlayerId))
-
+    if len(players_alive_in_match)<=5:
+        for p in players_alive_in_match:
+            if (p.GovRol != EX_DIRECTOR and p.GovRol != MINISTER):
+                posible_directors.append(get_player_username(p.PlayerId))
+    else:
+        for p in players_alive_in_match:
+            if (p.GovRol != EX_MINISTER and p.GovRol != EX_DIRECTOR and p.GovRol != MINISTER):
+                posible_directors.append(get_player_username(p.PlayerId))
     return {"posible directors": posible_directors}
 
 @db_session
