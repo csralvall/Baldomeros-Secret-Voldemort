@@ -136,6 +136,7 @@ async def start_game(match_id: int, user: int):
     create_deck(board_id)
     shuffle_deck(board_id)
     get_top_three_proclamation(board_id)
+    set_board_type(board_id,num)
 
     return {"game": "game created successfully"}
 

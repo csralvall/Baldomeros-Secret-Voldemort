@@ -125,4 +125,6 @@ class TestSV62(unittest.TestCase):
         game = set_game_decorated(id3)
         self.assertEqual(game, {"Nombre_partida": self.username3, "Min_and_Max": (5,10), "Match_id": id3})
 
-        
+
+if __name__ == '__main__':
+    unittest.main()
