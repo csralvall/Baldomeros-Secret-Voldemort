@@ -157,9 +157,6 @@ def test_get_directors_7_players():
     change_player_rol(player6id,1) #death_eater
     change_player_rol(player7id,2) #phoenix
 
-
-#HACER MAGOS A LOS NUEVOS, VER CUALES VOY A HACER MINISTRO, CUALES EXMINISTRO.
-#MATAR A UNO PARA VER COMO FUNCIONA CUANDO SON 6 Y MATAR A OTRO PARA VER CON 5.
     make_magician(player1id)
     make_magician(player2id)
     make_magician(player3id)
@@ -181,10 +178,10 @@ def test_get_directors_7_players():
 
     kill_player(player1id)
     kill_player(player3id)
-    #example1 y example 3 estan muertos, no deberian salir
+    #example1 y example 3 estan muertos, no tienen que salir
     #example 5 es ministro
     #example2 es exdirector
-    #example4 es exministro, esta vez si deberia estar
+    #example4 es exministro, esta vez si deberia estar, porque son 5 jugadores vivos
 
     response2 = client.get(
         f"game/{mid}/directors"
