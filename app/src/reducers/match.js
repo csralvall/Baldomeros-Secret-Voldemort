@@ -1,5 +1,5 @@
 const matchReducer = (
-  state = { id: -1, playerId: -1, name: "", hostId: -1 },
+  state = { id: -1, playerId: -1, name: "", hostName: "" },
   action
 ) => {
   switch (action.type) {

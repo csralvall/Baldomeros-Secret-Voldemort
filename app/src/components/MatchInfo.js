@@ -33,7 +33,7 @@ function MatchInfo({ playerList }) {
       {Object.entries(playerList).map((player) => (
         <h4 className="player-name">{player[0]}</h4>
       ))}
-      {user.id === game.hostId ? (
+      {user.username === game.hostName ? (
         <div>
           <button
             className="start-btn"

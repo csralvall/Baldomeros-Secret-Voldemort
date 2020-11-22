@@ -103,7 +103,7 @@ function MatchList() {
                 }}
               >
                 <ul className="entry">
-                  <li>Partida de {game.Nombre_partida}</li>
+                  <li>{game.Nombre_partida + "'s Game"}</li>
                   <li>
                     {game.Min_and_Max[0]} - {game.Min_and_Max[1]}
                   </li>
@@ -112,7 +112,10 @@ function MatchList() {
             ))}
           </ul>
           {selectedGame !== -1 ? (
-            <JoinMatch matchID={gameList[selectedGame].Match_id} />
+            <JoinMatch
+              matchID={gameList[selectedGame].Match_id}
+              hostName={gameList[selectedGame].Nombre_partida}
+            />
           ) : (
             ""
           )}
