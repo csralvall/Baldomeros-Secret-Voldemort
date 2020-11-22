@@ -15,6 +15,9 @@ BoardType = {0: "5-6",
              1: "7-8",
              2: "9-10"}
 
+SMALL_BOARD = 0
+MEDIUM_BOARD = 1
+BIG_BOARD = 2
 
 SecretRolDiccionary = {0: "Voldemort",
                        1: "Death Eater",
@@ -30,9 +33,20 @@ GovRolDiccionary = {0: "Head Master",
                     3: "Ex Minister",
                     4: "Ex Director"}
 
+DIRECTOR = 0
+MINISTER = 1
+MAGICIAN = 2
+EX_MINISTER = 3
+EX_DIRECTOR = 4
+NO_DIRECTOR = 99
+
 VoteType = {0: "nox",
             1: "lumos",
             2: "missing vote"}
+
+NOX = 0
+LUMOS = 1
+MISSING_VOTE = 2
 
 spells = (None, "Avada Kedavra", "Imperio", "Crucio", "Adivination")
 
@@ -49,6 +63,5 @@ ELECTION = 1
 MINISTER_SELECTION = 2
 DIRECTOR_SELECTION = 3
 USE_SPELL = 4
-CHAOS = 5
+CHAOS = 5#hay que agregarlo en database y en un if que chequea si el estado es legal
 
-NO_DIRECTOR = 99
