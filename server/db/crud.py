@@ -90,12 +90,12 @@ def get_user(username: str, password: str):
     return user
 
 @db_session
-def eliminate_player_from_match(mid, pid):
-    if not Player.exists(PlayerId = pid):
+def eliminate_player_from_match(match_id: int, player_id: int):
+    if not Player.exists(PlayerId = player_id):
         raise PlayerNotFound
-    if not Match.exists(Id = mid):
+    if not Match.exists(Id = match_id):
         raise MatchNotFound
-    Player[pid].delete()
+    Player[player_id].delete()
 
 
 @db_session
