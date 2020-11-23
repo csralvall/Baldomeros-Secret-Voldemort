@@ -4,7 +4,7 @@ from server.db.crud import *
 
 from server.tests.helpers import *
 
-class TestLeaveGame(unittest.TestCase):
+class TestEliminatePlayer(unittest.TestCase):
 
     def setUp(self):
         delete_data(Board)
@@ -44,7 +44,7 @@ class TestLeaveGame(unittest.TestCase):
         self.assertRaises(PlayerNotFound, eliminate_player_from_match, self.matchid, 99999999)
     
     def test_raise_match_not_exists(self):
-        self.assertRaises(PlayerNotFound, eliminate_player_from_match, 9999999, 99999999)
+        self.assertRaises(MatchNotFound, eliminate_player_from_match, 9999999, self.player1id)
 
     
 
