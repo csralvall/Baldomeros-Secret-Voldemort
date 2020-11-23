@@ -89,6 +89,14 @@ def get_user(username: str, password: str):
         user = user.to_dict("Id Username")
     return user
 
+@db_session
+def eliminate_player_from_match(match_id: int, player_id: int):
+    if not Player.exists(PlayerId = player_id):
+        raise PlayerNotFound
+    if not Match.exists(Id = match_id):
+        raise MatchNotFound
+    Player[player_id].delete()
+
 
 @db_session
 def create_user(email: str, username: str, password: str):
