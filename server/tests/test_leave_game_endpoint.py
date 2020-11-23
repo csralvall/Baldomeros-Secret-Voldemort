@@ -60,7 +60,7 @@ def test_match_already_started():
     mid = match['Match_id']
     pid = match['Player_id']
     
-    change_match_status(mid, IN_GAME):
+    change_match_status(mid, IN_GAME)
 
     response = client.patch(
         f"/game/{mid}/leave/{pid}"
