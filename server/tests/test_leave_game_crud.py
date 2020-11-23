@@ -34,9 +34,11 @@ class TestDeck(unittest.TestCase):
         delete_data(Board)
 
     def test_eliminate_player_OK(self):
-        self.assertEqual(get_players_in_match(self.matchid), [player1, player2, player3])
+        self.assertEqual(get_count_players_in_match(self.matchid), 4)
+        self.assertEqual(check_player_in_match(self.matchid,self.player1id),True)
         eliminate_player_from_match(self.matchid, self.player1id)
-        self.assertEqual(get_players_in_match(self.matchid), [player2, player3])
+        self.assertEqual(get_count_players_in_match(self.matchid), 3)
+        self.assertEqual(check_player_in_match(self.matchid,self.player1id),False)
 
     def test_raise_player_not_found(self):
         self.assertRaises(PlayerNotFound, eliminate_player_from_match, self.matchid, 99999999)

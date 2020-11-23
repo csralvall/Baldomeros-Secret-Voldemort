@@ -47,13 +47,12 @@ async def join_game(match_id: int, user: int):
 
     return playerdic
 
-
 @router.get("/list", tags=["Game"])
 async def list_games():
     return list_games_db()
-      
-@router.post("/{mid}/leave/{pid}", tags=["Game"])
-async def leave_game(mid: int, user: int):
+
+@router.patch("/{mid}/leave/{pid}", tags=["Game"])
+async def leave_game(mid: int, pid: int):
 
     if not check_match(mid):
         raise HTTPException(status_code=404, detail="this match does not exist")
@@ -71,4 +70,5 @@ async def leave_game(mid: int, user: int):
     except ResourceNotFound:
         raise HTTPException(status_code=404, detail="Resource not found")
 
-    return f"{playername} is not longer in the game"
+    return f"{playername} is not longer in the game"    
+    

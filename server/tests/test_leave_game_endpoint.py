@@ -16,12 +16,12 @@ def test_match_not_exist():
     pid = 1
     mid = 1
 
-    response = client.post(
+    response = client.patch(
         f"/game/{mid}/leave/{pid}"
     )
 
     assert response.status_code == 404
-    assert response.json() == "this match does not exist"
+    assert response.json() == {"detail":"this match does not exist"}
 
 def test_player_not_in_match():
     delete_data(Board)
@@ -36,13 +36,14 @@ def test_player_not_in_match():
 
     match = add_match_db(5,7,uid1)
     mid = match['Match_id']
+    pid = 99999
 
-    response = client.post(
+    response = client.patch(
         f"/game/{mid}/leave/{pid}"
     )
 
     assert response.status_code == 404
-    assert response.json() == "Player not found"
+    assert response.json() == {"detail": "Player not found"}
 
 def test_match_already_started():
     delete_data(Board)
@@ -61,12 +62,12 @@ def test_match_already_started():
     
     change_status_game(mid)
 
-    response = client.post(
+    response = client.patch(
         f"/game/{mid}/leave/{pid}"
     )
 
     assert response.status_code == 404
-    assert response.json() == "Player not found"
+    assert response.json() == {"detail": "game already started"}
 
 def test_leave_game_OK():
     delete_data(Board)
@@ -85,7 +86,7 @@ def test_leave_game_OK():
 
     playername = get_player_username(pid)
 
-    response = client.post(
+    response = client.patch(
         f"/game/{mid}/leave/{pid}"
     )
 
