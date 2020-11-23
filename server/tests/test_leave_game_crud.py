@@ -4,7 +4,7 @@ from server.db.crud import *
 
 from server.tests.helpers import *
 
-class TestDeck(unittest.TestCase):
+class TestLeaveGame(unittest.TestCase):
 
     def setUp(self):
         delete_data(Board)
@@ -34,10 +34,10 @@ class TestDeck(unittest.TestCase):
         delete_data(Board)
 
     def test_eliminate_player_OK(self):
-        self.assertEqual(get_count_players_in_match(self.matchid), 4)
+        self.assertEqual(get_num_players(self.matchid), 4)
         self.assertEqual(check_player_in_match(self.matchid,self.player1id),True)
         eliminate_player_from_match(self.matchid, self.player1id)
-        self.assertEqual(get_count_players_in_match(self.matchid), 3)
+        self.assertEqual(get_num_players(self.matchid), 3)
         self.assertEqual(check_player_in_match(self.matchid,self.player1id),False)
 
     def test_raise_player_not_found(self):
