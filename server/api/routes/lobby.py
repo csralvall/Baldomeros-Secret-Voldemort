@@ -51,21 +51,21 @@ async def join_game(match_id: int, user: int):
 async def list_games():
     return list_games_db()
 
-@router.patch("/{mid}/leave/{pid}", tags=["Game"])
-async def leave_game(mid: int, pid: int):
+@router.patch("/{match_id}/leave/{player_id}", tags=["Game"])
+async def leave_game(match_id: int, player_id: int):
 
-    if not check_match(mid):
+    if not check_match(match_id):
         raise HTTPException(status_code=404, detail="this match does not exist")
 
-    if not check_player_in_match(mid,pid):
+    if not check_player_in_match(match_id,player_id):
         raise HTTPException(status_code=404, detail="Player not found")
 
-    if not get_match_status(mid) == "Joinable":
+    if not get_match_status(match_id) == "Joinable":
         raise HTTPException(status_code=404, detail="game already started")
 
     try:
-        playername = get_player_username(pid)
-        eliminate_player_from_match(mid, pid)
+        playername = get_player_username(player_id)
+        eliminate_player_from_match(match_id, player_id)
 
     except ResourceNotFound:
         raise HTTPException(status_code=404, detail="Resource not found")
