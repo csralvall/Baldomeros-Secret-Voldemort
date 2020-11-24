@@ -390,9 +390,9 @@ def test_vote_endpoint():
 
     name_list = ['foo','bar','baz','zoo','zar']
 
-    enact_proclamation(gid,"death eater")
-    enact_proclamation(gid,"death eater")
-    enact_proclamation(gid,"death eater")
+    enact_proclamation(gid,DEATH_EATER_STR)
+    enact_proclamation(gid,DEATH_EATER_STR)
+    enact_proclamation(gid,DEATH_EATER_STR)
 
     make_minister(zoopid)
     set_current_minister(gid,3)
@@ -408,6 +408,6 @@ def test_vote_endpoint():
     client.put(f"/game/{gid}/player/{bazpid}?vote=lumos")
     client.put(f"/game/{gid}/player/{zoopid}?vote=lumos")
     client.put(f"/game/{gid}/player/{zarpid}?vote=lumos")
-    assert check_winner(gid) == DEATH_EATER_WINNER
+    assert check_winner(gid) == DEATH_EATER_STR
     assert get_ingame_status(gid) == ingame_status[MINISTER_SELECTION]
 

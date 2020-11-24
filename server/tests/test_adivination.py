@@ -32,9 +32,9 @@ class Testadivination(unittest.TestCase):
 #--------------------------- Test get_min_players ----------------------------
 
     def test_adivnination(self):
-        enact_proclamation(self.matchid1, "death eater")
-        enact_proclamation(self.matchid1, "death eater")
-        enact_proclamation(self.matchid1, "death eater")
+        enact_proclamation(self.matchid1, DEATH_EATER_STR)
+        enact_proclamation(self.matchid1, DEATH_EATER_STR)
+        enact_proclamation(self.matchid1, DEATH_EATER_STR)
 
         self.assertEqual(unlock_spell(self.matchid1), ADIVINATION) 
 
@@ -46,10 +46,10 @@ class Testadivination(unittest.TestCase):
         self.assertRaises(BoardNotFound, adivination, self.board_id + 1)
 
     def test_adivnination3(self):
-        enact_proclamation(self.matchid1, "death eater")
-        enact_proclamation(self.matchid1, "death eater")
-        enact_proclamation(self.matchid1, "death eater")
-        enact_proclamation(self.matchid1, "death eater")
+        enact_proclamation(self.matchid1, DEATH_EATER_STR)
+        enact_proclamation(self.matchid1, DEATH_EATER_STR)
+        enact_proclamation(self.matchid1, DEATH_EATER_STR)
+        enact_proclamation(self.matchid1, DEATH_EATER_STR)
 
         self.assertNotEqual(unlock_spell(self.matchid1), ADIVINATION) 
 

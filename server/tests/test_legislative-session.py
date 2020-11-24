@@ -62,13 +62,15 @@ class TestInMatch(unittest.TestCase):
         self.assertEqual(get_ingame_status(self.matchid),ingame_status[DIRECTOR_SELECTION])        
         change_ingame_status(self.matchid, USE_SPELL)
         self.assertEqual(get_ingame_status(self.matchid),ingame_status[USE_SPELL])
+        change_ingame_status(self.matchid, EXPELLIARMUS)
+        self.assertEqual(get_ingame_status(self.matchid),ingame_status[EXPELLIARMUS])
 
     def test_change_ingame_status_wrong_match(self):
         self.assertRaises(MatchNotFound, change_ingame_status, self.matchid+1,NOMINATION)
 
     def test_bad_ingame_status(self):
         self.assertRaises(BadIngameStatus, change_ingame_status, self.matchid, -1)
-        self.assertRaises(BadIngameStatus, change_ingame_status, self.matchid, 5)
+        self.assertRaises(BadIngameStatus, change_ingame_status, self.matchid, 7)
 
 
     def test_change_to_exdirector(self):
@@ -123,20 +125,20 @@ class TestInMatch(unittest.TestCase):
         for i in range(0,5):
             is_victory_from(self.matchid)
             self.assertEqual(check_winner(self.matchid), "no winner yet")
-            enact_proclamation(self.matchid, "phoenix")
-            enact_proclamation(self.matchid, "death eater")
+            enact_proclamation(self.matchid, PHOENIX_STR)
+            enact_proclamation(self.matchid, DEATH_EATER_STR)
         is_victory_from(self.matchid)
-        self.assertEqual(check_winner(self.matchid), "phoenix")
+        self.assertEqual(check_winner(self.matchid), PHOENIX_STR)
 
     def test_check_winner_de(self):
         reset_proclamation(self.matchid)
         for i in range(0,6):
             is_victory_from(self.matchid)
             self.assertEqual(check_winner(self.matchid), "no winner yet")
-            enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
+            enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         is_victory_from(self.matchid)
-        self.assertEqual(check_winner(self.matchid), "death eater")
+        self.assertEqual(check_winner(self.matchid), DEATH_EATER_STR)
 
     def test_check_winner(self):
         self.assertIsNone(check_winner(self.matchid+1))

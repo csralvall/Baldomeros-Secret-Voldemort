@@ -160,10 +160,10 @@ def test_receive_cards_minister_wrong_selected_cards():
     selected_db_1=hand_db[1]
     selected_db_2=hand_db[2]
 
-    if selected_db_1 == "phoenix":
-        selected_db_1 = "death eater"
+    if selected_db_1 == PHOENIX_STR:
+        selected_db_1 = DEATH_EATER_STR
     else:
-        selected_db_1="phoenix"
+        selected_db_1=PHOENIX_STR
 
     response = client.post(
         f"/game/{match_id}/proclamation/{pid}?discarded={discarted_db}",
@@ -216,7 +216,7 @@ def test_receive_cards_director_ok():
     assert response.json() == "no winner yet"
     assert get_ingame_status(match_id) == ingame_status[NOMINATION]
 
-    if selected_db_1 == "phoenix":
+    if selected_db_1 == PHOENIX_STR:
         assert get_phoenix_proclamations(match_id) == 1
         assert get_death_eater_proclamations(match_id) == 0
     else:
@@ -281,7 +281,7 @@ def test_receive_cards_director_ok_5players():
     assert response.json() == "no winner yet"
     assert get_ingame_status(match_id) == ingame_status[NOMINATION]
 
-    if selected_db_1 == "phoenix":
+    if selected_db_1 == PHOENIX_STR:
         assert get_phoenix_proclamations(match_id) == 1
         assert get_death_eater_proclamations(match_id) == 0
     else:
@@ -321,7 +321,7 @@ def test_receive_cards_director_ok_winner_ph():
     change_ingame_status(match_id, DIRECTOR_SELECTION)
 
     for i in range (0,4):
-        enact_proclamation(match_id,"phoenix")
+        enact_proclamation(match_id,PHOENIX_STR)
 
     change_selected_deck_phoenix(bid)
     hand_db = show_selected_deck(bid)
@@ -340,7 +340,7 @@ def test_receive_cards_director_ok_winner_ph():
     )
     assert get_failed_election_count(bid)==0
     assert response.status_code == 200
-    assert response.json() == "phoenix"
+    assert response.json() == PHOENIX_STR
 
 def test_receive_cards_director_spell():
     delete_data(Board)
@@ -370,7 +370,7 @@ def test_receive_cards_director_spell():
     change_ingame_status(match_id, DIRECTOR_SELECTION)
 
     for i in range (0,2):
-        enact_proclamation(match_id,"death eater")
+        enact_proclamation(match_id,DEATH_EATER_STR)
 
     change_selected_deck_death_eater(bid)
     hand_db = show_selected_deck(bid)
@@ -544,10 +544,10 @@ def test_receive_cards_director_fail3():
     assert get_minister_username(match_id)=="bar1"
     assert get_director_username(match_id)=="bar3"
 
-    if selected_db_1 == "phoenix":
-        selected_db_1 = "death eater"
+    if selected_db_1 == PHOENIX_STR:
+        selected_db_1 = DEATH_EATER_STR
     else:
-        selected_db_1="phoenix"
+        selected_db_1=PHOENIX_STR
 
     response = client.post(
         f"/game/{match_id}/proclamation/{pid3}?discarded={discarted_db}",
@@ -653,7 +653,7 @@ def test_receive_cards_director_fail_empty_selected():
 
     response = client.post(
         f"/game/{match_id}/proclamation/{pid3}?discarded=phoenix",
-        json=["phoenix"]
+        json=[PHOENIX_STR]
     )
     assert response.status_code == 404
     assert response.json()['detail'] == "The proclamation discarded doesn't match the proclamations passed."
@@ -722,7 +722,7 @@ def test_receive_cards_director_needed_shufle():
     assert response.status_code == 200
     assert response.json() == "no winner yet"
     assert get_ingame_status(match_id) == ingame_status[NOMINATION]
-    if selected_db_1 == "phoenix":
+    if selected_db_1 == PHOENIX_STR:
         assert get_phoenix_proclamations(match_id) == 1
         assert get_death_eater_proclamations(match_id) == 0
     else:
