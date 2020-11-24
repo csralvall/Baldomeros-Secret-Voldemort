@@ -40,11 +40,11 @@ class TestDeck(unittest.TestCase):
         self.assertEqual(get_player_id_from_username(self.match, "dfa"), None)
 
     def test_unlock_spell_with_small_board(self):
-        enact_proclamation(self.match, "death eater")
-        enact_proclamation(self.match, "death eater")
-        enact_proclamation(self.match, "death eater")
+        enact_proclamation(self.match, DEATH_EATER_STR)
+        enact_proclamation(self.match, DEATH_EATER_STR)
+        enact_proclamation(self.match, DEATH_EATER_STR)
         self.assertEqual(unlock_spell(self.match), ADIVINATION)
-        enact_proclamation(self.match, "death eater")
+        enact_proclamation(self.match, DEATH_EATER_STR)
         self.assertEqual(unlock_spell(self.match), AVADA_KEDAVRA)
 
     def test_unlock_spell_bad_match_id(self):
@@ -120,11 +120,108 @@ class TestDeck(unittest.TestCase):
     def test_set_death_eater_winner(self):
         set_death_eater_winner(self.match)
         self.assertEqual(get_match_status(self.match), Status[FINISHED])
-        self.assertEqual(check_winner(self.match), DEATH_EATER_WINNER)
+        self.assertEqual(check_winner(self.match), DEATH_EATER_STR)
         
 
     def test_set_death_eater_winner_match_not_found(self):
         self.assertRaises(MatchNotFound, set_death_eater_winner, self.match+1)
+
+    def test_unlock_expelliarmus_before_five_death_eater_cards(self):
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        for i in range(3):
+            enact_proclamation(self.match, DEATH_EATER_STR)
+
+        unlock_expelliarmus(self.board)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+    def test_unlock_expelliarmus_after_five_death_eater_cards(self):
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        for i in range(5):
+            enact_proclamation(self.match, DEATH_EATER_STR)
+
+        unlock_expelliarmus(self.board)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[UNLOCKED])
+
+    def test_unlock_expelliarmus_bad_board_id(self):
+        self.assertRaises(BoardNotFound, unlock_expelliarmus, self.board+1)
+
+    def test_get_expelliarmus_status_bad_board_id(self):
+        self.assertRaises(BoardNotFound, get_expelliarmus_status, self.board+1)
+
+
+    def test_set_expelliarmus_status_after_five_death_eater_cards(self):
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        for i in range(5):
+            enact_proclamation(self.match, DEATH_EATER_STR)
+
+        unlock_expelliarmus(self.board)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[UNLOCKED])
+
+        set_expelliarmus_status(self.board, MINISTER_STAGE)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[MINISTER_STAGE])
+
+        set_expelliarmus_status(self.board, REJECTED)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[REJECTED])
+
+    def test_set_expelliarmus_status_before_five_death_eater_cards(self):
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        for i in range(3):
+            enact_proclamation(self.match, DEATH_EATER_STR)
+
+        unlock_expelliarmus(self.board)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        set_expelliarmus_status(self.board, MINISTER_STAGE)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        set_expelliarmus_status(self.board, REJECTED)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+    def test_set_expelliarmus_status_lock_after_unlock(self):
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        for i in range(5):
+            enact_proclamation(self.match, DEATH_EATER_STR)
+
+        unlock_expelliarmus(self.board)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[UNLOCKED])
+
+        set_expelliarmus_status(self.board, LOCKED)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[UNLOCKED])
+
+    def test_set_expelliarmus_status_bad_board_id(self):
+        self.assertRaises(BoardNotFound, set_expelliarmus_status,
+                          self.board+1, MINISTER_STAGE)
+
 
 if __name__ == "__main__":
     unittest.main()
