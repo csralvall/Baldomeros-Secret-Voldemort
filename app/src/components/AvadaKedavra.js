@@ -87,6 +87,7 @@ function AvadaKedavra({ playerList }) {
         }}
       >
         <div>
+          <h1 className="avada-kedavra-modal-title">Cast Avada Kedavra</h1>
           {Object.entries(playerList)
             .filter(isPlayerDead)
             .filter(isNotMe)
