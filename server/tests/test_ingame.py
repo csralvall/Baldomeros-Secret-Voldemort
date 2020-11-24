@@ -177,6 +177,7 @@ class TestInMatch(unittest.TestCase):
                 'PhoenixProclamations': 0,
                 'boardtype': '5-6',
                 'spell': None,
+                'expelliarmus': expelliarmus[LOCKED],
                 'status': 'nomination',
                 'failcounter': 0}
         board_id = get_match_board_id(self.matchid)
@@ -184,15 +185,16 @@ class TestInMatch(unittest.TestCase):
 
     def test_enact_proclamation(self):
         reset_proclamation(self.matchid)
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         board_id = get_match_board_id(self.matchid)
         add_failed_election(board_id)
         board = {'DeathEaterProclamations': 1,
                 'PhoenixProclamations': 3,
                 'boardtype': '5-6',
+                'expelliarmus': expelliarmus[LOCKED],
                 'spell': None,
                 'status': 'nomination',
                 'failcounter': 1}
@@ -206,6 +208,7 @@ class TestInMatch(unittest.TestCase):
                 'PhoenixProclamations': 0,
                 'boardtype': '5-6',
                 'spell': None,
+                'expelliarmus': expelliarmus[LOCKED],
                 'status': 'nomination',
                 'failcounter': 0}
         board_id = get_match_board_id(self.matchid)
@@ -217,21 +220,21 @@ class TestInMatch(unittest.TestCase):
     def test_get_fp_OK(self):
         reset_proclamation(self.matchid)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 0)
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 1)
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 2)
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 3)
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 4)
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 5)
 
     def test_get_fp_OK2(self):
         reset_proclamation(self.matchid)
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 2)
 
     #------------------------get_death_eater_proclamations----------------------
@@ -240,23 +243,23 @@ class TestInMatch(unittest.TestCase):
     def test_get_dp_OK(self):
         reset_proclamation(self.matchid)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 0)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 1)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 2)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 3)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 4)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 5)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 6)
 
     def test_get_dp_OK2(self):
         reset_proclamation(self.matchid)
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 2)
 
     #-------------27 test^-------------------
@@ -269,63 +272,63 @@ class TestInMatch(unittest.TestCase):
     def test_is_victory_OK_de(self):
         reset_proclamation(self.matchid)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
-        self.assertEqual(is_victory_from(self.matchid), "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        self.assertEqual(is_victory_from(self.matchid), DEATH_EATER_STR)
 
     def test_is_victory_OK_de2(self):
         reset_proclamation(self.matchid)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
-        self.assertEqual(is_victory_from(self.matchid), "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        self.assertEqual(is_victory_from(self.matchid), DEATH_EATER_STR)
 
     def test_is_victory_OK_ph(self):
         reset_proclamation(self.matchid)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        self.assertEqual(is_victory_from(self.matchid), "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        self.assertEqual(is_victory_from(self.matchid), PHOENIX_STR)
 
     def test_is_victory_OK_ph2(self):
         reset_proclamation(self.matchid)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
-        self.assertEqual(is_victory_from(self.matchid), "phoenix")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        self.assertEqual(is_victory_from(self.matchid), PHOENIX_STR)
 
     def test_is_victory_fail(self):
         self.assertIsNone(is_victory_from(999999))#can fail if match has this id
