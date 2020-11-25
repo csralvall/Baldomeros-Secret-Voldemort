@@ -486,6 +486,19 @@ def failed_director_election(match_id: int):
     Match[match_id].CandidateDirector = NO_DIRECTOR
     Match[match_id].CurrentDirector = NO_DIRECTOR
 
+@db_session
+def failed_director_expelliarmus(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    query = Match[match_id].Players.order_by(Player.Position)
+    players = [x for x in query]
+    current_director = Match[match_id].CurrentDirector
+    if current_director == NO_DIRECTOR:
+        raise NoDirector
+    players[current_director].GovRol = MAGICIAN
+    Match[match_id].CandidateDirector = NO_DIRECTOR
+    Match[match_id].CurrentDirector = NO_DIRECTOR
+
 
 @db_session
 def set_next_candidate_director(match_id: int, pos: int):
