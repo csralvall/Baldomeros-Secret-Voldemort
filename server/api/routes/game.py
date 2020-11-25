@@ -151,38 +151,6 @@ async def posible_directors(match_id:int):
 
     return posible_directors
 
-@router.patch("/{match_id}/board/avada-kedavra", tags=["Game"])
-async def use_avada_kedavra(
-    match_id: int = Path(..., title="The ID of the current match"),
-    playername: str = Query(..., title="Name of player who receives the spell")):
-
-    if not check_match(match_id):
-        raise HTTPException(status_code=404, detail="Match not found")
-
-    minister = get_minister_username(match_id)
-
-    if minister == playername:
-        raise HTTPException(status_code=403, detail="You can't kill yourself")
-
-    try:
-        player_id = get_player_id_from_username(match_id, playername)
-        board_id = get_match_board_id(match_id)
-        avada_kedavra(board_id, player_id)
-        change_ingame_status(match_id, NOMINATION)#minister selects director stage
-        change_to_exdirector(match_id)
-        set_next_minister(match_id)
-        if is_voldemort_dead(match_id):
-            set_phoenix_winner(match_id)
-    except VoldemortNotFound:
-        raise HTTPException(status_code=500, detail="Voldemort was not set")
-    except ResourceNotFound:
-        raise HTTPException(status_code=404, detail="Resource not found")
-    except NoDirector:
-        raise HTTPException(status_code=404, detail="There is no director")
-
-    return f"{playername} is dead"
-
-
 @router.post("/{match_id}/proclamation/{player_id}", tags=["Game"])
 async def receive_cards(match_id: int, player_id: int, discarded: str, selected: List[str]=Body(...)):
 
@@ -232,7 +200,8 @@ async def receive_cards(match_id: int, player_id: int, discarded: str, selected:
         reset_failed_election(board_id)
         winner = is_victory_from(match_id)
 
-        if selected_card == "death eater":
+        unlock_expelliarmus(board_id)
+        if selected_card == DEATH_EATER_STR:
             if not unlock_spell(match_id) == NO_SPELL:
                 change_ingame_status(match_id, USE_SPELL)#spell stage
             else:
@@ -285,17 +254,3 @@ async def select_director(
     return f"{playername} is the candidate to director"
 
 
-@router.patch("/{match_id}/board/adivination", tags=["Game"])
-async def use_adivination(match_id: int):
-
-    if not check_match(match_id):
-        raise HTTPException(status_code=404, detail="Match not found")
-
-    change_ingame_status(match_id, NOMINATION)
-    change_to_exdirector(match_id)
-    set_next_minister(match_id)
-
-    board_id = get_match_board_id(match_id)
-    adivination(board_id)
-
-    return 200

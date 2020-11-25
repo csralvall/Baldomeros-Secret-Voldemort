@@ -1,6 +1,6 @@
 
-DEATH_EATER_WINNER = "death eater"
-PHOENIX_WINNER = "phoenix"
+DEATH_EATER_STR = "death eater"
+PHOENIX_STR = "phoenix"
 NO_WINNER_YET = "no winner yet"
 
 Status = {0: "Joinable",
@@ -56,12 +56,25 @@ IMPERIO = 2
 CRUCIO = 3
 ADIVINATION = 4
 
-ingame_status = ("nomination", "election", "minister selection", "director selection", "use spell", "chaos")
+ingame_status = ("nomination",
+                 "election",
+                 "minister selection",
+                 "director selection",
+                 "use spell",
+                 "chaos",
+                 "expelliarmus")
 
 NOMINATION = 0
 ELECTION = 1
 MINISTER_SELECTION = 2
 DIRECTOR_SELECTION = 3
 USE_SPELL = 4
-CHAOS = 5#hay que agregarlo en database y en un if que chequea si el estado es legal
+CHAOS = 5
+EXPELLIARMUS = 6
 
+expelliarmus = ("locked", "unlocked", "minister stage", "rejected")
+
+LOCKED = 0
+UNLOCKED = 1
+MINISTER_STAGE = 2
+REJECTED = 3
