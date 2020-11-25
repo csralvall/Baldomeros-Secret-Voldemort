@@ -335,7 +335,6 @@ def get_director_username(match_id: int):
         return "No director yet"
     return director.UserId.Username 
 
-#cuando agreguemos el caos, hay que cambiar el <= a USE_SPELL a CHAOS
 @db_session
 def change_ingame_status(match_id: int, status: int):
     if not Match.exists(Id=match_id):
