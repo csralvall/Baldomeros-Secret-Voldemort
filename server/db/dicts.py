@@ -69,7 +69,7 @@ ELECTION = 1
 MINISTER_SELECTION = 2
 DIRECTOR_SELECTION = 3
 USE_SPELL = 4
-CHAOS = 5#hay que agregarlo en database y en un if que chequea si el estado es legal
+CHAOS = 5
 EXPELLIARMUS = 6
 
 expelliarmus = ("locked", "unlocked", "minister stage", "rejected")
@@ -78,4 +78,3 @@ LOCKED = 0
 UNLOCKED = 1
 MINISTER_STAGE = 2
 REJECTED = 3
-
