@@ -61,8 +61,10 @@ def minister_expelliarmus(match_id: int, minister_desition: str):
         set_expelliarmus_status(board_id, UNLOCKED)
 
         change_ingame_status(match_id, NOMINATION)
-        change_to_exdirector(match_id)
-        set_next_minister(match_id)
+        get_top_three_proclamation(board_id)
+        failed_election(match_id)
+        failed_director_expelliarmus(match_id)
+        set_next_minister_failed_election(match_id)
 
     else:
         set_expelliarmus_status(board_id, REJECTED)
