@@ -200,8 +200,8 @@ async def receive_cards(match_id: int, player_id: int, discarded: str, selected:
         reset_failed_election(board_id)
         winner = is_victory_from(match_id)
 
+        unlock_expelliarmus(board_id)
         if selected_card == DEATH_EATER_STR:
-            unlock_expelliarmus(board_id)
             if not unlock_spell(match_id) == NO_SPELL:
                 change_ingame_status(match_id, USE_SPELL)#spell stage
             else:
