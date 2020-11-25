@@ -324,7 +324,7 @@ def test_expelliarmus_director_call_expelliarmus_locked():
     assert response.status_code == 404
     assert response.json()["detail"] == "Not allowed."
 
-def test_expelliarmus_minister_call():
+def test_expelliarmus_minister_call_expelliarmus():
     delete_data(Board)
     delete_data(Player)
     delete_data(Match)
@@ -367,8 +367,57 @@ def test_expelliarmus_minister_call():
     )
 
     assert response.status_code == 200
+    assert len(show_selected_deck(board_id)) == 3
+    assert get_director_username(match_id) == "No director yet"
+    assert get_exdirector_username(match_id) == "No director yet"
     assert get_ingame_status(match_id) == ingame_status[NOMINATION]
     assert get_expelliarmus_status(board_id) == expelliarmus[UNLOCKED]
+
+def test_expelliarmus_minister_call_not_expelliarmus():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(5,7,user_id)['Match_id']
+    board_id = get_match_board_id(match_id)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+
+    for i in range(5):
+        enact_proclamation(match_id, DEATH_EATER_STR)
+
+    unlock_expelliarmus(board_id)
+
+    player_id = get_player_id(match_id, user_id)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id)
+    minister = get_minister_username(match_id)
+
+    make_director(player_id2)
+    set_current_director(match_id, 0)
+    director = get_director_username(match_id)
+
+    set_expelliarmus_status(board_id, MINISTER_STAGE)
+
+    create_deck(board_id)
+    get_top_three_proclamation(board_id)
+    get_selected_card(board_id)
+
+    response = client.patch(
+        f"/game/{match_id}/board/expelliarmus?playername={minister}&minister-desition=exprmus"
+    )
+
+    assert response.status_code == 200
+    assert get_ingame_status(match_id) == ingame_status[DIRECTOR_SELECTION]
+    assert get_expelliarmus_status(board_id) == expelliarmus[REJECTED]
 
 def test_expelliarmus_minister_call_no_minister_stage():
     delete_data(Board)

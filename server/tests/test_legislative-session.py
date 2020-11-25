@@ -119,6 +119,27 @@ class TestInMatch(unittest.TestCase):
         set_candidate_director_test(self.matchid,0)
         successful_director_election(self.matchid)
         self.assertRaises(NoDirector, failed_director_election, self.matchid)
+
+    def test_failed_director_expelliarmus(self):
+        make_magician(self.playeridcreator)
+        make_magician(self.player1id)
+        set_current_director(self.matchid,0)
+        make_director(self.playeridcreator)
+        failed_director_expelliarmus(self.matchid)
+        self.assertEqual(get_player_gov_rol(self.playeridcreator),"Magician")
+        self.assertEqual(get_player_gov_rol(self.player1id),"Magician")
+        self.assertRaises(NoDirector, failed_director_expelliarmus, self.matchid)
+        self.assertRaises(NoDirector, change_to_exdirector, self.matchid)
+
+    def test_failed_director_expelliarmus_bad_match_id(self):
+        self.assertRaises(MatchNotFound, failed_director_election, self.matchid+1)
+
+    def test_failed_director_expelliarmus_no_candidate(self):
+        make_magician(self.playeridcreator)
+        make_magician(self.player1id)
+        set_candidate_director_test(self.matchid,0)
+        successful_director_election(self.matchid)
+        self.assertRaises(NoDirector, failed_director_election, self.matchid)
         
     def test_check_winner_ph(self):
         reset_proclamation(self.matchid)
