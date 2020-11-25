@@ -196,4 +196,5 @@ class TestChaos(unittest.TestCase):
         self.assertRaises(MatchNotFound,check_voldemort,self.match_id+1)
 
 
-check_voldemort
+if __name__ == "__main__":
+    unittest.main()
