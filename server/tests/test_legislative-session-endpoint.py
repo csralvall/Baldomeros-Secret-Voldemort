@@ -392,6 +392,57 @@ def test_receive_cards_director_spell():
     assert get_ingame_status(match_id) == ingame_status[USE_SPELL]
     assert get_board_status(bid)['spell'] == spells[ADIVINATION]
 
+def test_unlock_expelliarmus():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    uid1 = get_user("foo", "foo")["Id"]
+    uid2 = get_user("bar", "bar")["Id"]
+
+    match = add_match_db(5,7,uid1)
+    match_id = match['Match_id']
+    pid = match['Player_id']
+    make_minister(pid)
+    set_current_minister(match_id, 0)
+    pid2 =add_user_in_match(uid2, match_id, 1).PlayerId
+    bid = get_match_board_id(match_id)
+    create_deck(bid)
+    shuffle_deck(bid)
+    get_top_three_proclamation(bid)
+
+    make_director(pid2)
+    set_current_director(match_id,1)
+
+    change_ingame_status(match_id, DIRECTOR_SELECTION)
+
+    for i in range(4):
+        enact_proclamation(match_id,DEATH_EATER_STR)
+
+    change_selected_deck_death_eater(bid)
+    hand_db = show_selected_deck(bid)
+    discarted_db = hand_db[0]
+    selected_db_1 = hand_db[1]
+    selected_db_2 = hand_db[2]
+    discard_proclamation(bid, selected_db_2)
+    assert get_failed_election_count(bid)==0
+    add_failed_election(bid)
+    assert get_failed_election_count(bid)==1
+
+    response = client.post(
+        f"/game/{match_id}/proclamation/{pid2}?discarded={discarted_db}",
+        json=[selected_db_1]
+    )
+    assert get_failed_election_count(bid)==0
+    assert response.status_code == 200
+    assert response.json() == NO_WINNER_YET
+    assert get_ingame_status(match_id) == ingame_status[USE_SPELL]
+    assert get_board_status(bid)['spell'] == spells[AVADA_KEDAVRA]
+    assert get_board_status(bid)['expelliarmus'] == expelliarmus[UNLOCKED]
+
 def test_receive_cards_director_fail_ingame():
     delete_data(Board)
     delete_data(Player)
