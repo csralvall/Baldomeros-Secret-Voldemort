@@ -117,17 +117,17 @@ class TestDeck(unittest.TestCase):
     def test_is_voldemort_dead_match_not_found(self):
         self.assertRaises(MatchNotFound, is_voldemort_dead, self.match+1)
 
-    #Deprecado.
-    def test_set_death_eater_winner(self):
-        set_death_eater_winner(self.match)
-        self.assertEqual(get_match_status(self.match), Status[FINISHED])
-        self.assertEqual(check_winner(self.match), DEATH_EATER_STR)
+    #Deprecated
+    #def test_set_death_eater_winner(self):
+    #    set_death_eater_winner(self.match)
+    #    self.assertEqual(get_match_status(self.match), Status[FINISHED])
+    #    self.assertEqual(check_winner(self.match), DEATH_EATER_STR)
         
-    #Deprecado.
-    def test_set_death_eater_winner_match_not_found(self):
-        self.assertRaises(MatchNotFound, set_death_eater_winner, self.match+1)
+    #Deprecated
+    #def test_set_death_eater_winner_match_not_found(self):
+    #    self.assertRaises(MatchNotFound, set_death_eater_winner, self.match+1)
 
-    #Nuevos test para set_winner.
+    #new test for set_winner.
     def test_set_winner_DEATH_EATER_STR_OK(self):
         set_winner(self.match, DEATH_EATER_STR)
         self.assertEqual(get_match_status(self.match), Status[FINISHED])
