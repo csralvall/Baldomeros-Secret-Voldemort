@@ -47,7 +47,7 @@ def test_receive_cards_minister_ok_no_winner():
     )
     assert response.status_code == 200
     assert response.json() == "no winner yet"
-    assert get_ingame_status(match_id) == ingame_status[DIRECTOR_SELECTION]
+    assert get_ingame_status(match_id) == DIRECTOR_SELECTION
 
 def test_receive_cards_minister_bad_status():
     delete_data(Board)
@@ -214,7 +214,7 @@ def test_receive_cards_director_ok():
     )
     assert response.status_code == 200
     assert response.json() == "no winner yet"
-    assert get_ingame_status(match_id) == ingame_status[NOMINATION]
+    assert get_ingame_status(match_id) == NOMINATION
 
     if selected_db_1 == PHOENIX_STR:
         assert get_phoenix_proclamations(match_id) == 1
@@ -279,7 +279,7 @@ def test_receive_cards_director_ok_5players():
     )
     assert response.status_code == 200
     assert response.json() == "no winner yet"
-    assert get_ingame_status(match_id) == ingame_status[NOMINATION]
+    assert get_ingame_status(match_id) == NOMINATION
 
     if selected_db_1 == PHOENIX_STR:
         assert get_phoenix_proclamations(match_id) == 1
@@ -389,7 +389,7 @@ def test_receive_cards_director_spell():
     assert get_failed_election_count(bid)==0
     assert response.status_code == 200
     assert response.json() == NO_WINNER_YET
-    assert get_ingame_status(match_id) == ingame_status[USE_SPELL]
+    assert get_ingame_status(match_id) == USE_SPELL
     assert get_board_status(bid)['spell'] == spells[ADIVINATION]
 
 def test_unlock_expelliarmus():
@@ -439,7 +439,7 @@ def test_unlock_expelliarmus():
     assert get_failed_election_count(bid)==0
     assert response.status_code == 200
     assert response.json() == NO_WINNER_YET
-    assert get_ingame_status(match_id) == ingame_status[USE_SPELL]
+    assert get_ingame_status(match_id) == USE_SPELL
     assert get_board_status(bid)['spell'] == spells[AVADA_KEDAVRA]
     assert get_board_status(bid)['expelliarmus'] == expelliarmus[UNLOCKED]
 
@@ -772,7 +772,7 @@ def test_receive_cards_director_needed_shufle():
     )
     assert response.status_code == 200
     assert response.json() == "no winner yet"
-    assert get_ingame_status(match_id) == ingame_status[NOMINATION]
+    assert get_ingame_status(match_id) == NOMINATION
     if selected_db_1 == PHOENIX_STR:
         assert get_phoenix_proclamations(match_id) == 1
         assert get_death_eater_proclamations(match_id) == 0

@@ -94,7 +94,7 @@ async def player_rol(match_id: int, player_id: int):
     if not check_player_in_match(match_id,player_id):
         raise HTTPException(status_code=404, detail="Player not found")
 
-    player_rol = get_player_rol(player_id)
+    player_rol = SecretRolDiccionary[get_player_rol(player_id)]
     player_username = get_player_username(player_id)
 
     rol = {
@@ -166,7 +166,7 @@ async def receive_cards(match_id: int, player_id: int, discarded: str, selected:
     director = get_director_username(match_id)
 
     if username == minister:
-        if not get_ingame_status(match_id) == ingame_status[MINISTER_SELECTION]:
+        if not get_ingame_status(match_id) == MINISTER_SELECTION:
             raise HTTPException(status_code=404, detail="We are not in the minister selection stage.")    
         if not len(selected) == 2:
             raise HTTPException(status_code=404, detail="The number of proclamation selected doesn't match the number of proclamations expected from minister.")    
@@ -180,7 +180,7 @@ async def receive_cards(match_id: int, player_id: int, discarded: str, selected:
         change_ingame_status(match_id, DIRECTOR_SELECTION)#director selects cards stage
 
     elif username == director:
-        if not get_ingame_status(match_id) == ingame_status[DIRECTOR_SELECTION]:
+        if not get_ingame_status(match_id) == DIRECTOR_SELECTION:
             raise HTTPException(status_code=404, detail="We are not in the director selection stage.")    
         if not len(selected) == 1:
             raise HTTPException(status_code=404, detail="The number of proclamation selected doesn't match the number of proclamations expected from director.")    

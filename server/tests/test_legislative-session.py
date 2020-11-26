@@ -53,17 +53,17 @@ class TestInMatch(unittest.TestCase):
         
     def test_change_ingame_status(self):
         change_ingame_status(self.matchid, NOMINATION)
-        self.assertEqual(get_ingame_status(self.matchid),ingame_status[NOMINATION])
+        self.assertEqual(get_ingame_status(self.matchid), NOMINATION)
         change_ingame_status(self.matchid, ELECTION)
-        self.assertEqual(get_ingame_status(self.matchid),ingame_status[ELECTION])
+        self.assertEqual(get_ingame_status(self.matchid), ELECTION)
         change_ingame_status(self.matchid, MINISTER_SELECTION)
-        self.assertEqual(get_ingame_status(self.matchid),ingame_status[MINISTER_SELECTION])
+        self.assertEqual(get_ingame_status(self.matchid), MINISTER_SELECTION)
         change_ingame_status(self.matchid, DIRECTOR_SELECTION)
-        self.assertEqual(get_ingame_status(self.matchid),ingame_status[DIRECTOR_SELECTION])        
+        self.assertEqual(get_ingame_status(self.matchid), DIRECTOR_SELECTION)        
         change_ingame_status(self.matchid, USE_SPELL)
-        self.assertEqual(get_ingame_status(self.matchid),ingame_status[USE_SPELL])
+        self.assertEqual(get_ingame_status(self.matchid), USE_SPELL)
         change_ingame_status(self.matchid, EXPELLIARMUS)
-        self.assertEqual(get_ingame_status(self.matchid),ingame_status[EXPELLIARMUS])
+        self.assertEqual(get_ingame_status(self.matchid), EXPELLIARMUS)
 
     def test_change_ingame_status_wrong_match(self):
         self.assertRaises(MatchNotFound, change_ingame_status, self.matchid+1,NOMINATION)

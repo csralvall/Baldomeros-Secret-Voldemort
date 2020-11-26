@@ -31,19 +31,19 @@ class Testadivination(unittest.TestCase):
 
 #--------------------------- Test get_min_players ----------------------------
 
-    def test_adivnination(self):
+    def test_adivination(self):
         enact_proclamation(self.matchid1, DEATH_EATER_STR)
         enact_proclamation(self.matchid1, DEATH_EATER_STR)
         enact_proclamation(self.matchid1, DEATH_EATER_STR)
 
         self.assertEqual(unlock_spell(self.matchid1), ADIVINATION) 
 
-        adivination(self.board_id)
+        disable_spell(self.board_id)
 
         self.assertEqual(get_board_status(self.board_id)['spell'], None)
 
     def test_adivnination2(self):
-        self.assertRaises(BoardNotFound, adivination, self.board_id + 1)
+        self.assertRaises(BoardNotFound, disable_spell, self.board_id + 1)
 
     def test_adivnination3(self):
         enact_proclamation(self.matchid1, DEATH_EATER_STR)
