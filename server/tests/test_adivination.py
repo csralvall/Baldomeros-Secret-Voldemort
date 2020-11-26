@@ -42,7 +42,7 @@ class Testadivination(unittest.TestCase):
 
         self.assertEqual(get_board_status(self.board_id)['spell'], None)
 
-    def test_adivnination2(self):
+    def test_adivination2(self):
         self.assertRaises(BoardNotFound, disable_spell, self.board_id + 1)
 
     def test_adivnination3(self):
@@ -52,4 +52,3 @@ class Testadivination(unittest.TestCase):
         enact_proclamation(self.matchid1, DEATH_EATER_STR)
 
         self.assertNotEqual(unlock_spell(self.matchid1), ADIVINATION) 
-
