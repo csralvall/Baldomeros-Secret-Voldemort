@@ -29,7 +29,7 @@ async def use_avada_kedavra(
         change_to_exdirector(match_id)
         set_next_minister(match_id)
         if is_voldemort_dead(match_id):
-            set_phoenix_winner(match_id)
+            set_winner(match_id, VOLDEMORT_DEAD)
     except VoldemortNotFound:
         raise HTTPException(status_code=500, detail="Voldemort was not set")
     except ResourceNotFound:

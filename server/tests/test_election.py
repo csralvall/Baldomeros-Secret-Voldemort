@@ -408,6 +408,6 @@ def test_vote_endpoint():
     client.put(f"/game/{gid}/player/{bazpid}?vote=lumos")
     client.put(f"/game/{gid}/player/{zoopid}?vote=lumos")
     client.put(f"/game/{gid}/player/{zarpid}?vote=lumos")
-    assert check_winner(gid) == DEATH_EATER_STR
+    assert check_winner(gid) == VOLDEMORT_DIRECTOR
     assert get_ingame_status(gid) == ingame_status[MINISTER_SELECTION]
 

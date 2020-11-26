@@ -2,6 +2,10 @@
 DEATH_EATER_STR = "death eater"
 PHOENIX_STR = "phoenix"
 NO_WINNER_YET = "no winner yet"
+VOLDEMORT_DEAD = "Voldemort died"
+VOLDEMORT_DIRECTOR = "Voldemort is the director"
+
+
 
 Status = {0: "Joinable",
           1: "In Game",
