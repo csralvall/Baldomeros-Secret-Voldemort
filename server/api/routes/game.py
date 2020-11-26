@@ -74,7 +74,7 @@ async def vote_candidate(
             successful_director_election(match_id)
             change_ingame_status(match_id, MINISTER_SELECTION)#minister selects cards stage
             if check_voldemort(match_id):
-                set_death_eater_winner(match_id)
+                set_winner(match_id, VOLDEMORT_DIRECTOR)
         else :
             failed_director_election(match_id)
             set_next_minister_failed_election(match_id)

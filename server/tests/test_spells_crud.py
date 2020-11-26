@@ -117,14 +117,33 @@ class TestDeck(unittest.TestCase):
     def test_is_voldemort_dead_match_not_found(self):
         self.assertRaises(MatchNotFound, is_voldemort_dead, self.match+1)
 
-    def test_set_death_eater_winner(self):
-        set_death_eater_winner(self.match)
+    def test_set_winner_DEATH_EATER_STR_OK(self):
+        set_winner(self.match, DEATH_EATER_STR)
         self.assertEqual(get_match_status(self.match), Status[FINISHED])
         self.assertEqual(check_winner(self.match), DEATH_EATER_STR)
-        
+    
+    def test_set_winner_PHOENIX_STR_OK(self):
+        set_winner(self.match, PHOENIX_STR)
+        self.assertEqual(get_match_status(self.match), Status[FINISHED])
+        self.assertEqual(check_winner(self.match), PHOENIX_STR)
 
-    def test_set_death_eater_winner_match_not_found(self):
-        self.assertRaises(MatchNotFound, set_death_eater_winner, self.match+1)
+    def test_set_winner_PHOENIX_STR_OK(self):
+        set_winner(self.match, PHOENIX_STR)
+        self.assertEqual(get_match_status(self.match), Status[FINISHED])
+        self.assertEqual(check_winner(self.match), PHOENIX_STR)
+
+    def test_set_winner_VOLDEMORT_DEAD_OK(self):
+        set_winner(self.match, VOLDEMORT_DEAD)
+        self.assertEqual(get_match_status(self.match), Status[FINISHED])
+        self.assertEqual(check_winner(self.match), VOLDEMORT_DEAD)
+
+    def test_set_winner_VOLDEMORT_DIRECTOR_OK(self):
+        set_winner(self.match, VOLDEMORT_DIRECTOR)
+        self.assertEqual(get_match_status(self.match), Status[FINISHED])
+        self.assertEqual(check_winner(self.match), VOLDEMORT_DIRECTOR)
+
+    def test_set_winner_match_not_found(self):
+        self.assertRaises(MatchNotFound, set_winner, self.match+1, PHOENIX_STR)
 
     def test_unlock_expelliarmus_before_five_death_eater_cards(self):
         self.assertEqual(get_expelliarmus_status(self.board),
