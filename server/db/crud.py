@@ -630,23 +630,6 @@ def is_voldemort_dead(match_id: int):
         raise VoldemortNotFound
     return voldemort.IsDead
 
-##deprecated
-#@db_session
-#def set_death_eater_winner(match_id: int):
-#    if not Match.exists(Id=match_id):
-#        raise MatchNotFound
-#    Match[match_id].Winner = DEATH_EATER_STR
-#    Match[match_id].Status = FINISHED
-
-##deprecated
-#@db_session
-#def set_phoenix_winner(match_id: int): # TODO: test
-#    if not Match.exists(Id=match_id):
-#        raise MatchNotFound
-#    Match[match_id].Winner = PHOENIX_STR
-#   Match[match_id].Status = FINISHED
-
-#Replace set_phoenix_winner and set_death_eater_winner.
 @db_session
 def set_winner(match_id: int, winner: str):
     if not Match.exists(Id=match_id):
