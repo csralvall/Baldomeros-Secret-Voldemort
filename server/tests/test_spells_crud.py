@@ -238,11 +238,11 @@ class TestDeck(unittest.TestCase):
         self.assertRaises(BoardNotFound, set_expelliarmus_status,
                           self.board+1, MINISTER_STAGE)
 
-    def test_get_available_spell(self):
+    def test_get_available_spell_small_board(self):
         for i in range(3):
+            self.assertEqual(get_available_spell(self.board), NO_SPELL)
             enact_proclamation(self.match, DEATH_EATER_STR)
-
-        unlock_spell(match_id)
+            unlock_spell(match_id)
 
         self.assertEqual(get_available_spell(self.board), ADIVINATION)
 
