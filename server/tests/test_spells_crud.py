@@ -242,7 +242,7 @@ class TestDeck(unittest.TestCase):
         for i in range(3):
             self.assertEqual(get_available_spell(self.board), NO_SPELL)
             enact_proclamation(self.match, DEATH_EATER_STR)
-            unlock_spell(match_id)
+            unlock_spell(self.board)
 
         self.assertEqual(get_available_spell(self.board), ADIVINATION)
 
