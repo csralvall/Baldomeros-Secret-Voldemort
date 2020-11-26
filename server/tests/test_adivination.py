@@ -45,7 +45,7 @@ class Testadivination(unittest.TestCase):
     def test_adivination2(self):
         self.assertRaises(BoardNotFound, disable_spell, self.board_id + 1)
 
-    def test_adivnination3(self):
+    def test_adivination3(self):
         enact_proclamation(self.matchid1, DEATH_EATER_STR)
         enact_proclamation(self.matchid1, DEATH_EATER_STR)
         enact_proclamation(self.matchid1, DEATH_EATER_STR)
