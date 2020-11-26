@@ -347,7 +347,7 @@ def change_ingame_status(match_id: int, status: int):
 @db_session
 def get_ingame_status(match_id: int):
     board_id= get_match_board_id(match_id)
-    return ingame_status[Board[board_id].BoardStatus]
+    return Board[board_id].BoardStatus
 
 
 @db_session
@@ -373,12 +373,19 @@ def get_board_status(board_id: int):
 
     board_attr = ["PhoenixProclamations", "DeathEaterProclamations"]
     board_status = Board[board_id].to_dict(board_attr)
-    board_status['spell'] = spells[Board[board_id].AvailableSpell]
+    board_status['spell'] = spells[get_available_spell(board_id)]
     board_status['expelliarmus'] = expelliarmus[Board[board_id].Expelliarmus]
     board_status['status'] = ingame_status[Board[board_id].BoardStatus]
     board_status['boardtype'] = BoardType[Board[board_id].BoardType]
     board_status['failcounter'] = Board[board_id].FailedElectionsCount
     return board_status    
+
+@db_session
+def get_available_spell(board_id: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+
+    return Board[board_id].AvailableSpell
 
 @db_session
 def check_match(match_id: int):
@@ -773,7 +780,7 @@ def get_min_players(match_id: int):
 
 @db_session
 def get_player_rol(player_id: int):
-    return SecretRolDiccionary[Player[player_id].SecretRol]
+    return Player[player_id].SecretRol
 
 @db_session
 def get_user_username(user_id: int):
@@ -824,7 +831,7 @@ def avada_kedavra(board_id: int, player_id: int):
     Board[board_id].AvailableSpell = NO_SPELL
 
 @db_session
-def adivination(board_id: int):
+def disable_spell(board_id: int):
     if not Board.exists(Id=board_id):
         raise BoardNotFound
 
