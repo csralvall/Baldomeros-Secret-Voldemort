@@ -298,7 +298,7 @@ def test_expelliarmus_director_call():
 
     assert response.status_code == 200
     assert get_expelliarmus_status(board_id) == expelliarmus[MINISTER_STAGE]
-    assert get_ingame_status(match_id) == ingame_status[EXPELLIARMUS]
+    assert get_ingame_status(match_id) == EXPELLIARMUS
 
 def test_expelliarmus_director_call_expelliarmus_locked():
     delete_data(Board)
@@ -370,7 +370,7 @@ def test_expelliarmus_minister_call_expelliarmus():
     assert len(show_selected_deck(board_id)) == 3
     assert get_director_username(match_id) == "No director yet"
     assert get_exdirector_username(match_id) == "No director yet"
-    assert get_ingame_status(match_id) == ingame_status[NOMINATION]
+    assert get_ingame_status(match_id) == NOMINATION
     assert get_expelliarmus_status(board_id) == expelliarmus[UNLOCKED]
 
 def test_expelliarmus_minister_call_not_expelliarmus():
@@ -416,7 +416,7 @@ def test_expelliarmus_minister_call_not_expelliarmus():
     )
 
     assert response.status_code == 200
-    assert get_ingame_status(match_id) == ingame_status[DIRECTOR_SELECTION]
+    assert get_ingame_status(match_id) == DIRECTOR_SELECTION
     assert get_expelliarmus_status(board_id) == expelliarmus[REJECTED]
 
 def test_expelliarmus_minister_call_no_minister_stage():
@@ -515,10 +515,10 @@ def test_expelliarmus_minister_not_discarded_proclamation():
 
     create_user("foo@gmail.com", "foo", "foo")
     create_user("bar@gmail.com", "bar", "bar")
-    user_id = get_user("foo", "foo")["Id"]
+    user_id1 = get_user("foo", "foo")["Id"]
     user_id2 = get_user("bar", "bar")["Id"]
 
-    match_id = add_match_db(5,7,user_id)['Match_id']
+    match_id = add_match_db(5,7,user_id1)['Match_id']
     board_id = get_match_board_id(match_id)
 
     add_user_in_match(user_id2, match_id, 2)
@@ -528,10 +528,10 @@ def test_expelliarmus_minister_not_discarded_proclamation():
 
     unlock_expelliarmus(board_id)
 
-    player_id = get_player_id(match_id, user_id)
+    player_id1 = get_player_id(match_id, user_id1)
     player_id2 = get_player_id(match_id, user_id2)
 
-    make_minister(player_id)
+    make_minister(player_id1)
     minister = get_minister_username(match_id)
 
     make_director(player_id2)
@@ -549,4 +549,318 @@ def test_expelliarmus_minister_not_discarded_proclamation():
 
     assert response.status_code == 404
     assert response.json()["detail"] == "Minister should discard one card."
+
+def test_crucio_medium_board():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(7,8,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 8)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    for i in range(2):
+        enact_proclamation(match_id, DEATH_EATER_STR)
+
+    unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id2)
+    minister = get_minister_username(match_id)
+
+    response = client.get(
+        f"/game/{match_id}/board/crucio?playername={minister}&investigated=bar"
+    )
+
+    rol = get_player_rol(player_id2) 
+    if rol == VOLDEMORT:
+        rol = DEATH_EATER
+
+    assert response.status_code == 200
+    assert response.json() == SecretRolDiccionary[rol]
+
+def test_crucio_big_board():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(9,10,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 10)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    enact_proclamation(match_id, DEATH_EATER_STR)
+
+    unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+
+    response = client.get(
+        f"/game/{match_id}/board/crucio?playername={minister}&investigated=bar"
+    )
+
+    rol = get_player_rol(player_id2) 
+    if rol == VOLDEMORT:
+        rol = DEATH_EATER
+
+    assert response.status_code == 200
+    assert response.json() == SecretRolDiccionary[rol]
+
+def test_crucio_bad_match_id():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    user_id = get_user("foo", "foo")["Id"]
+
+    match_id = add_match_db(9,10,user_id)['Match_id']
+
+    player_id = get_player_id(match_id, user_id)
+
+    make_minister(player_id)
+    minister = get_minister_username(match_id)
+
+    response = client.get(
+        f"/game/{match_id+1}/board/crucio?playername={minister}&investigated=bar"
+    )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "this match does not exist"
+
+def test_crucio_bad_game_status():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    user_id = get_user("foo", "foo")["Id"]
+
+    match_id = add_match_db(9,10,user_id)['Match_id']
+
+    player_id = get_player_id(match_id, user_id)
+
+    make_minister(player_id)
+    minister = get_minister_username(match_id)
+
+    change_ingame_status(match_id, NOMINATION)
+
+    response = client.get(
+        f"/game/{match_id}/board/crucio?playername={minister}&investigated=bar"
+    )
+
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Can't use spell now"
+
+def test_crucio_big_board_bad_available_spell():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(9,10,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 10)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    for i in range(5):
+        enact_proclamation(match_id, DEATH_EATER_STR)
+
+    unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+
+    response = client.get(
+        f"/game/{match_id}/board/crucio?playername={minister}&investigated=bar"
+    )
+
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Spell not available"
+
+def test_crucio_medium_board_bad_available_spell():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(7,8,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 8)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    for i in range(3):
+        enact_proclamation(match_id, DEATH_EATER_STR)
+
+    unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id2)
+    minister = get_minister_username(match_id)
+
+    response = client.get(
+        f"/game/{match_id}/board/crucio?playername={minister}&investigated=bar"
+    )
+
+    rol = get_player_rol(player_id2) 
+    if rol == VOLDEMORT:
+        rol = DEATH_EATER
+
+    assert response.status_code == 200
+    assert response.json() == SecretRolDiccionary[rol]
+
+def test_crucio_bad_minister():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(9,10,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 10)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    enact_proclamation(match_id, DEATH_EATER_STR)
+
+    unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+
+    response = client.get(
+        f"/game/{match_id}/board/crucio?playername=dfad&investigated=bar"
+    )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Player not found"
+
+def test_crucio_bad_player():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(9,10,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 10)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    enact_proclamation(match_id, DEATH_EATER_STR)
+
+    unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+
+    response = client.get(
+        f"/game/{match_id}/board/crucio?playername={minister}&investigated=r"
+    )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Player not found"
+
+def test_crucio_not_minister_caller():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(9,10,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 10)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    enact_proclamation(match_id, DEATH_EATER_STR)
+
+    unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+
+    response = client.get(
+        f"/game/{match_id}/board/crucio?playername=bar&investigated=foo"
+    )
+
+    assert response.status_code == 403
+    assert response.json()['detail'] == "You are not minister"
+
 
