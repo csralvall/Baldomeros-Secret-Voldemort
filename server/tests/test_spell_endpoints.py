@@ -754,8 +754,8 @@ def test_crucio_medium_board_bad_available_spell():
     if rol == VOLDEMORT:
         rol = DEATH_EATER
 
-    assert response.status_code == 200
-    assert response.json() == SecretRolDiccionary[rol]
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Spell not available"
 
 def test_crucio_bad_minister():
     delete_data(Board)
