@@ -328,7 +328,7 @@ def test_vote_endpoint():
         assert get_candidate_director_username(gid)== p 
         client.put(f"/game/{gid}/player/{zarpid}?vote=lumos")
         assert get_director_username(gid) == p
-        assert get_ingame_status(gid) == ingame_status[MINISTER_SELECTION]
+        assert get_ingame_status(gid) == MINISTER_SELECTION
         change_to_exdirector(gid)
         i=i+1
 
@@ -348,7 +348,7 @@ def test_vote_endpoint():
         assert get_candidate_director_username(gid)== p 
         client.put(f"/game/{gid}/player/{zarpid}?vote=nox")
         assert get_director_username(gid) == "No director yet"
-        assert get_ingame_status(gid) == ingame_status[NOMINATION]#cuando agreguemos el ingame status chaos, va a fallar
+        assert get_ingame_status(gid) == NOMINATION#cuando agreguemos el ingame status chaos, va a fallar
         i=i+1
         assert get_failed_election_count(bid)== i % 3
         assert i//3 == get_phoenix_proclamations(gid)+ get_death_eater_proclamations(gid)
@@ -409,5 +409,5 @@ def test_vote_endpoint():
     client.put(f"/game/{gid}/player/{zoopid}?vote=lumos")
     client.put(f"/game/{gid}/player/{zarpid}?vote=lumos")
     assert check_winner(gid) == VOLDEMORT_DIRECTOR
-    assert get_ingame_status(gid) == ingame_status[MINISTER_SELECTION]
+    assert get_ingame_status(gid) == MINISTER_SELECTION
 

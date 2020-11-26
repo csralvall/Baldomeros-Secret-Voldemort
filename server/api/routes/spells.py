@@ -103,8 +103,8 @@ async def use_expelliarmus(
     elif playername == director:
         director_expelliarmus(match_id)
 
-@router.patch("/{match_id}/board/adivination", tags=["Spells"])
-async def use_adivination(match_id: int):
+@router.patch("/{match_id}/board/no-spell", tags=["Spells"])
+async def disable_spell(match_id: int):
 
     if not check_match(match_id):
         raise HTTPException(status_code=404, detail="Match not found")
@@ -114,8 +114,41 @@ async def use_adivination(match_id: int):
     set_next_minister(match_id)
 
     board_id = get_match_board_id(match_id)
-    adivination(board_id)
+    disable_spell(board_id)
 
     return 200
 
+@router.get("/{match_id}/board/crucio", tags=["Spells"]) # TODO: tests
+async def use_crucio(
+    match_id: int = Path(..., title="The ID of the current match"),
+    playername: str = Query(..., title="The playername of the caller"),
+    investigated: str = Query(..., title="Player under investigation")):
 
+    if not check_match(match_id):
+        raise HTTPException(status_code=404, detail="this match does not exist")
+
+    if not get_ingame_status(match_id) == USE_SPELL:
+        raise HTTPException(status_code=403, detail="Can't use spell now")
+
+    board_id = get_match_board_id(match_id)
+
+    if not get_available_spell(board_id) == CRUCIO:
+        raise HTTPException(status_code=403, detail="Spell not available")
+
+    minister_id = get_player_id_from_username(match_id, playername)
+    magician_id = get_player_id_from_username(match_id, investigated)
+
+    if minister_id is None or magician_id is None:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    minister = get_minister_username(match_id)
+
+    if not playername == minister:
+        raise HTTPException(status_code=403, detail="You are not minister")
+
+    magician_rol = get_player_rol(magician_id)
+
+    if magician_rol == VOLDEMORT:
+        magician_rol = DEATH_EATER
+
+    return SecretRolDiccionary[magician_rol]

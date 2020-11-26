@@ -101,17 +101,14 @@ class TestDeck(unittest.TestCase):
         player_id = get_player_id(self.match, new_userid)
         change_player_rol(player_id, VOLDEMORT)
         change_player_rol(self.playerid, PHOENIX)
-        self.assertEqual(get_player_rol(player_id),
-                        SecretRolDiccionary[VOLDEMORT])
-        self.assertEqual(get_player_rol(self.playerid),
-                        SecretRolDiccionary[PHOENIX])
+        self.assertEqual(get_player_rol(player_id), VOLDEMORT)
+        self.assertEqual(get_player_rol(self.playerid), PHOENIX)
         avada_kedavra(self.board, player_id)
         self.assertTrue(is_voldemort_dead(self.match))
 
     def test_is_voldemort_dead_not_setted_voldemort(self):
         change_player_rol(self.playerid, PHOENIX)
-        self.assertEqual(get_player_rol(self.playerid),
-                        SecretRolDiccionary[PHOENIX])
+        self.assertEqual(get_player_rol(self.playerid), PHOENIX)
         self.assertRaises(VoldemortNotFound, is_voldemort_dead, self.match)
 
     def test_is_voldemort_dead_match_not_found(self):
@@ -240,6 +237,17 @@ class TestDeck(unittest.TestCase):
     def test_set_expelliarmus_status_bad_board_id(self):
         self.assertRaises(BoardNotFound, set_expelliarmus_status,
                           self.board+1, MINISTER_STAGE)
+
+    def test_get_available_spell_small_board(self):
+        for i in range(3):
+            self.assertEqual(get_available_spell(self.board), NO_SPELL)
+            enact_proclamation(self.match, DEATH_EATER_STR)
+            unlock_spell(self.board)
+
+        self.assertEqual(get_available_spell(self.board), ADIVINATION)
+
+    def test_get_available_spell_bad_board_id(self):
+        self.assertRaises(BoardNotFound, get_available_spell, self.board+1)
 
 
 if __name__ == "__main__":
