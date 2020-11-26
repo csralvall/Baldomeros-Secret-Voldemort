@@ -246,7 +246,7 @@ class TestDeck(unittest.TestCase):
 
         self.assertEqual(get_available_spell(self.board), ADIVINATION)
 
-    def test_get_available_spell(self):
+    def test_get_available_spell_bad_board_id(self):
         self.assertRaises(BoardNotFound, get_available_spell, self.board+1)
 
 
