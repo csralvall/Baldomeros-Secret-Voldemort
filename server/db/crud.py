@@ -35,6 +35,10 @@ class PlayerNotFound(ResourceNotFound):
     """ Raised when there is not player with the parameters passed. """
     pass
 
+class UserNotFound(ResourceNotFound):
+    """ Raised when there is not User with the parameters passed. """
+    pass
+
 class VoldemortNotFound(ResourceNotFound):
     """ Raised when there is not Voldemort within the game. """
     pass
@@ -965,3 +969,20 @@ def unlock_spell_big_board(death_eater_proclamations: int):
 
     return spell
 
+
+@db_session
+def update_password(user_id: int, oldp: str, newp: str):
+
+    if not User.exists(Id=user_id):
+        raise UserNotFound
+       
+    if (User[user_id].Password==oldp):
+        User[user_id].Password = newp
+        return True
+
+    else:
+        return False
+
+@db_session
+def get_password(user_id: int):
+    return User[user_id].Password

@@ -50,6 +50,7 @@ async def join_game(match_id: int, user: int):
 @router.get("/list", tags=["Game"])
 async def list_games():
     return list_games_db()
+  
 
 @router.patch("/{match_id}/leave/{player_id}", tags=["Game"])
 async def leave_game(match_id: int, player_id: int):
