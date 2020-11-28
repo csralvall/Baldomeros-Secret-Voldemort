@@ -79,14 +79,11 @@ class TestEliminatePlayer(unittest.TestCase):
     #restart_positions(match_id: int)#
     def restart_positions_OK(self):
         self.assertEqual(get_position(self.player3id), self.player3position)
-        eliminate_player_from_match(self.matchid, self.player3id)
+        eliminate_player_from_match(self.matchid, self.player1id)
+        restart_positions(self.matchid)
         players = get_players_from_match(match_id)
         for p in players:
             self.assertNotEqual(get_position(p.PlayerId), self.player3position)
-        eliminate_player_from_match(self.matchid, self.player2id)
-        player3 = add_user_in_match(self.user3id,self.matchid,2)
-        player3position = player3.to_dict("Position")["Position"]
-        self.assertEqual(player3position, 2)
 
 
 
