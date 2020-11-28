@@ -25,7 +25,10 @@ class TestEliminatePlayer(unittest.TestCase):
         player1 = add_user_in_match(self.user1id,self.matchid,1)
         self.player1id = player1.to_dict("PlayerId")["PlayerId"]
         player2 = add_user_in_match(self.user2id,self.matchid,2)
+        self.player2id = player2.to_dict("PlayerId")["PlayerId"]
         player3 = add_user_in_match(self.user3id,self.matchid,3)
+        self.player3id = player3.to_dict("PlayerId")["PlayerId"]
+        self.player3position = player3.to_dict("Position")["Position"]
 
     def tearDown(self):
         delete_data(User)
@@ -72,6 +75,18 @@ class TestEliminatePlayer(unittest.TestCase):
 
     def test_get_creator_id_match_Match_not_found(self):
         self.assertRaises(MatchNotFound, get_creator_id_match, 9999999)
+
+    #restart_positions(match_id: int)#
+    def restart_positions_OK(self):
+        self.assertEqual(get_position(self.player3id), self.player3position)
+        eliminate_player_from_match(self.matchid, self.player3id)
+        players = get_players_from_match(match_id)
+        for p in players:
+            self.assertNotEqual(get_position(p.PlayerId), self.player3position)
+        eliminate_player_from_match(self.matchid, self.player2id)
+        player3 = add_user_in_match(self.user3id,self.matchid,2)
+        player3position = player3.to_dict("Position")["Position"]
+        self.assertEqual(player3position, 2)
 
 
 

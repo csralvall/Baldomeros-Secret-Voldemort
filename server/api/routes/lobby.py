@@ -67,6 +67,7 @@ async def leave_game(match_id: int, player_id: int):
         if not (get_user_id_from_player_id(match_id, player_id) == get_creator_id_match(match_id)):
             playername = get_player_username(player_id)
             eliminate_player_from_match(match_id, player_id)
+            restart_positions(match_id)
             return f"{playername} is not longer in the game" 
         
         eliminate_all_players_from_match(match_id)

@@ -154,6 +154,17 @@ def add_user_in_match(userid: int, matchid: int, position: int):
     return newplayer#need to refactor so it only returns id
 
 @db_session
+def restart_positions(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    players = Match[match_id].Players
+    position = 0
+    for p in players:
+        p.Position = position
+        position += 1
+        
+
+@db_session
 def check_player_in_match(match_id: int, player_id: int):
     if Match.exists(Id=match_id):
         return exists(p for p in Match[match_id].Players if p.PlayerId == player_id)
