@@ -46,10 +46,32 @@ class TestEliminatePlayer(unittest.TestCase):
     def test_raise_match_not_exists(self):
         self.assertRaises(MatchNotFound, eliminate_player_from_match, 9999999, self.player1id)
 
+    #eliminate_all_players_from_match#
+    def test_eliminate_all_players_OK(self):
+        self.assertEqual(get_num_players(self.matchid), 4)
+        eliminate_all_players_from_match(self.matchid)
+        self.assertEqual(get_num_players(self.matchid), 0)
     
+    def test_eliminate_all_players_match_not_found(self):
+        self.assertRaises(MatchNotFound, eliminate_all_players_from_match, 9999999)
 
+    #get_user_id_from_player_id#
+    def test_get_user_id_from_player_id_OK(self):
+        self.assertEqual(self.user1id, get_user_id_from_player_id(self.matchid, self.player1id))
+        self.assertEqual(self.creatorid, get_user_id_from_player_id(self.matchid, self.playeridcreator))
+    
+    def test_get_user_id_from_player_id_player_not_found(self):
+        self.assertRaises(PlayerNotFound, get_user_id_from_player_id, self.matchid, 9999999)
 
+    def test_get_user_id_from_player_id_Match_not_found(self):
+        self.assertRaises(MatchNotFound, get_user_id_from_player_id, 9999999, 9999999)
 
+    #get_creator_id_match#
+    def test_get_creator_id_match_OK(self):
+        self.assertEqual(self.creatorid, get_creator_id_match(self.matchid))
+
+    def test_get_creator_id_match_Match_not_found(self):
+        self.assertRaises(MatchNotFound, get_creator_id_match, 9999999)
 
 
 

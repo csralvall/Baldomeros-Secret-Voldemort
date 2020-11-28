@@ -97,6 +97,13 @@ def eliminate_player_from_match(match_id: int, player_id: int):
         raise MatchNotFound
     Player[player_id].delete()
 
+@db_session
+def eliminate_all_players_from_match(match_id: int):
+    if not Match.exists(Id = match_id):
+        raise MatchNotFound
+    players = Match[match_id].Players
+    for p in players:
+        p.delete()
 
 @db_session
 def create_user(email: str, username: str, password: str):
@@ -872,6 +879,21 @@ def get_player_id_from_username(match_id: int, username: str):
         raise MatchNotFound
     players = Match[match_id].Players
     return get(p.PlayerId for p in players if p.UserId.Username == username)
+
+@db_session
+def get_user_id_from_player_id(match_id: int, player_id: int):
+    if not Match.exists(Id = match_id):
+        raise MatchNotFound
+    if not Player.exists(PlayerId = player_id):
+        raise PlayerNotFound
+    return Player[player_id].UserId.Id
+
+@db_session
+def get_creator_id_match(match_id: int):
+    if not Match.exists(Id = match_id):
+        raise MatchNotFound
+    return Match[match_id].Creator.Id
+    
 
 @db_session
 def get_max_players(match_id: int):

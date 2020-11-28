@@ -64,11 +64,18 @@ async def leave_game(match_id: int, player_id: int):
         raise HTTPException(status_code=404, detail="game already started")
 
     try:
-        playername = get_player_username(player_id)
-        eliminate_player_from_match(match_id, player_id)
+        if not (get_user_id_from_player_id(match_id, player_id) == get_creator_id_match(match_id)):
+            playername = get_player_username(player_id)
+            eliminate_player_from_match(match_id, player_id)
+            return f"{playername} is not longer in the game" 
+        
+        eliminate_all_players_from_match(match_id)
+        change_match_status(match_id, CLOSED)
 
     except ResourceNotFound:
         raise HTTPException(status_code=404, detail="Resource not found")
 
-    return f"{playername} is not longer in the game"    
+    return "the game is over, the creator left the game"
+
+       
     
