@@ -916,3 +916,21 @@ def unlock_spell_big_board(death_eater_proclamations: int):
 
     return spell
 
+@db_session
+def update_email(user_id: int, olde: str, newe: str):
+
+    if User.exists(Id=user_id):
+       
+        if (User[user_id].Email==olde):
+            if not check_email(newe):
+                User[user_id].Email = newe
+                return True
+
+        else:
+            return False
+    else:
+        return False
+
+@db_session
+def get_email(user_id: int):
+    return User[user_id].Email

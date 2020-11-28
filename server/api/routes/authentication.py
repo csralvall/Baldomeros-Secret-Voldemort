@@ -47,3 +47,9 @@ async def autenticate_user(
 
     return user
   
+@router.post("/email", tags=["Authentication"])
+async def change_email(user_id: int, olde: str, newe: str):
+    if update_email(user_id, olde, newe):
+        return 200
+    else:
+        raise HTTPException(status_code=404, detail="invalid user or email") 
