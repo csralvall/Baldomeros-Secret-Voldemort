@@ -6,6 +6,20 @@ from typing import Optional
 
 router = APIRouter()
 
+@router.post("/profile")
+async def give_profile_data(user_id: int):
+
+    if check_user(user_id):
+
+        user_required = get_username_and_email(user_id)
+
+        if (user_required is not None):
+            return user_required
+        else:
+            raise HTTPException(status_code=404, detail="failed giving user data")
+    else: 
+        raise HTTPException(status_code=404, detail="failed giving user data")
+
 @router.post("/new", tags=["Game"])
 async def create_match(minp: int, maxp: int, uhid: int):
   
