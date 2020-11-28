@@ -12,6 +12,7 @@ if (process.env.NODE_ENV === "test") {
 }
 
 function MatchList() {
+  //ReactModal.defaultStyles = {}; // Flushes all of react-modal's styles
   const [gameList, setGameList] = useState([]);
   const [selectedGame, setSelectedGame] = useState(-1);
   const [open, setOpen] = useState(false);
@@ -57,14 +58,12 @@ function MatchList() {
         closeTimeoutMS={200}
         style={{
           content: {
-            position: "absolute",
             top: "50%",
             left: "50%",
             right: "auto",
             bottom: "auto",
             border: "1px solid #ccc",
             background: "#000",
-            overflow: "auto",
             WebkitOverflowScrolling: "touch",
             borderRadius: "4px",
             outline: "none",

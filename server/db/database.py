@@ -7,7 +7,7 @@ class Match(db.Entity):
     Id = PrimaryKey(int, auto=True)
     MaxPlayers = Required(int, min=5, max=10)
     MinPlayers = Required(int, min=5, max=10)
-    Status = Required(int, min=0, max=2)
+    Status = Required(int, min=0, max=3)
     BoardType = Required(int, min=0, max=2)
     CandidateDirector = Optional(int)
     CurrentMinister = Optional(int)
@@ -24,7 +24,8 @@ class Board(db.Entity):
     DeathEaterProclamations = Optional(int, min=0, max=6)
     FailedElectionsCount = Optional(int)
     AvailableSpell = Optional(int, min=0, max=4, default=0)
-    BoardStatus = Optional(int, min=0, max=4, default=0)#hay que cambiarlo si agregamos caos
+    Expelliarmus = Optional(int, min=0, max=3, default=0)
+    BoardStatus = Optional(int, min=0, max=6, default=0)
     Proclamations = Optional('Deck', cascade_delete=True)
     Match = Required(Match)
 
@@ -55,4 +56,3 @@ class User(db.Entity):
 
 
 db.generate_mapping(create_tables=True)  
-

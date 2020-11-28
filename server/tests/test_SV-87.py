@@ -53,20 +53,20 @@ class TestSV87(unittest.TestCase):
     #--------------------------- Test get_player_rol ----------------------------
 
     def test_is_voldemort(self):
-        self.assertEqual(get_player_rol(self.player1id), SecretRolDiccionary[0])
+        self.assertEqual(get_player_rol(self.player1id), VOLDEMORT)
     
     def test_is_death_eater(self):
-        self.assertEqual(get_player_rol(self.player2id), SecretRolDiccionary[1])
+        self.assertEqual(get_player_rol(self.player2id), DEATH_EATER)
 
     def test_is_Phoenix(self):
-        self.assertEqual(get_player_rol(self.player3id), SecretRolDiccionary[2])
+        self.assertEqual(get_player_rol(self.player3id), PHOENIX)
 
     def test_get_player_rol_2(self):
-        self.assertEqual(get_player_rol(self.player1id), SecretRolDiccionary[0])
-        self.assertEqual(get_player_rol(self.player2id), SecretRolDiccionary[1])
-        self.assertEqual(get_player_rol(self.player3id), SecretRolDiccionary[2])
-        self.assertEqual(get_player_rol(self.player4id), SecretRolDiccionary[2])
-        self.assertEqual(get_player_rol(self.player5id), SecretRolDiccionary[2])
+        self.assertEqual(get_player_rol(self.player1id), VOLDEMORT)
+        self.assertEqual(get_player_rol(self.player2id), DEATH_EATER)
+        self.assertEqual(get_player_rol(self.player3id), PHOENIX)
+        self.assertEqual(get_player_rol(self.player4id), PHOENIX)
+        self.assertEqual(get_player_rol(self.player5id), PHOENIX)
 
     #--------------------------- Test get_player_username ----------------------------
 

@@ -26,10 +26,10 @@ class TestDeck(unittest.TestCase):
 
 
     def test_creation_correct_id(self):
-        proclamations = ['phoenix', 'phoenix', 'phoenix', 'phoenix', 'phoenix',
-        'phoenix', 'death eater', 'death eater', 'death eater', 'death eater',
-        'death eater', 'death eater', 'death eater', 'death eater',
-        'death eater', 'death eater', 'death eater']
+        proclamations = [PHOENIX_STR, PHOENIX_STR, PHOENIX_STR, PHOENIX_STR, PHOENIX_STR,
+        PHOENIX_STR, DEATH_EATER_STR, DEATH_EATER_STR, DEATH_EATER_STR, DEATH_EATER_STR,
+        DEATH_EATER_STR, DEATH_EATER_STR, DEATH_EATER_STR, DEATH_EATER_STR,
+        DEATH_EATER_STR, DEATH_EATER_STR, DEATH_EATER_STR]
 
         self.assertTrue(create_deck(self.board))
 
@@ -45,11 +45,11 @@ class TestDeck(unittest.TestCase):
 
 
     def test_creation_shuffle_deck(self):
-        proclamations_ordered = ['phoenix', 'phoenix', 'phoenix',
-        'phoenix', 'phoenix', 'phoenix', 'death eater', 'death eater',
-        'death eater', 'death eater', 'death eater', 'death eater',
-        'death eater', 'death eater', 'death eater', 'death eater',
-        'death eater']
+        proclamations_ordered = [PHOENIX_STR, PHOENIX_STR, PHOENIX_STR,
+        PHOENIX_STR, PHOENIX_STR, PHOENIX_STR, DEATH_EATER_STR, DEATH_EATER_STR,
+        DEATH_EATER_STR, DEATH_EATER_STR, DEATH_EATER_STR, DEATH_EATER_STR,
+        DEATH_EATER_STR, DEATH_EATER_STR, DEATH_EATER_STR, DEATH_EATER_STR,
+        DEATH_EATER_STR]
         self.assertTrue(create_deck(self.board))
         self.assertTrue(shuffle_deck(self.board))
 
@@ -66,7 +66,7 @@ class TestDeck(unittest.TestCase):
     def test_get_top_proclamation(self):
         self.assertTrue(create_deck(self.board))
         self.assertTrue(get_top_proclamation(self.board))
-        self.assertEqual(show_selected_deck(self.board), ['death eater'])
+        self.assertEqual(show_selected_deck(self.board), [DEATH_EATER_STR])
         self.assertEqual(deck_status(self.board)['Available'], 16)
 
 
@@ -87,7 +87,7 @@ class TestDeck(unittest.TestCase):
     def test_get_top_three_proclamations(self):
         self.assertTrue(create_deck(self.board))
         self.assertTrue(get_top_three_proclamation(self.board))
-        self.assertEqual(show_selected_deck(self.board), ['death eater','death eater','death eater'])
+        self.assertEqual(show_selected_deck(self.board), [DEATH_EATER_STR,DEATH_EATER_STR,DEATH_EATER_STR])
         self.assertEqual(deck_status(self.board)['Available'], 14)
 
     def test_get_top_three_proclamations_not_enough_cards(self):
@@ -107,13 +107,13 @@ class TestDeck(unittest.TestCase):
 
         self.assertTrue(get_top_proclamation(self.board))
 
-        self.assertEqual(show_selected_deck(self.board), ['death eater'])
+        self.assertEqual(show_selected_deck(self.board), [DEATH_EATER_STR])
 
-        self.assertTrue(discard_proclamation(self.board, 'death eater'))
+        self.assertTrue(discard_proclamation(self.board, DEATH_EATER_STR))
 
         self.assertEqual(deck_status(self.board)['Discarded'], 1)
 
-        self.assertEqual(show_discarded_deck(self.board), ['death eater'])
+        self.assertEqual(show_discarded_deck(self.board), [DEATH_EATER_STR])
 
         self.assertEqual(show_selected_deck(self.board), [])
 
@@ -129,7 +129,7 @@ class TestDeck(unittest.TestCase):
         self.assertTrue(create_deck(self.board))
 
         self.assertRaises(DeckNotFound, discard_proclamation,
-                                    self.board+1, 'death eater')
+                                    self.board+1, DEATH_EATER_STR)
 
 
     def test_refill_deck(self):
@@ -137,11 +137,11 @@ class TestDeck(unittest.TestCase):
 
         self.assertTrue(get_top_proclamation(self.board))
 
-        self.assertEqual(show_selected_deck(self.board), ['death eater'])
+        self.assertEqual(show_selected_deck(self.board), [DEATH_EATER_STR])
 
-        self.assertTrue(discard_proclamation(self.board, 'death eater'))
+        self.assertTrue(discard_proclamation(self.board, DEATH_EATER_STR))
 
-        self.assertEqual(show_discarded_deck(self.board), ['death eater'])
+        self.assertEqual(show_discarded_deck(self.board), [DEATH_EATER_STR])
 
         self.assertEqual(show_selected_deck(self.board), [])
 
@@ -176,9 +176,9 @@ class TestDeck(unittest.TestCase):
 
         self.assertTrue(get_top_proclamation(self.board))
 
-        self.assertEqual(show_selected_deck(self.board), ['death eater'])
+        self.assertEqual(show_selected_deck(self.board), [DEATH_EATER_STR])
 
-        self.assertEqual(get_selected_card(self.board), 'death eater')
+        self.assertEqual(get_selected_card(self.board), DEATH_EATER_STR)
 
         self.assertEqual(show_selected_deck(self.board), [])
 
@@ -199,7 +199,7 @@ class TestDeck(unittest.TestCase):
 
         self.assertTrue(get_top_proclamation(self.board))
 
-        self.assertEqual(show_selected_deck(self.board), ['death eater'])
+        self.assertEqual(show_selected_deck(self.board), [DEATH_EATER_STR])
 
     def test_show_selected_deck_bad_board_id(self):
         self.assertRaises(BoardNotFound,

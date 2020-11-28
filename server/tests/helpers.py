@@ -88,7 +88,7 @@ def change_selected_deck_phoenix(board_id: int):
     for card in deck.Cards['selected']:
         deck.Cards['selected'].pop()
     for i in range (0,3):
-        deck.Cards['selected'].append("phoenix")
+        deck.Cards['selected'].append(PHOENIX_STR)
 
 @db_session
 def change_selected_deck_death_eater(board_id: int):
@@ -96,7 +96,7 @@ def change_selected_deck_death_eater(board_id: int):
     for card in deck.Cards['selected']:
         deck.Cards['selected'].pop()
     for i in range (0,3):
-        deck.Cards['selected'].append("death eater")
+        deck.Cards['selected'].append(DEATH_EATER_STR)
 
 @db_session
 def show_available_deck(board_id: int):
@@ -142,3 +142,7 @@ def get_failed_election_count(board_id: int):
     if not Board.exists(Id=board_id):
         raise BoardNotFound
     return Board[board_id].FailedElectionsCount
+
+@db_session
+def get_players_from_match(match_id: int):
+    return Match[match_id].Players
