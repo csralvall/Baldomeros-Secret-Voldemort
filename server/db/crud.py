@@ -1032,11 +1032,10 @@ def update_password(user_id: int, oldp: str, newp: str):
         return False
 
 @db_session
-
 def get_email(user_id: int):
     return User[user_id].Email
 
-  
+@db_session
 def get_password(user_id: int):
     return User[user_id].Password
 
