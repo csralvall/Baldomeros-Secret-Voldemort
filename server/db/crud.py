@@ -93,6 +93,14 @@ def get_user(username: str, password: str):
         user = user.to_dict("Id Username")
     return user
 
+@db_session
+def eliminate_player_from_match(match_id: int, player_id: int):
+    if not Player.exists(PlayerId = player_id):
+        raise PlayerNotFound
+    if not Match.exists(Id = match_id):
+        raise MatchNotFound
+    Player[player_id].delete()
+
 
 @db_session
 def create_user(email: str, username: str, password: str):
@@ -190,9 +198,9 @@ def create_deck(board_id: int):
 
     available = []
     for i in range(0,6):
-        available.append("phoenix")
+        available.append(PHOENIX_STR)
     for i in range(0,11):
-        available.append("death eater")
+        available.append(DEATH_EATER_STR)
 
     size = len(available)
     cards = {'available': available, 'discarded': [], 'selected': []}
@@ -331,12 +339,11 @@ def get_director_username(match_id: int):
         return "No director yet"
     return director.UserId.Username 
 
-#cuando agreguemos el caos, hay que cambiar el <= a USE_SPELL a CHAOS
 @db_session
 def change_ingame_status(match_id: int, status: int):
     if not Match.exists(Id=match_id):
         raise MatchNotFound
-    if not (status >= NOMINATION and status <= USE_SPELL) :
+    if not (status >= NOMINATION and status <= EXPELLIARMUS) :
         raise BadIngameStatus
     board_id= get_match_board_id(match_id)
     Board[board_id].BoardStatus=status
@@ -344,7 +351,7 @@ def change_ingame_status(match_id: int, status: int):
 @db_session
 def get_ingame_status(match_id: int):
     board_id= get_match_board_id(match_id)
-    return ingame_status[Board[board_id].BoardStatus]
+    return Board[board_id].BoardStatus
 
 
 @db_session
@@ -370,11 +377,19 @@ def get_board_status(board_id: int):
 
     board_attr = ["PhoenixProclamations", "DeathEaterProclamations"]
     board_status = Board[board_id].to_dict(board_attr)
-    board_status['spell'] = spells[Board[board_id].AvailableSpell]
+    board_status['spell'] = spells[get_available_spell(board_id)]
+    board_status['expelliarmus'] = expelliarmus[Board[board_id].Expelliarmus]
     board_status['status'] = ingame_status[Board[board_id].BoardStatus]
     board_status['boardtype'] = BoardType[Board[board_id].BoardType]
     board_status['failcounter'] = Board[board_id].FailedElectionsCount
     return board_status    
+
+@db_session
+def get_available_spell(board_id: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+
+    return Board[board_id].AvailableSpell
 
 @db_session
 def check_match(match_id: int):
@@ -482,6 +497,19 @@ def failed_director_election(match_id: int):
     Match[match_id].CandidateDirector = NO_DIRECTOR
     Match[match_id].CurrentDirector = NO_DIRECTOR
 
+@db_session
+def failed_director_expelliarmus(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+    query = Match[match_id].Players.order_by(Player.Position)
+    players = [x for x in query]
+    current_director = Match[match_id].CurrentDirector
+    if current_director == NO_DIRECTOR:
+        raise NoDirector
+    players[current_director].GovRol = MAGICIAN
+    Match[match_id].CandidateDirector = NO_DIRECTOR
+    Match[match_id].CurrentDirector = NO_DIRECTOR
+
 
 @db_session
 def set_next_candidate_director(match_id: int, pos: int):
@@ -574,9 +602,9 @@ def failed_election(match_id: int):
 
 @db_session
 def enact_proclamation(match_id: int, proclamation: str):
-    if proclamation == "phoenix":
+    if proclamation == PHOENIX_STR:
         Match[match_id].Board.PhoenixProclamations += 1
-    elif proclamation == "death eater":
+    elif proclamation == DEATH_EATER_STR:
         Match[match_id].Board.DeathEaterProclamations += 1
 
 @db_session
@@ -594,10 +622,10 @@ def is_victory_from(match_id: int):
             return Match[match_id].Winner
         winner = NO_WINNER_YET
         if get_death_eater_proclamations(match_id) == 6:
-            winner = DEATH_EATER_WINNER
+            winner = DEATH_EATER_STR
             Match[match_id].Status = FINISHED
         elif get_phoenix_proclamations(match_id) == 5:
-            winner = PHOENIX_WINNER
+            winner = PHOENIX_STR
             Match[match_id].Status = FINISHED
 
         Match[match_id].Winner = winner
@@ -614,17 +642,10 @@ def is_voldemort_dead(match_id: int):
     return voldemort.IsDead
 
 @db_session
-def set_death_eater_winner(match_id: int):
+def set_winner(match_id: int, winner: str):
     if not Match.exists(Id=match_id):
         raise MatchNotFound
-    Match[match_id].Winner = DEATH_EATER_WINNER
-    Match[match_id].Status = FINISHED
-
-@db_session
-def set_phoenix_winner(match_id: int): # TODO: test
-    if not Match.exists(Id=match_id):
-        raise MatchNotFound
-    Match[match_id].Winner = PHOENIX_WINNER
+    Match[match_id].Winner = winner
     Match[match_id].Status = FINISHED
 
 @db_session
@@ -763,7 +784,7 @@ def get_min_players(match_id: int):
 
 @db_session
 def get_player_rol(player_id: int):
-    return SecretRolDiccionary[Player[player_id].SecretRol]
+    return Player[player_id].SecretRol
 
 @db_session
 def get_user_username(user_id: int):
@@ -814,12 +835,40 @@ def avada_kedavra(board_id: int, player_id: int):
     Board[board_id].AvailableSpell = NO_SPELL
 
 @db_session
-def adivination(board_id: int):
+def disable_spell(board_id: int):
     if not Board.exists(Id=board_id):
         raise BoardNotFound
 
     Board[board_id].AvailableSpell = NO_SPELL
 
+@db_session
+def unlock_expelliarmus(board_id: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+
+    board = Board[board_id]
+
+    if board.DeathEaterProclamations >= 5:
+        board.Expelliarmus = UNLOCKED
+
+@db_session
+def get_expelliarmus_status(board_id: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+
+    status = Board[board_id].Expelliarmus
+
+    return expelliarmus[status]
+
+@db_session
+def set_expelliarmus_status(board_id: int, status: int):
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+
+    board = Board[board_id]
+
+    if board.DeathEaterProclamations >= 5 and status != LOCKED:
+        board.Expelliarmus = status
 
 @db_session
 def get_player_id_from_username(match_id: int, username: str):

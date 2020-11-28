@@ -57,10 +57,10 @@ def test_adivination_ok():
     set_current_director(matchid1, 2)
 
     response = client.patch(
-        f"/game/{matchid1}/board/adivination"
+        f"/game/{matchid1}/board/no-spell"
     )
     assert response.status_code == 200
-    assert get_ingame_status(matchid1) == ingame_status[NOMINATION]
+    assert get_ingame_status(matchid1) == NOMINATION
     assert get_board_status(bid)['spell'] == spells[NO_SPELL]
   
     assert get_minister_username(matchid1)=="example2"
@@ -115,7 +115,7 @@ def test_adivination_bad_match_id():
     trash = 666
 
     response = client.patch(
-        f"/game/{trash}/board/adivination"
+        f"/game/{trash}/board/no-spell"
     )
 
     assert response.status_code == 404
