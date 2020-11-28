@@ -6,12 +6,12 @@ VOLDEMORT_DEAD = "Voldemort died"
 VOLDEMORT_DIRECTOR = "Voldemort is the director"
 
 
-
-Status = ("Joinable", "In Game","Finished")
+Status = ("Joinable", "In Game", "Finished", "Closed")
 
 JOINABLE = 0
 IN_GAME = 1
 FINISHED = 2
+CLOSED = 3
 
 BoardType = ("5-6", "7-8", "9-10")
 

@@ -143,3 +143,6 @@ def get_failed_election_count(board_id: int):
         raise BoardNotFound
     return Board[board_id].FailedElectionsCount
 
+@db_session
+def get_players_from_match(match_id: int):
+    return Match[match_id].Players
