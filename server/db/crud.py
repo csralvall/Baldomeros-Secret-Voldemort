@@ -927,10 +927,13 @@ def update_password(user_id: int, oldp: str, newp: str):
     if not User.exists(Id=user_id):
         raise UserNotFound
        
-    if User.exists(Password=oldp):
+    if (User[user_id].Password==oldp):
         User[user_id].Password = newp
         return True
 
     else:
         return False
 
+@db_session
+def get_password(user_id: int):
+    return User[user_id].Password
