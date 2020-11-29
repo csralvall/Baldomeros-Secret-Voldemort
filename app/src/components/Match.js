@@ -128,6 +128,7 @@ function Match({ match }) {
                 deathEaterProclamationCount={
                   gameStatus.boardstatus.deatheaterproclamations
                 }
+                boardType={gameStatus.boardstatus.boardtype}
                 chaosCirclePosition={gameStatus.boardstatus.failcounter}
               />
             ) : (
