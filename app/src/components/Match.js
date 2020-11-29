@@ -8,6 +8,7 @@ import MatchInfo from "./MatchInfo";
 import Board from "./Board";
 import Adivination from "./Adivination";
 import "./css/Match.css";
+import Expelliarmus from "./Expelliarmus";
 
 function Match({ match }) {
   const game = useSelector((state) => state.match);
@@ -20,6 +21,7 @@ function Match({ match }) {
       spell: null,
       status: "",
       failcounter: 0,
+      expelliarmus: "",
     },
     matchstatus: "",
     winner: "",
@@ -125,6 +127,7 @@ function Match({ match }) {
                       candidate={gameStatus.candidate}
                       status={gameStatus.boardstatus.status}
                       hand={gameStatus.hand}
+                      expelliarmus={gameStatus.boardstatus.expelliarmus}
                     />
                   ) : (
                     ""
@@ -146,6 +149,27 @@ function Match({ match }) {
                   gameStatus.boardstatus.status === "use spell" &&
                   gameStatus.minister === user.username ? (
                     <Adivination hand={gameStatus.hand} />
+                  ) : (
+                    ""
+                  )}
+                  {gameStatus.boardstatus.status === "expelliarmus" &&
+                  gameStatus.minister === user.username ? (
+                    <Expelliarmus
+                      minister={gameStatus.minister}
+                      director={gameStatus.director}
+                      expelliarmus={gameStatus.boardstatus.expelliarmus}
+                    />
+                  ) : (
+                    ""
+                  )}
+                  {gameStatus.boardstatus.expelliarmus === "unlocked" &&
+                  gameStatus.boardstatus.status === "director selection" &&
+                  gameStatus.director === user.username ? (
+                    <Expelliarmus
+                      minister={gameStatus.minister}
+                      director={gameStatus.director}
+                      expelliarmus={gameStatus.boardstatus.expelliarmus}
+                    />
                   ) : (
                     ""
                   )}
