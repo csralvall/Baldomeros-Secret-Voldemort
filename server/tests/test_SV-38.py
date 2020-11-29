@@ -76,10 +76,7 @@ def test_gamestatus_empty_mid():
     assert response.status_code == 404
     assert response.json()['detail'] == "Not Found" 
 
-
-
-
-
+    
 def test_gamestatus_ok_2():
     delete_data(Board)
     delete_data(Player)
