@@ -341,8 +341,12 @@ def vote_director(player_id: int, vote: str):
 
 
 @db_session
-def get_minister_username(match_id: int): 
-    minister = Match[match_id].Players.filter(lambda p: p.GovRol == 1).first()
+def get_minister_username(match_id: int):
+    all_players = Match[match_id].Players
+    imp_min = get(p for p in all_players if p.GovRol == IMPERIO_MINISTER)
+    if imp_min is not None:
+        return imp_min.UserId.Username
+    minister = Match[match_id].Players.filter(lambda p: p.GovRol == MINISTER).first()
     if minister is None:
         return "No minister yet"
     return minister.UserId.Username
@@ -453,24 +457,47 @@ def get_player_id(match_id: int, user_id: int):
 @db_session
 def set_next_minister(match_id: int):
     if Match.exists(Id=match_id):
-        query = Match[match_id].Players.order_by(Player.Position)
-        exMinister = [x for x in query if x.GovRol==3]
+        all_players = Match[match_id].Players
+        query = all_players.order_by(Player.Position)
+        exMinister = [x for x in query if x.GovRol == EX_MINISTER]
         if len(exMinister):
             exMinister[0].GovRol = MAGICIAN
+        # set imperio minister as ex minister
+        imp_min = get(p for p in all_players if p.GovRol == IMPERIO_MINISTER)
+        if imp_min is not None:
+            imp_min.GovRol = EX_MINISTER # si era exMinister no hay problema
         players = [x for x in query]
         last_minister = Match[match_id].CurrentMinister
         players[last_minister].GovRol = EX_MINISTER
         current_minister = (last_minister + 1) % len(players)
-        while players[current_minister].IsDead:
+        # tienen que haber mas de tres jugadores vivos siempre
+        # si hay menos de tres puede entrar en loop infinito
+        while players[current_minister].IsDead or players[current_minister].GovRol == EX_MINISTER:
             current_minister = (current_minister + 1) % len(players)
         players[current_minister].GovRol = MINISTER
         Match[match_id].CurrentMinister = current_minister
         return current_minister
 
 @db_session
+def imperio(board_id: int, player_id: int):
+    if not Player.exists(PlayerId=player_id):
+        raise PlayerNotFound
+
+    if not Board.exists(Id=board_id):
+        raise BoardNotFound
+
+    Player[player_id].GovRol = IMPERIO_MINISTER
+    Board[board_id].AvailableSpell = NO_SPELL
+    
+
+@db_session
 def set_next_minister_failed_election(match_id: int):
     if Match.exists(Id=match_id):
-        query = Match[match_id].Players.order_by(Player.Position)
+        all_players = Match[match_id].Players
+        query = all_players.order_by(Player.Position)
+        imp_min = get(p for p in all_players if p.GovRol == IMPERIO_MINISTER)
+        if imp_min is not None:
+            imp_min.GovRol = MAGICIAN # si era exMinister no hay problema
         players = [x for x in query]
         last_minister = Match[match_id].CurrentMinister
         players[last_minister].GovRol = MAGICIAN
@@ -830,11 +857,11 @@ def get_posible_directors(match_id: int):
     posible_directors = list()
     if len(players_alive_in_match)<=5:
         for p in players_alive_in_match:
-            if (p.GovRol != EX_DIRECTOR and p.GovRol != MINISTER):
+            if (p.GovRol != EX_DIRECTOR and p.GovRol != MINISTER and p.GovRol != IMPERIO_MINISTER):
                 posible_directors.append(get_player_username(p.PlayerId))
     else:
         for p in players_alive_in_match:
-            if (p.GovRol != EX_MINISTER and p.GovRol != EX_DIRECTOR and p.GovRol != MINISTER):
+            if (p.GovRol != EX_MINISTER and p.GovRol != EX_DIRECTOR and p.GovRol != MINISTER and p.GovRol != IMPERIO_MINISTER):
                 posible_directors.append(get_player_username(p.PlayerId))
     return {"posible directors": posible_directors}
 
