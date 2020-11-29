@@ -86,6 +86,14 @@ def check_email(email: str):
     except Exception:
         return False
 
+@db_session
+def check_user(user_id: int):
+    try: 
+        u = User.exists(Id=user_id)
+        return u 
+    except Exception:
+        return False
+
 @db_session #get the User object.
 def get_user(username: str, password: str):
     user = User.get(Username=username, Password=password)
@@ -1006,15 +1014,16 @@ def unlock_spell_big_board(death_eater_proclamations: int):
 @db_session
 def update_email(user_id: int, olde: str, newe: str):
 
-    if User.exists(Id=user_id):
+    if not User.exists(Id=user_id):
+        raise UserNotFound
        
-        if (User[user_id].Email==olde):
-            if not check_email(newe):
-                User[user_id].Email = newe
-                return True
+    if (User[user_id].Email==olde):
+        if not check_email(newe):
+            User[user_id].Email = newe
+            return True
 
-        else:
-            return False
+    else:
+        return False
 
 
 @db_session
@@ -1039,3 +1048,18 @@ def get_email(user_id: int):
 def get_password(user_id: int):
     return User[user_id].Password
 
+@db_session
+def get_username_and_email(user_id: int):
+
+    if not User.exists(Id=user_id):
+        raise UserNotFound
+
+    username = get_user_username(user_id)
+    email = get_email(user_id)
+
+    username_and_email = {
+        "Username": username,
+        "Email": email
+    }
+
+    return username_and_email
