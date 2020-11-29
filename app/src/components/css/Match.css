@@ -55,8 +55,15 @@
   padding-bottom: 1vmin;
   padding-right: 1vmin;
   padding-left: 1vmin;
+  width: 70vmin;
+  margin: auto;
 }
 
 .winner-msg {
-  font-size: 3rem;
+  font-size: 6.3vmin;
+}
+
+.winner-description {
+  font-size: 4vmin;
+  color: gray;
 }
