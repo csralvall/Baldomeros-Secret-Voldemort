@@ -34,6 +34,7 @@ function MatchInfo({ playerList }) {
       {Object.entries(playerList).map((player) => (
         <h4 className="player-name">{player[0]}</h4>
       ))}
+      <div>
       {user.username === game.hostName ? (
         <button
           className="start-btn"
@@ -46,6 +47,7 @@ function MatchInfo({ playerList }) {
       ) : (
         <h3>Waiting for Host to start the game</h3>
       )}
+      <div/>
       <LeaveGame status={"Joinable"} />
     </div>
   );
