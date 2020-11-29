@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import "./css/MatchInfo.css";
+import LeaveGame from "./LeaveGame";
 
 function MatchInfo({ playerList }) {
   const game = useSelector((state) => state.match);
@@ -34,19 +35,18 @@ function MatchInfo({ playerList }) {
         <h4 className="player-name">{player[0]}</h4>
       ))}
       {user.username === game.hostName ? (
-        <div>
-          <button
-            className="start-btn"
-            onClick={() => {
-              startGame();
-            }}
-          >
-            Start Game
-          </button>
-        </div>
+        <button
+          className="start-btn"
+          onClick={() => {
+            startGame();
+          }}
+        >
+          Start Game
+        </button>
       ) : (
         <h3>Waiting for Host to start the game</h3>
       )}
+      <LeaveGame status={"Joinable"} />
     </div>
   );
 }

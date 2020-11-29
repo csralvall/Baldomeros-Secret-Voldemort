@@ -9,6 +9,7 @@ import Board from "./Board";
 import Adivination from "./Adivination";
 import "./css/Match.css";
 import Expelliarmus from "./Expelliarmus";
+import LeaveGame from "./LeaveGame";
 
 function Match({ match }) {
   const game = useSelector((state) => state.match);
@@ -118,6 +119,13 @@ function Match({ match }) {
                 ) : (
                   ""
                 )}
+                <div>
+                  {gameStatus.matchstatus === "Closed" ? (
+                    <LeaveGame status={gameStatus.matchstatus} />
+                  ) : (
+                    ""
+                  )}
+                </div>
                 <div>
                   {gameStatus.matchstatus === "In Game" ? (
                     <Election
