@@ -23,7 +23,6 @@ function AvadaKedavra({ playerList }) {
     return username !== player[0];
   }
 
-  //flag for voting when the vote is the same as the last
   const loaded = useRef(false);
   useEffect(() => {
     if (loaded.current) {
