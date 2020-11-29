@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import phoenixBoard from "../media/boards/phoenixBoard.png";
 import phoenixProclamation from "../media/cards/phoenixProclamation.png";
 import deathEaterBoard5_6 from "../media/boards/deathEaterBoard5-6.png";
+import deathEaterBoard7_8 from "../media/boards/deathEaterBoard7-8.png";
+import deathEaterBoard9_10 from "../media/boards/deathEaterBoard9-10.png";
 import deathEaterProclamation from "../media/cards/deathEaterProclamation.png";
 import chaosCircle from "../media/boards/chaosCircle.png";
 import "./css/Board.css";
@@ -9,6 +11,7 @@ import "./css/Board.css";
 function Board({
   phoenixProclamationCount,
   deathEaterProclamationCount,
+  boardType,
   chaosCirclePosition,
 }) {
   const loaded = useRef(false);
@@ -73,6 +76,16 @@ function Board({
     }
   };
 
+  const getBoardImg = (type) => {
+    if (type === "7-8") {
+      return deathEaterBoard7_8;
+    } else if (type === "9-10") {
+      return deathEaterBoard9_10;
+    } else {
+      return deathEaterBoard5_6;
+    }
+  };
+
   return (
     <div className="boards">
       <div className="phoenix-board-container">
@@ -116,7 +129,7 @@ function Board({
       <div className="death-eater-board-container">
         <img
           className="death-eater-board-img"
-          src={deathEaterBoard5_6}
+          src={getBoardImg(boardType)}
           alt=""
         ></img>
         <img
