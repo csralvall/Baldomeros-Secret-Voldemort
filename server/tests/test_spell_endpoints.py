@@ -15,8 +15,10 @@ def test_vote_avada_kedavra():
 
     create_user("foo@gmail.com", "foo", "foo")
     create_user("bar@gmail.com", "bar", "bar")
+    create_user("baz@gmail.com", "baz", "baz")
     uid1 = get_user("foo", "foo")["Id"]
     uid2 = get_user("bar", "bar")["Id"]
+    uid3 = get_user("baz", "baz")["Id"]
 
     match = add_match_db(5,7,uid1)
     match_id = match['Match_id']
@@ -24,7 +26,9 @@ def test_vote_avada_kedavra():
     make_director(pid)
     set_current_director(match_id,0)
 
-    add_user_in_match(uid2, match_id, 2)
+    add_user_in_match(uid2, match_id, 1)
+
+    add_user_in_match(uid3, match_id, 2)
 
     response = client.patch(
         f"/game/{match_id}/board/avada-kedavra?playername=bar"
@@ -41,8 +45,10 @@ def test_vote_avada_kedavra_voldemort_kill():
 
     create_user("foo@gmail.com", "foo", "foo")
     create_user("bar@gmail.com", "bar", "bar")
+    create_user("baz@gmail.com", "baz", "baz")
     uid1 = get_user("foo", "foo")["Id"]
     uid2 = get_user("bar", "bar")["Id"]
+    uid3 = get_user("baz", "baz")["Id"]
 
     match = add_match_db(5,7,uid1)
     match_id = match['Match_id']
@@ -50,7 +56,8 @@ def test_vote_avada_kedavra_voldemort_kill():
     make_director(pid)
     set_current_director(match_id,0)
 
-    add_user_in_match(uid2, match_id, 2)
+    add_user_in_match(uid2, match_id, 1)
+    add_user_in_match(uid3, match_id, 2)
 
     bar_player_id = get_player_id(match_id, uid2)
 
@@ -74,8 +81,10 @@ def test_vote_avada_kedavra_voldemort_not_set():
 
     create_user("foo@gmail.com", "foo", "foo")
     create_user("bar@gmail.com", "bar", "bar")
+    create_user("baz@gmail.com", "baz", "baz")
     uid1 = get_user("foo", "foo")["Id"]
     uid2 = get_user("bar", "bar")["Id"]
+    uid3 = get_user("baz", "baz")["Id"]
 
     match = add_match_db(5,7,uid1)
     match_id = match['Match_id']
@@ -83,12 +92,15 @@ def test_vote_avada_kedavra_voldemort_not_set():
     make_director(pid)
     set_current_director(match_id,0)
 
-    add_user_in_match(uid2, match_id, 2)
+    add_user_in_match(uid2, match_id, 1)
+    add_user_in_match(uid3, match_id, 2)
 
     bar_player_id = get_player_id(match_id, uid2)
+    bar_player_id3 = get_player_id(match_id, uid3)
 
     change_player_rol(pid, PHOENIX)
     change_player_rol(bar_player_id, PHOENIX)
+    change_player_rol(bar_player_id3, PHOENIX)
 
     response = client.patch(
         f"/game/{match_id}/board/avada-kedavra?playername=bar"
@@ -105,12 +117,15 @@ def test_vote_avada_kedavra_minister_autokill():
 
     create_user("foo@gmail.com", "foo", "foo")
     create_user("bar@gmail.com", "bar", "bar")
+    create_user("baz@gmail.com", "baz", "baz")
     uid1 = get_user("foo", "foo")["Id"]
     uid2 = get_user("bar", "bar")["Id"]
+    uid3 = get_user("baz", "baz")["Id"]
 
     match_id = add_match_db(5,7,uid1)['Match_id']
 
-    add_user_in_match(uid2, match_id, 2)
+    add_user_in_match(uid2, match_id, 1)
+    add_user_in_match(uid3, match_id, 2)
 
     set_gob_roles(match_id)
 
@@ -149,12 +164,15 @@ def test_vote_avada_kedavra_bad_match_id():
 
     create_user("foo@gmail.com", "foo", "foo")
     create_user("bar@gmail.com", "bar", "bar")
+    create_user("baz@gmail.com", "baz", "baz")
     uid1 = get_user("foo", "foo")["Id"]
     uid2 = get_user("bar", "bar")["Id"]
+    uid3 = get_user("baz", "baz")["Id"]
 
     match_id = add_match_db(5,7,uid1)['Match_id']
 
-    add_user_in_match(uid2, match_id, 2)
+    add_user_in_match(uid2, match_id, 1)
+    add_user_in_match(uid3, match_id, 2)
 
     match_id += 1
 
@@ -577,7 +595,7 @@ def test_crucio_medium_board():
     player_id1 = get_player_id(match_id, user_id1)
     player_id2 = get_player_id(match_id, user_id2)
 
-    make_minister(player_id2)
+    make_minister(player_id1)
     minister = get_minister_username(match_id)
 
     response = client.get(
@@ -863,4 +881,332 @@ def test_crucio_not_minister_caller():
     assert response.status_code == 403
     assert response.json()['detail'] == "You are not minister"
 
+def test_imperio_medium_board():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(7,8,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 8)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    while not get_available_spell(board_id) == IMPERIO:
+        enact_proclamation(match_id, DEATH_EATER_STR)
+        unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+    make_magician(player_id2)
+
+    assert get_available_spell(board_id) == IMPERIO
+
+    response = client.patch(
+        f"/game/{match_id}/board/imperio?playername={minister}&designated=bar"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == "bar is the new Minister"
+    assert get_minister_username(match_id) == "bar"
+    assert get_available_spell(board_id) == NO_SPELL
+
+def test_imperio_big_board():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(9,10,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 10)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    while not get_available_spell(board_id) == IMPERIO:
+        enact_proclamation(match_id, DEATH_EATER_STR)
+        unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+    make_magician(player_id2)
+
+    assert get_available_spell(board_id) == IMPERIO
+
+    response = client.patch(
+        f"/game/{match_id}/board/imperio?playername={minister}&designated=bar"
+    )
+
+    assert response.status_code == 200
+    assert response.json() == "bar is the new Minister"
+    assert get_minister_username(match_id) == "bar"
+    assert get_available_spell(board_id) == NO_SPELL
+
+def test_imperio_bad_match_id():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    user_id1 = get_user("foo", "foo")["Id"]
+
+    match_id = add_match_db(7,8,user_id1)['Match_id']
+
+    player_id1 = get_player_id(match_id, user_id1)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+
+    response = client.patch(
+        f"/game/{match_id+1}/board/imperio?playername={minister}&designated=bar"
+    )
+
+    assert response.status_code == 404
+    assert response.json()['detail'] == "this match does not exist"
+
+def test_imperio_bad_ingame_status():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(7,8,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 8)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+    make_magician(player_id2)
+
+    response = client.patch(
+        f"/game/{match_id}/board/imperio?playername={minister}&designated=bar"
+    )
+
+    assert response.status_code == 403
+    assert response.json()['detail'] == "Can't use spell now"
+
+def test_imperio_not_available_spell():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(7,8,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 8)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    while not get_available_spell(board_id) == CRUCIO:
+        enact_proclamation(match_id, DEATH_EATER_STR)
+        unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+    make_magician(player_id2)
+
+    response = client.patch(
+        f"/game/{match_id}/board/imperio?playername={minister}&designated=bar"
+    )
+
+    assert response.status_code == 403
+    assert response.json()['detail'] == "Spell not available"
+
+def test_imperio_bad_playername():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(7,8,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 8)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    while not get_available_spell(board_id) == IMPERIO:
+        enact_proclamation(match_id, DEATH_EATER_STR)
+        unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+    make_magician(player_id2)
+
+    assert get_available_spell(board_id) == IMPERIO
+
+    response = client.patch(
+        f"/game/{match_id}/board/imperio?playername=kaljlj&designated=bar"
+    )
+
+    assert response.status_code == 404
+    assert response.json()['detail'] == "Player not found"
+
+def test_imperio_bad_designated():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(7,8,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 8)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    while not get_available_spell(board_id) == IMPERIO:
+        enact_proclamation(match_id, DEATH_EATER_STR)
+        unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+    make_magician(player_id2)
+
+    assert get_available_spell(board_id) == IMPERIO
+
+    response = client.patch(
+        f"/game/{match_id}/board/imperio?playername={minister}&designated=lkjlj"
+    )
+
+    assert response.status_code == 404
+    assert response.json()['detail'] == "Player not found"
+
+def test_imperio_not_minister():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(7,8,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 8)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    while not get_available_spell(board_id) == IMPERIO:
+        enact_proclamation(match_id, DEATH_EATER_STR)
+        unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+    make_magician(player_id2)
+
+    assert get_available_spell(board_id) == IMPERIO
+
+    response = client.patch(
+        f"/game/{match_id}/board/imperio?playername=bar&designated=bar"
+    )
+
+    assert response.status_code == 403
+    assert response.json()['detail'] == "You are not minister"
+
+def test_imperio_minister_designating_himself():
+    delete_data(Board)
+    delete_data(Player)
+    delete_data(Match)
+    delete_data(User)
+
+    create_user("foo@gmail.com", "foo", "foo")
+    create_user("bar@gmail.com", "bar", "bar")
+    user_id1 = get_user("foo", "foo")["Id"]
+    user_id2 = get_user("bar", "bar")["Id"]
+
+    match_id = add_match_db(7,8,user_id1)['Match_id']
+    board_id = get_match_board_id(match_id)
+    set_board_type(board_id, 8)
+
+    add_user_in_match(user_id2, match_id, 2)
+
+    while not get_available_spell(board_id) == IMPERIO:
+        enact_proclamation(match_id, DEATH_EATER_STR)
+        unlock_spell(match_id)
+
+    change_ingame_status(match_id, USE_SPELL)
+
+    player_id1 = get_player_id(match_id, user_id1)
+    player_id2 = get_player_id(match_id, user_id2)
+
+    make_minister(player_id1)
+    minister = get_minister_username(match_id)
+    make_magician(player_id2)
+
+    assert get_available_spell(board_id) == IMPERIO
+
+    response = client.patch(
+        f"/game/{match_id}/board/imperio?playername={minister}&designated={minister}"
+    )
+
+    assert response.status_code == 403
+    assert response.json()['detail'] == "Not allowed"
 

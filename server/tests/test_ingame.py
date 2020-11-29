@@ -135,6 +135,12 @@ class TestInMatch(unittest.TestCase):
         make_magician(self.player1id)
         self.assertEqual(get_minister_username(self.matchid),"No minister yet")
 
+    def test_get_minister_imperio_minister(self):
+        make_magician(self.playeridcreator)
+        make_magician(self.player1id)
+        imperio(self.matchid, self.playeridcreator)
+        self.assertEqual(get_minister_username(self.matchid),"example")
+
     #------------------------get_candidate_director_username----------------------
     #won't receive a wrong matchid bc we check that before calling it
     def test_get_candidate_director_ok(self):
@@ -403,6 +409,25 @@ class TestInMatch(unittest.TestCase):
         self.assertEqual(set_next_minister(self.matchid),0)
         self.assertEqual(get_minister_username(self.matchid), 'example')
 
+    # probando que el ministro seleccionado en el imperio, si la eleccion
+    # de director es exitosa, pase a ex-ministro luego de su periodo de
+    # actividad
+    def test_set_next_minister_after_imperio(self):
+        create_user("exa@gmail.com","exa","exa")
+        exa_user_id = get_user("exa","exa")['Id']
+        add_user_in_match(exa_user_id,self.matchid,2)
+        change_last_minister(self.matchid,0)
+        make_magician(self.player1id)
+        make_minister(self.playeridcreator)
+        self.assertEqual(get_minister_username(self.matchid), 'example')
+        imperio(self.matchid, self.player1id)
+        self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister(self.matchid), 2)
+        self.assertEqual(get_minister_username(self.matchid), 'exa')
+        self.assertEqual(set_next_minister(self.matchid),0)
+        self.assertEqual(get_minister_username(self.matchid), 'example')
+
+
     #------------------------set_next_minister_failed_election----------------------
 
     def test_set_next_minister_failed_election_OK(self):
@@ -432,6 +457,25 @@ class TestInMatch(unittest.TestCase):
         make_minister(self.playeridcreator)
         self.assertEqual(set_next_minister_failed_election(self.matchid),1)
         self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister_failed_election(self.matchid),0)
+        self.assertEqual(get_minister_username(self.matchid), 'example')
+
+    # probando que el ciclado incluya al ministro del imperio cuando
+    # falla la eleccion de director
+    def test_set_next_minister_failed_election_after_imperio(self):
+        create_user("exa@gmail.com","exa","exa")
+        exa_user_id = get_user("exa","exa")['Id']
+        add_user_in_match(exa_user_id,self.matchid,2)
+        change_last_minister(self.matchid,0)
+        make_magician(self.player1id)
+        make_minister(self.playeridcreator)
+        self.assertEqual(get_minister_username(self.matchid), 'example')
+        imperio(self.matchid, self.player1id)
+        self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister_failed_election(self.matchid), 1)
+        self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister_failed_election(self.matchid),2)
+        self.assertEqual(get_minister_username(self.matchid), 'exa')
         self.assertEqual(set_next_minister_failed_election(self.matchid),0)
         self.assertEqual(get_minister_username(self.matchid), 'example')
 
