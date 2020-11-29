@@ -143,8 +143,13 @@ function Match({ match }) {
                   )}
                 </div>
                 <div>
-                  {" "}
-                  {gameStatus.matchstatus == "In Game" ? <Role /> : ""}{" "}
+                  {gameStatus.matchstatus === "In Game" ? (
+                    <Role
+                      playerCount={Object.keys(gameStatus.playerstatus).length}
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
                 <div>
                   {gameStatus.boardstatus.spell === "Avada Kedavra" &&
