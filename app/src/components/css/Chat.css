@@ -1,0 +1,85 @@
+.chat-btn {
+  position: absolute;
+  top: -7.6vh;
+  right: 1vw;
+  z-index: 10;
+
+  padding-top: 1vmin;
+  padding-bottom: 1vmin;
+  padding-left: 2vmin;
+  padding-right: 2vmin;
+  background-color: #2e2d2d;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+  font-family: "Harry P", monospace, sans-serif;
+  font-size: 1.9rem;
+  outline: none;
+  margin-bottom: 1vw;
+}
+
+.chat-btn:hover {
+  background-color: #333333;
+}
+
+.chat-modal {
+  position: absolute;
+  height: 100vh;
+  width: 50vmin;
+  right: 1vmin;
+  bottom: 1vmin;
+  background-color: #252525;
+  border-radius: 15px;
+  outline: none;
+}
+
+.chat-msg-input {
+  width: 80%;
+  margin-bottom: 2vh;
+  font-size: 3.5vmin;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  padding-left: 3vmin;
+  border-radius: 15px;
+  border: none;
+  outline: none;
+  background-color: #313030;
+  color: white;
+  font-family: "Harry P", monospace, sans-serif;
+}
+
+.send-msg-form {
+  position: absolute;
+  bottom: 3vh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+}
+
+.button-send-msg {
+  width: 20%;
+  margin: auto;
+
+  padding-top: 1vmin;
+  padding-bottom: 1vmin;
+  padding-left: 2vmin;
+  padding-right: 2vmin;
+  background-color: #2e2d2d;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+  font-family: "Harry P", monospace, sans-serif;
+  font-size: 1.9rem;
+  outline: none;
+}
+
+.button-send-msg:hover {
+  background-color: #333333;
+}

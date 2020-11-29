@@ -7,6 +7,7 @@ import Election from "./Election";
 import MatchInfo from "./MatchInfo";
 import Board from "./Board";
 import Adivination from "./Adivination";
+import Chat from "./Chat";
 import "./css/Match.css";
 
 function Match({ match }) {
@@ -121,15 +122,18 @@ function Match({ match }) {
           <div>
             {gameStatus.matchstatus === "Joinable" ||
             gameStatus.matchstatus === "In Game" ? (
-              <Board
-                phoenixProclamationCount={
-                  gameStatus.boardstatus.phoenixproclamations
-                }
-                deathEaterProclamationCount={
-                  gameStatus.boardstatus.deatheaterproclamations
-                }
-                chaosCirclePosition={gameStatus.boardstatus.failcounter}
-              />
+              <div>
+                <Chat />
+                <Board
+                  phoenixProclamationCount={
+                    gameStatus.boardstatus.phoenixproclamations
+                  }
+                  deathEaterProclamationCount={
+                    gameStatus.boardstatus.deatheaterproclamations
+                  }
+                  chaosCirclePosition={gameStatus.boardstatus.failcounter}
+                />
+              </div>
             ) : (
               ""
             )}
