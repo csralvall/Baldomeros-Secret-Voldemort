@@ -31,6 +31,7 @@ function Match({ match }) {
     candidate: "",
     playerstatus: {},
     hand: [],
+    chat: {},
   });
 
   useInterval(async () => {
@@ -197,7 +198,7 @@ function Match({ match }) {
             {gameStatus.matchstatus === "Joinable" ||
             gameStatus.matchstatus === "In Game" ? (
               <div>
-                <Chat />
+                <Chat messages={gameStatus.chat} />
                 <Board
                   phoenixProclamationCount={
                     gameStatus.boardstatus.phoenixproclamations

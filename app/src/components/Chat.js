@@ -3,11 +3,21 @@ import { useSelector } from "react-redux";
 import Modal from "react-modal";
 import "./css/Chat.css";
 
-function Chat() {
+function Chat({ messages }) {
   const user = useSelector((state) => state.user);
+  const matchId = useSelector((state) => state.match.id);
+
+  const messagesEndRef = useRef(null);
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [newMessageData, setNewMessageData] = useState({});
+  const [messageCount, setMessageCount] = useState(0);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef != null) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const loaded = useRef(false);
   useEffect(() => {
@@ -19,6 +29,23 @@ function Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newMessageData]);
 
+  const loaded2 = useRef(false);
+
+  useEffect(() => {
+    if (loaded2.current) {
+      scrollToBottom();
+    } else {
+      loaded2.current = true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messageCount]);
+
+  useEffect(() => {
+    if (Object.keys(messages).length !== messageCount) {
+      setMessageCount(Object.keys(messages).length);
+    }
+  }, [messages]);
+
   const updateNewMessage = (e) => {
     setNewMessage(e.target.value);
   };
@@ -26,7 +53,7 @@ function Chat() {
   const getNewMessageData = (e) => {
     e.preventDefault();
     setNewMessageData({
-      user_id: user.id,
+      username: user.username,
       msg: newMessage,
     });
   };
@@ -35,22 +62,21 @@ function Chat() {
     const url = "http://127.0.0.1:8000";
 
     await fetch(
-      url +
-        `/password?user_id=${newMessageData.user_id}&oldp=${newMessageData.text}`,
+      url + `/game/${matchId}/chat?username=${newMessageData.username}`,
       {
-        method: "POST",
+        method: "PATCH",
+        body: JSON.stringify(newMessageData.msg),
       }
     )
       .then((response) => {
-        console.log(response);
         if (response.status !== 200) {
           if (response.status === 404) {
-            alert("Invalid Password");
+            alert("Match Not Found");
           } else {
-            alert("Could not Change Password. Unknown Error.");
+            alert("Could not Send Message. Unknown Error.");
           }
         } else {
-          console.log("Success!");
+          setNewMessage("");
         }
       })
       .catch(() => {
@@ -76,7 +102,22 @@ function Chat() {
         }}
         className="chat-modal"
       >
-        <div>
+        <div className="chat-div">
+          <div className="msg-feed">
+            {Object.keys(messages).map((msg) =>
+              messages[msg]["Username"] === user.username ? (
+                <div className="my-msg-div">
+                  <p className="my-msg-p">{messages[msg]["Text"]}</p>
+                </div>
+              ) : (
+                <div className="msg-div">
+                  <p className="msg-label">{messages[msg]["Username"]}</p>
+                  <p className="msg-p">{messages[msg]["Text"]}</p>
+                </div>
+              )
+            )}
+            <div ref={messagesEndRef} />
+          </div>
           <form onSubmit={getNewMessageData} className="send-msg-form">
             <input
               className="chat-msg-input"
