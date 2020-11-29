@@ -104,7 +104,7 @@ async def use_expelliarmus(
         director_expelliarmus(match_id)
 
 @router.patch("/{match_id}/board/no-spell", tags=["Spells"])
-async def disable_spell(match_id: int):
+async def disable_spell_endpoint(match_id: int):
 
     if not check_match(match_id):
         raise HTTPException(status_code=404, detail="Match not found")
