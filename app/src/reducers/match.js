@@ -7,6 +7,8 @@ const matchReducer = (
       return action.payload;
     case "CREATE":
       return action.payload;
+    case "LEAVE":
+      return action.payload;
     default:
       return state;
   }
