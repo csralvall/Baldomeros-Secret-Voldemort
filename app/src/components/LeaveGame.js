@@ -5,7 +5,7 @@ import { leaveMatchAction } from "../actions/match";
 import "./css/MatchInfo.css";
 
 function LeaveGame({ status }) {
-  const userID = useSelector((state) => state.user.id);
+  const playerID = useSelector((state) => state.match.playerId);
   const matchID = useSelector((state) => state.match.id);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -13,7 +13,7 @@ function LeaveGame({ status }) {
   const leave = async () => {
     const url = "http://127.0.0.1:8000";
 
-    await fetch(url + `/game/${matchID}/leave/${userID}`, {
+    await fetch(url + `/game/${matchID}/leave/${playerID}`, {
       method: "PATCH",
     })
       .then(async (response) => {
