@@ -1,0 +1,9 @@
+.profile-labels {
+  font-family: "Harry P", monospace;
+  font-size: 3rem;
+  text-align: center;
+}
+
+#bottom-label {
+  padding-top: 2vh;
+}

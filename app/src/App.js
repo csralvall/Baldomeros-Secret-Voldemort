@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import Signup from "./components/SignUp";
 import Match from "./components/Match";
 import CreateMatch from "./components/CreateMatch";
+import Profile from "./components/Profile";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route exact path="/signup" component={Signup} />
           <Route exact path="/match/create" component={CreateMatch} />
           <Route exact path="/match/:id" component={Match} />
+          <Route exact path="/profile" component={Profile} />
         </Switch>
       </div>
     </BrowserRouter>
