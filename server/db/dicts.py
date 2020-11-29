@@ -29,13 +29,15 @@ GovRolDiccionary = ("Head Master",
                     "Magic Minister",
                     "Magician",
                     "Ex Minister",
-                    "Ex Director")
+                    "Ex Director",
+                    "Imperio Minister")
 
 DIRECTOR = 0
 MINISTER = 1
 MAGICIAN = 2
 EX_MINISTER = 3
 EX_DIRECTOR = 4
+IMPERIO_MINISTER = 5
 NO_DIRECTOR = 99
 
 VoteType = ("nox", "lumos", "missing vote")
