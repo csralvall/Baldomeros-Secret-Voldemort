@@ -16,6 +16,7 @@ class Match(db.Entity):
     Board = Optional('Board', cascade_delete=True)
     Creator = Required('User')
     Winner = Required(str)
+    Messages = Set('Message',cascade_delete=True)
     
 class Board(db.Entity):
     Id = PrimaryKey(int, auto=True)
@@ -54,5 +55,10 @@ class User(db.Entity):
     Players = Set('Player')
     Matches = Set('Match')
 
+class Message(db.Entity):
+    Match = Required('Match')
+    Username = Required(str, max_len=30)
+    Text = Required(str)
+    Number = Required(int)
 
 db.generate_mapping(create_tables=True)  
