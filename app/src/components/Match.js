@@ -54,7 +54,44 @@ function Match({ match }) {
 
   const Winner = (
     <div className="winner-div">
-      <h1 className="winner-msg">The winner is {gameStatus.winner}</h1>
+      {gameStatus.winner === "Voldemort is the director" ? (
+        <div>
+          <h1 className="winner-msg">The Death Eaters have won!</h1>
+          <h2 className="winner-description">
+            Voldemort has been chosen as director
+          </h2>
+        </div>
+      ) : (
+        ""
+      )}
+      {gameStatus.winner === "Voldemort died" ? (
+        <div>
+          <h1 className="winner-msg">The Order of The Phoenix has won!</h1>
+          <h2 className="winner-description">Voldemort has died</h2>
+        </div>
+      ) : (
+        ""
+      )}
+      {gameStatus.winner === "death eater" ? (
+        <div>
+          <h1 className="winner-msg">The Death Eaters have won!</h1>
+          <h2 className="winner-description">
+            They managed to enact six of their proclamations
+          </h2>
+        </div>
+      ) : (
+        ""
+      )}
+      {gameStatus.winner === "phoenix" ? (
+        <div>
+          <h1 className="winner-msg">The Order of The Phoenix has won!</h1>
+          <h2 className="winner-description">
+            They managed to enact five of their proclamations
+          </h2>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 
@@ -128,6 +165,7 @@ function Match({ match }) {
                 deathEaterProclamationCount={
                   gameStatus.boardstatus.deatheaterproclamations
                 }
+                boardType={gameStatus.boardstatus.boardtype}
                 chaosCirclePosition={gameStatus.boardstatus.failcounter}
               />
             ) : (
