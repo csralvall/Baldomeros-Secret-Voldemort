@@ -14,7 +14,7 @@ function Chat({ messages }) {
   const [messageCount, setMessageCount] = useState(0);
 
   const scrollToBottom = () => {
-    if (messagesEndRef != null) {
+    if (messagesEndRef.current != null) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
