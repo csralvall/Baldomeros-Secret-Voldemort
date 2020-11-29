@@ -1,5 +1,7 @@
 from server.db.crud import *
 
+from server.db.crud_messages import *
+
 from server.db.dicts import *
 
 from fastapi import APIRouter, HTTPException, Query, Path, Body
@@ -23,7 +25,7 @@ async def game_status(match_id: int):
     matchstatus = get_match_status(match_id)
     board_id = get_match_board_id(match_id)
     board_status = get_board_status(board_id)
-
+    chat = read_messages(match_id)
     try:
         hand = show_selected_deck(board_id)
     except DeckNotFound:
@@ -41,7 +43,8 @@ async def game_status(match_id: int):
         'winner': winner,
         'playerstatus': player_status,
         'boardstatus': board_status,
-        'hand': hand
+        'hand': hand,
+        'chat':chat
     }
 
     return status
@@ -253,4 +256,36 @@ async def select_director(
 
     return f"{playername} is the candidate to director"
 
+@router.patch("/{match_id}/chat", tags=["Game"])
+async def send_message_endpoint(
+    match_id: int = Path(..., title="The ID of the current match"),
+    username: str = Query(..., title="Name of user who sends a message"),
+    message: str = Body(..., title = "message that the users sends")):
+
+    if not check_match(match_id):
+        raise HTTPException(status_code=404, detail="Match not found")
+
+    minister = get_minister_username(match_id)
+    director = get_director_username(match_id)
+
+    if get_player_id_from_username(match_id, username) is None:
+        raise HTTPException(status_code=404, detail="This user is not playing this match")
+
+    if get_all_player_status(match_id)[username]["isDead"]:
+        raise HTTPException(status_code=404, detail="Player is dead")
+
+    ingame_status = get_ingame_status(match_id)
+
+    if ((ingame_status == MINISTER_SELECTION or ingame_status == DIRECTOR_SELECTION) and
+            (username == minister or username == director)):
+        raise HTTPException(status_code=404, detail="Minister and director can't talk during legislative session")
+    
+    try:
+        send_message(match_id,username,message)
+    except ResourceNotFound:
+        raise HTTPException(status_code=404, detail="Resource not found")
+    except BadUsername:
+        raise HTTPException(status_code=404, detail="username is too long")
+
+    return "Message sent"
 

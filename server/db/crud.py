@@ -131,7 +131,7 @@ def add_match(minp: int, maxp: str, creator):
         newmatch = Match(MaxPlayers=maxp,
             MinPlayers=minp,
             Status=JOINABLE,
-            BoardType=SMALL_BOARD, #hardcoded_hay que cambiarlo cuando empieza la partida
+            BoardType=SMALL_BOARD,
             CurrentMinister = 0, 
             CandidateDirector = NO_DIRECTOR,
             CurrentDirector = NO_DIRECTOR,
