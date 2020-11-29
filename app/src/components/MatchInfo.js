@@ -35,19 +35,19 @@ function MatchInfo({ playerList }) {
         <h4 className="player-name">{player[0]}</h4>
       ))}
       <div>
-      {user.username === game.hostName ? (
-        <button
-          className="start-btn"
-          onClick={() => {
-            startGame();
-          }}
-        >
-          Start Game
-        </button>
-      ) : (
-        <h3>Waiting for Host to start the game</h3>
-      )}
-      <div/>
+        {user.username === game.hostName ? (
+          <button
+            className="start-btn"
+            onClick={() => {
+              startGame();
+            }}
+          >
+            Start Game
+          </button>
+        ) : (
+          <h3>Waiting for Host to start the game</h3>
+        )}
+      </div>
       <LeaveGame status={"Joinable"} />
     </div>
   );
