@@ -55,7 +55,7 @@ describe("Match Info Interface", () => {
     };
     const wrapper = wrap();
     const button = wrapper.find("div div button");
-    expect(button.exists()).toBe(true);
+    expect(button).toHaveLength(2);
   });
 
   it("should show if you are not the host", () => {
@@ -89,7 +89,7 @@ describe("Match Info Interface", () => {
     };
     const wrapper = wrap();
     const button = wrapper.find("div div button");
-    expect(button.exists()).toBe(false);
+    expect(button).toHaveLength(1);
   });
 
   it("should show player list title", () => {

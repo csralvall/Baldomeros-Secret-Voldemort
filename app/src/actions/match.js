@@ -20,3 +20,14 @@ export const createMatchAction = (matchData) => {
     },
   };
 };
+export const leaveMatchAction = () => {
+  return {
+    type: "LEAVE",
+    payload: {
+      id: -1,
+      playerId: -1,
+      name: "",
+      hostName: "",
+    },
+  };
+};
