@@ -18,7 +18,7 @@ function Adivination({ hand }) {
   const endAdivination = async () => {
     const url = "http://127.0.0.1:8000";
 
-    await fetch(url + `/game/${game.id}/board/adivination`, {
+    await fetch(url + `/game/${game.id}/board/no-spell`, {
       method: "PATCH",
     })
       .then((response) => {

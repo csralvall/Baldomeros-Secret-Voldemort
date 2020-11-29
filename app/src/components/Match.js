@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import useInterval from "react-useinterval";
 import { useSelector } from "react-redux";
-import AvadaKedavra from "./AvadaKedavra";
 import Role from "./Role";
 import Election from "./Election";
 import MatchInfo from "./MatchInfo";
 import Board from "./Board";
-import Adivination from "./Adivination";
 import "./css/Match.css";
 import Expelliarmus from "./Expelliarmus";
 import LeaveGame from "./LeaveGame";
+import Spell from "./Spell";
 
 function Match({ match }) {
   const game = useSelector((state) => state.match);
@@ -98,7 +97,6 @@ function Match({ match }) {
     </div>
   );
 
-  //This needs a "Spell" component
   return (
     <div>
       {game.id === parseInt(match.params.id) ? (
@@ -151,17 +149,14 @@ function Match({ match }) {
                   )}
                 </div>
                 <div>
-                  {gameStatus.boardstatus.spell === "Avada Kedavra" &&
-                  gameStatus.boardstatus.status === "use spell" &&
+                  {gameStatus.boardstatus.status === "use spell" &&
                   gameStatus.minister === user.username ? (
-                    <AvadaKedavra playerList={gameStatus.playerstatus} />
-                  ) : (
-                    ""
-                  )}
-                  {gameStatus.boardstatus.spell === "Adivination" &&
-                  gameStatus.boardstatus.status === "use spell" &&
-                  gameStatus.minister === user.username ? (
-                    <Adivination hand={gameStatus.hand} />
+                    <Spell
+                      minister={gameStatus.minister}
+                      availableSpell={gameStatus.boardstatus.spell}
+                      playerList={gameStatus.playerstatus}
+                      hand={gameStatus.hand}
+                    />
                   ) : (
                     ""
                   )}
