@@ -21,7 +21,7 @@ function Nav() {
           <Link to="/" className="nav-link">
             <li>Home</li>
           </Link>
-          <Link to={!logged_in ? "/login" : "/Profile"} className="nav-link">
+          <Link to={!logged_in ? "/login" : "/profile"} className="nav-link">
             <li>{!logged_in ? "Login" : "Profile"}</li>
           </Link>
           <Link to={!logged_in ? "/signup" : "/"} className="nav-link">
