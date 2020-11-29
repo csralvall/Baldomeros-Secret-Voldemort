@@ -24,7 +24,7 @@ class Testupdatepass(unittest.TestCase):
         delete_data(User)
 
 
-#--------------------------- Test get_min_players ----------------------------
+#--------------------------- Test update_password ----------------------------
 
     def test_update_pass1(self):
         update_password(self.userid, "oldpassword", "newpassword")

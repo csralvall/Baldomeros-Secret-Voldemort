@@ -56,7 +56,7 @@ async def change_email(user_id: int, olde: str, newe: str):
         raise HTTPException(status_code=404, detail="invalid user or email") 
         
 
-@router.post("/password", tags=["Game"])
+@router.post("/password", tags=["Authentication"])
 async def change_password(user_id: int, oldp: str, newp: str):
     if update_password(user_id, oldp, newp):
         return 200
