@@ -41,7 +41,7 @@ class Player(db.Entity):
     PlayerId = PrimaryKey(int, auto=True)
     Position = Required(int, min=0, max=9)
     SecretRol = Required(int, min=0, max=2)
-    GovRol = Required(int, min=0, max=4)
+    GovRol = Required(int, min=0, max=5)
     IsDead = Required(bool)
     Vote = Optional(int, min=0, max=2)
     UserId = Optional('User')

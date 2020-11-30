@@ -249,6 +249,16 @@ class TestDeck(unittest.TestCase):
     def test_get_available_spell_bad_board_id(self):
         self.assertRaises(BoardNotFound, get_available_spell, self.board+1)
 
+    def test_use_imperio(self):
+        imperio(self.board, self.playerid)
+
+        self.assertEqual(get_minister_username(self.match), "foo")
+
+    def test_use_imperio_bad_board_id(self):
+        self.assertRaises(BoardNotFound, imperio, self.board+1, self.playerid)
+
+    def test_use_imperio_bad_player_id(self):
+        self.assertRaises(PlayerNotFound, imperio, self.board, self.playerid+1)
 
 if __name__ == "__main__":
     unittest.main()

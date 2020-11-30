@@ -61,7 +61,16 @@ def minister_expelliarmus(match_id: int, minister_desition: str):
         set_expelliarmus_status(board_id, UNLOCKED)
 
         change_ingame_status(match_id, NOMINATION)
-        get_top_three_proclamation(board_id)
+
+        try:
+            get_top_three_proclamation(board_id)
+        except NotEnoughProclamations:
+            refill_deck(board_id)
+            shuffle_deck(board_id)
+            get_top_three_proclamation(board_id)
+        except DeckNotFound:
+            raise HTTPException(status_code=404, detail="Deck not found.")
+
         failed_election(match_id)
         failed_director_expelliarmus(match_id)
         set_next_minister_failed_election(match_id)
@@ -118,7 +127,7 @@ async def disable_spell_endpoint(match_id: int):
 
     return 200
 
-@router.get("/{match_id}/board/crucio", tags=["Spells"]) # TODO: tests
+@router.get("/{match_id}/board/crucio", tags=["Spells"])
 async def use_crucio(
     match_id: int = Path(..., title="The ID of the current match"),
     playername: str = Query(..., title="The playername of the caller"),
@@ -152,3 +161,41 @@ async def use_crucio(
         magician_rol = DEATH_EATER
 
     return SecretRolDiccionary[magician_rol]
+
+@router.patch("/{match_id}/board/imperio", tags=["Spells"])
+async def use_imperio(
+    match_id: int = Path(..., title="The ID of the current match"),
+    playername: str = Query(..., title="The playername of the caller"),
+    designated: str = Query(..., title="Player designed as next minister")):
+
+    if not check_match(match_id):
+        raise HTTPException(status_code=404, detail="this match does not exist")
+
+    if not get_ingame_status(match_id) == USE_SPELL:
+        raise HTTPException(status_code=403, detail="Can't use spell now")
+
+    board_id = get_match_board_id(match_id)
+
+    if not get_available_spell(board_id) == IMPERIO:
+        raise HTTPException(status_code=403, detail="Spell not available")
+
+    minister_id = get_player_id_from_username(match_id, playername)
+    magician_id = get_player_id_from_username(match_id, designated)
+
+    if minister_id is None or magician_id is None:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    minister = get_minister_username(match_id)
+
+    if not playername == minister:
+        raise HTTPException(status_code=403, detail="You are not minister")
+
+    if designated == minister:
+        raise HTTPException(status_code=403, detail="Not allowed")
+
+    imperio(board_id, magician_id)
+
+    change_ingame_status(match_id, NOMINATION)
+    change_to_exdirector(match_id)
+
+    return f"{designated} is the new Minister"
