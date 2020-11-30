@@ -72,6 +72,21 @@ class TestInMatch(unittest.TestCase):
         self.assertRaises(BadIngameStatus, change_ingame_status, self.matchid, -1)
         self.assertRaises(BadIngameStatus, change_ingame_status, self.matchid, 7)
 
+    def test_exminister_to_magician(self):
+        make_ex_minister(self.playeridcreator)
+        make_ex_minister(self.player1id)
+        self.assertEqual(get_player_gov_rol(self.playeridcreator),
+                        GovRolDiccionary[EX_MINISTER])
+        self.assertEqual(get_player_gov_rol(self.player1id),
+                        GovRolDiccionary[EX_MINISTER])
+        exminister_to_magician(self.matchid)
+        self.assertEqual(get_player_gov_rol(self.playeridcreator),
+                        GovRolDiccionary[MAGICIAN])
+        self.assertEqual(get_player_gov_rol(self.player1id),
+                        GovRolDiccionary[EX_MINISTER])
+
+    def test_exminister_to_magician_bad_match_id(self):
+        self.assertRaises(MatchNotFound, exminister_to_magician, self.matchid+1)
 
     def test_change_to_exdirector(self):
         make_director(self.playeridcreator)
