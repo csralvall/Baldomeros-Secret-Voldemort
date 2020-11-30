@@ -1063,3 +1063,103 @@ def get_username_and_email(user_id: int):
     }
 
     return username_and_email
+
+@db_session
+def get_finished_matches(user_id: int):
+    finished_matches = []
+    matches = User[user_id].Matches
+
+    for p in matches:
+        if (get_match_status(p.Id) == 'Finished'):
+            pid = get_player_id(p.Id, user_id)
+            rol = get_player_rol(pid)
+            winner = check_winner(p.Id)
+            match_name = get_creator_username_match(p.Id)
+            match = {
+                "Match name": match_name,
+                "secret rol": SecretRolDiccionary[rol],
+                "winner": winner
+            }
+            finished_matches.append(match)
+    return finished_matches        
+
+@db_session
+def get_winrate(user_id: int):
+    winrate_phoneix = 100
+    winrate_voldemort = 100
+    winrate_death_eater = 100
+    winrate_total = 100 
+    partidas_ganadas_phoenix = 0
+    partidas_ganadas_death_eater = 0 
+    partidas_ganadas_voldemort = 0 
+    partidas_ganadas = 0 
+    partidas_jugadas = 0
+    partidas_jugadas_phoenix = 0
+    partidas_jugadas_voldemort = 0
+    partidas_jugadas_death_eater = 0
+
+    winrates = []
+
+    matches = User[user_id].Matches
+    for p in matches: 
+        if (get_match_status(p.Id) == 'Finished'):
+            pid = get_player_id(p.Id, user_id)
+            rol = get_player_rol(pid)
+            winner = check_winner(p.Id)
+
+            if (rol == 2):
+                if (winner == 'phoenix' or winner == 'Voldemort died'):
+                    partidas_ganadas_phoenix = partidas_ganadas_phoenix + 1
+                    partidas_ganadas = partidas_ganadas + 1
+                    partidas_jugadas_phoenix = partidas_jugadas_phoenix + 1
+                    partidas_jugadas = partidas_jugadas + 1
+                else:
+                    partidas_jugadas_phoenix = partidas_jugadas_phoenix + 1
+                    partidas_jugadas = partidas_jugadas + 1
+                
+            elif (rol == 1):
+                if (winner == 'death eater' or winner == 'Voldemort is the director'):
+                    partidas_ganadas_death_eater = partidas_ganadas_death_eater + 1
+                    partidas_ganadas = partidas_ganadas + 1
+                    partidas_jugadas_death_eater = partidas_jugadas_death_eater + 1
+                    partidas_jugadas = partidas_jugadas + 1
+                else:
+                    partidas_jugadas_death_eater = partidas_jugadas_death_eater + 1
+                    partidas_jugadas = partidas_jugadas + 1
+            else:
+                if (winner == 'death eater' or winner == 'Voldemort is the director'):
+                    partidas_ganadas_voldemort = partidas_ganadas_death_eater + 1
+                    partidas_ganadas = partidas_ganadas + 1 
+                    partidas_jugadas_voldemort = partidas_jugadas_voldemort + 1
+                    partidas_jugadas = partidas_jugadas + 1 
+                else:
+                    partidas_jugadas_voldemort = partidas_jugadas_voldemort + 1
+                    partidas_jugadas = partidas_jugadas + 1
+
+    if (partidas_jugadas == 0 ):
+        partidas_jugadas = 1
+    if (partidas_jugadas_voldemort == 0 ):
+        partidas_jugadas_voldemort = 1
+    if (partidas_jugadas_death_eater == 0 ):
+        partidas_jugadas_death_eater = 1
+    if (partidas_jugadas_phoenix == 0 ):
+        partidas_jugadas_phoenix = 1
+
+    wint = (partidas_ganadas / partidas_jugadas) * 100
+    winv = (partidas_ganadas_voldemort / partidas_jugadas_voldemort) * 100
+    wind = (partidas_ganadas_death_eater / partidas_jugadas_death_eater) * 100
+    winp = (partidas_ganadas_phoenix / partidas_jugadas_phoenix) * 100
+
+    winrates = {
+        'winrate total': wint,
+        'winrate as Voldemort': winv,
+        'winrate as Death eater': wind,
+        'winrate as Phoenix': winp
+    }
+    return winrates
+
+@db_session
+def get_creator_username_match(match_id: int):
+    if not Match.exists(Id = match_id):
+        raise MatchNotFound
+    return Match[match_id].Creator.Username
