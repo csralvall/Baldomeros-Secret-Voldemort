@@ -890,9 +890,11 @@ def test_imperio_medium_board():
     create_user("foo@gmail.com", "foo", "foo")
     create_user("bar@gmail.com", "bar", "bar")
     create_user("baz@gmail.com", "baz", "baz")
+    create_user("zaz@gmail.com", "zaz", "zaz")
     user_id1 = get_user("foo", "foo")["Id"]
     user_id2 = get_user("bar", "bar")["Id"]
     user_id3 = get_user("baz", "baz")["Id"]
+    user_id4 = get_user("zaz", "zaz")["Id"]
 
     match_id = add_match_db(7,8,user_id1)['Match_id']
     board_id = get_match_board_id(match_id)
@@ -900,6 +902,7 @@ def test_imperio_medium_board():
 
     add_user_in_match(user_id2, match_id, 1)
     add_user_in_match(user_id3, match_id, 2)
+    add_user_in_match(user_id4, match_id, 3)
 
     while not get_available_spell(board_id) == IMPERIO:
         enact_proclamation(match_id, DEATH_EATER_STR)
@@ -910,14 +913,17 @@ def test_imperio_medium_board():
     player_id1 = get_player_id(match_id, user_id1)
     player_id2 = get_player_id(match_id, user_id2)
     player_id3 = get_player_id(match_id, user_id3)
+    player_id4 = get_player_id(match_id, user_id4)
 
     make_minister(player_id1)
     minister = get_minister_username(match_id)
     make_magician(player_id2)
     make_director(player_id3)
+    make_ex_minister(player_id4)
     set_current_director(match_id, 2)
 
     assert get_available_spell(board_id) == IMPERIO
+    assert get_player_gov_rol(player_id4) == GovRolDiccionary[EX_MINISTER]
 
     response = client.patch(
         f"/game/{match_id}/board/imperio?playername={minister}&designated=bar"
@@ -925,6 +931,7 @@ def test_imperio_medium_board():
 
     assert response.status_code == 200
     assert response.json() == "bar is the new Minister"
+    assert get_player_gov_rol(player_id4) == GovRolDiccionary[MAGICIAN]
     assert get_minister_username(match_id) == "bar"
     assert get_available_spell(board_id) == NO_SPELL
 
@@ -937,9 +944,11 @@ def test_imperio_big_board():
     create_user("foo@gmail.com", "foo", "foo")
     create_user("bar@gmail.com", "bar", "bar")
     create_user("baz@gmail.com", "baz", "baz")
+    create_user("zaz@gmail.com", "zaz", "zaz")
     user_id1 = get_user("foo", "foo")["Id"]
     user_id2 = get_user("bar", "bar")["Id"]
     user_id3 = get_user("baz", "baz")["Id"]
+    user_id4 = get_user("zaz", "zaz")["Id"]
 
     match_id = add_match_db(9,10,user_id1)['Match_id']
     board_id = get_match_board_id(match_id)
@@ -947,6 +956,7 @@ def test_imperio_big_board():
 
     add_user_in_match(user_id2, match_id, 1)
     add_user_in_match(user_id3, match_id, 2)
+    add_user_in_match(user_id4, match_id, 3)
 
     while not get_available_spell(board_id) == IMPERIO:
         enact_proclamation(match_id, DEATH_EATER_STR)
@@ -957,14 +967,17 @@ def test_imperio_big_board():
     player_id1 = get_player_id(match_id, user_id1)
     player_id2 = get_player_id(match_id, user_id2)
     player_id3 = get_player_id(match_id, user_id3)
+    player_id4 = get_player_id(match_id, user_id4)
 
     make_minister(player_id1)
     minister = get_minister_username(match_id)
     make_magician(player_id2)
     make_director(player_id3)
+    make_ex_minister(player_id4)
     set_current_director(match_id, 2)
 
     assert get_available_spell(board_id) == IMPERIO
+    assert get_player_gov_rol(player_id4) == GovRolDiccionary[EX_MINISTER]
 
     response = client.patch(
         f"/game/{match_id}/board/imperio?playername={minister}&designated=bar"
@@ -972,6 +985,7 @@ def test_imperio_big_board():
 
     assert response.status_code == 200
     assert response.json() == "bar is the new Minister"
+    assert get_player_gov_rol(player_id4) == GovRolDiccionary[MAGICIAN]
     assert get_minister_username(match_id) == "bar"
     assert get_available_spell(board_id) == NO_SPELL
 

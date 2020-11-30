@@ -193,9 +193,9 @@ async def use_imperio(
     if designated == minister:
         raise HTTPException(status_code=403, detail="Not allowed")
 
-    imperio(board_id, magician_id)
-
-    change_ingame_status(match_id, NOMINATION)
     change_to_exdirector(match_id)
+    exminister_to_magician(match_id)
+    imperio(board_id, magician_id)
+    change_ingame_status(match_id, NOMINATION)
 
     return f"{designated} is the new Minister"

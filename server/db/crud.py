@@ -482,6 +482,17 @@ def set_next_minister(match_id: int):
         return current_minister
 
 @db_session
+def exminister_to_magician(match_id: int):
+    if not Match.exists(Id=match_id):
+        raise MatchNotFound
+
+    all_players = Match[match_id].Players
+    query = all_players.order_by(Player.Position)
+    exMinister = [x for x in query if x.GovRol == EX_MINISTER]
+    if len(exMinister):
+        exMinister[0].GovRol = MAGICIAN
+
+@db_session
 def imperio(board_id: int, player_id: int):
     if not Player.exists(PlayerId=player_id):
         raise PlayerNotFound
