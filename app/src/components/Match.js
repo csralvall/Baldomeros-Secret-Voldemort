@@ -5,6 +5,7 @@ import Role from "./Role";
 import Election from "./Election";
 import MatchInfo from "./MatchInfo";
 import Board from "./Board";
+import Chat from "./Chat";
 import "./css/Match.css";
 import Expelliarmus from "./Expelliarmus";
 import LeaveGame from "./LeaveGame";
@@ -29,6 +30,7 @@ function Match({ match }) {
     candidate: "",
     playerstatus: {},
     hand: [],
+    chat: {},
   });
 
   useInterval(async () => {
@@ -190,16 +192,19 @@ function Match({ match }) {
           <div>
             {gameStatus.matchstatus === "Joinable" ||
             gameStatus.matchstatus === "In Game" ? (
-              <Board
-                phoenixProclamationCount={
-                  gameStatus.boardstatus.phoenixproclamations
-                }
-                deathEaterProclamationCount={
-                  gameStatus.boardstatus.deatheaterproclamations
-                }
-                boardType={gameStatus.boardstatus.boardtype}
-                chaosCirclePosition={gameStatus.boardstatus.failcounter}
-              />
+              <div>
+                <Chat messages={gameStatus.chat} />
+                <Board
+                  phoenixProclamationCount={
+                    gameStatus.boardstatus.phoenixproclamations
+                  }
+                  deathEaterProclamationCount={
+                    gameStatus.boardstatus.deatheaterproclamations
+                  }
+                  boardType={gameStatus.boardstatus.boardtype}
+                  chaosCirclePosition={gameStatus.boardstatus.failcounter}
+                />
+              </div>
             ) : (
               ""
             )}
