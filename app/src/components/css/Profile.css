@@ -1,9 +1,68 @@
+.profile-module {
+  text-align: center;
+  background-color: #252525;
+  padding-bottom: 1vmin;
+  padding-left: 1vmin;
+  padding-right: 1vmin;
+  max-width: 75vmin;
+  margin: auto;
+  border-radius: 15px;
+}
+
 .profile-labels {
   font-family: "Harry P", monospace;
   font-size: 3rem;
   text-align: center;
 }
 
+.profile-title {
+  margin-bottom: 3vmin !important;
+  font-family: "Harry P", monospace;
+  color: white;
+  font-size: 5rem;
+  padding-top: 3vmin;
+}
+
 #bottom-label {
   padding-top: 2vh;
+}
+.line {
+  max-width: 70vmin;
+}
+
+.profile-info-title,
+.change-info-title {
+  font-family: "Harry P", monospace;
+  color: white;
+  max-width: 60vmin;
+  font-size: 3rem;
+  padding-top: 1.5vmin;
+  margin: auto;
+}
+
+.change-info-title {
+  padding-bottom: 2vmin;
+}
+
+.username,
+.email {
+  padding-top: 1.5vmin;
+  font-family: "Harry P", monospace;
+  font-size: 1.8rem;
+  color: gray;
+  max-width: 60vmin;
+  margin: auto;
+}
+
+.email {
+  padding-bottom: 1vmin;
+}
+
+.profile-info-labels {
+  font-family: "Harry P", monospace;
+  color: white;
+  max-width: 60vmin;
+  font-size: 1.8rem;
+  padding-top: 1.5vmin;
+  margin: auto;
 }
