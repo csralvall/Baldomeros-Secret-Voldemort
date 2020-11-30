@@ -16,7 +16,7 @@ async def list_history(user_id: int):
         matches = get_finished_matches(user_id)
         winrates = get_winrate(user_id)
         history_info = {
-            'Historial de partidas': matches,
+            'record': matches,
             'winrates': winrates
         }
         return history_info
