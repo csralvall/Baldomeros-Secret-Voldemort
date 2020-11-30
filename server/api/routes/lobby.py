@@ -6,6 +6,25 @@ from typing import Optional
 
 router = APIRouter()
 
+@router.post("/history")
+async def list_history(user_id: int):
+
+    history_info = []
+
+    if check_user(user_id):
+
+        matches = get_finished_matches(user_id)
+        winrates = get_winrate(user_id)
+        history_info = {
+            'Historial de partidas': matches,
+            'winrates': winrates
+        }
+        return history_info
+    else: 
+        raise HTTPException(status_code=404, detail="failed giving user data")
+
+
+
 @router.post("/profile")
 async def give_profile_data(user_id: int):
 
