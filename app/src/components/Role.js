@@ -164,7 +164,7 @@ function Role(playerCount) {
 
   const voldemortJSX = (
     <div className="other-death-eater-info">
-      {Object.values(playerCount)[0] >= 7 ? (
+      {Object.values(playerCount)[0] < 7 ? (
         <div>
           <h1>Death Eaters</h1>
           {Object.values(deathEaterUsernames["Death Eater"]).map((name) => (

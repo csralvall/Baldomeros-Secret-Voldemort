@@ -151,8 +151,7 @@ function Match({ match }) {
                   )}
                 </div>
                 <div>
-                  {gameStatus.boardstatus.status === "use spell" &&
-                  gameStatus.minister === user.username ? (
+                  {gameStatus.boardstatus.status === "use spell" ? (
                     <Spell
                       minister={gameStatus.minister}
                       availableSpell={gameStatus.boardstatus.spell}
