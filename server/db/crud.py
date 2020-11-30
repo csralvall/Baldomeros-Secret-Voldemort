@@ -1156,7 +1156,6 @@ def get_winrate(user_id: int):
         'winrate as Death eater': wind,
         'winrate as Phoenix': winp
     }
-
     return winrates
 
 @db_session
