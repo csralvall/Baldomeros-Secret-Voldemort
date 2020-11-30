@@ -1127,7 +1127,7 @@ def get_winrate(user_id: int):
                     partidas_jugadas_death_eater = partidas_jugadas_death_eater + 1
                     partidas_jugadas = partidas_jugadas + 1
             else:
-                 if (winner == 'death eater' or winner == 'Voldemort is the director'):
+                if (winner == 'death eater' or winner == 'Voldemort is the director'):
                     partidas_ganadas_voldemort = partidas_ganadas_death_eater + 1
                     partidas_ganadas = partidas_ganadas + 1 
                     partidas_jugadas_voldemort = partidas_jugadas_voldemort + 1
