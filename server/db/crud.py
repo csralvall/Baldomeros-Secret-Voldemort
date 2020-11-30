@@ -462,17 +462,20 @@ def set_next_minister(match_id: int):
         exMinister = [x for x in query if x.GovRol == EX_MINISTER]
         if len(exMinister):
             exMinister[0].GovRol = MAGICIAN
+        players = [x for x in query]
+        last_minister = Match[match_id].CurrentMinister
         # set imperio minister as ex minister
         imp_min = get(p for p in all_players if p.GovRol == IMPERIO_MINISTER)
         if imp_min is not None:
             imp_min.GovRol = EX_MINISTER # si era exMinister no hay problema
-        players = [x for x in query]
-        last_minister = Match[match_id].CurrentMinister
-        players[last_minister].GovRol = EX_MINISTER
+            players[last_minister].GovRol = MAGICIAN
+        else:
+            players[last_minister].GovRol = EX_MINISTER
+
         current_minister = (last_minister + 1) % len(players)
         # tienen que haber mas de tres jugadores vivos siempre
         # si hay menos de tres puede entrar en loop infinito
-        while players[current_minister].IsDead or players[current_minister].GovRol == EX_MINISTER:
+        while players[current_minister].IsDead:
             current_minister = (current_minister + 1) % len(players)
         players[current_minister].GovRol = MINISTER
         Match[match_id].CurrentMinister = current_minister

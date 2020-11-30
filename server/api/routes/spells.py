@@ -195,4 +195,7 @@ async def use_imperio(
 
     imperio(board_id, magician_id)
 
+    change_ingame_status(match_id, NOMINATION)
+    change_to_exdirector(match_id)
+
     return f"{designated} is the new Minister"

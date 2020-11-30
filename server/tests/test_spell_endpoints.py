@@ -889,14 +889,17 @@ def test_imperio_medium_board():
 
     create_user("foo@gmail.com", "foo", "foo")
     create_user("bar@gmail.com", "bar", "bar")
+    create_user("baz@gmail.com", "baz", "baz")
     user_id1 = get_user("foo", "foo")["Id"]
     user_id2 = get_user("bar", "bar")["Id"]
+    user_id3 = get_user("baz", "baz")["Id"]
 
     match_id = add_match_db(7,8,user_id1)['Match_id']
     board_id = get_match_board_id(match_id)
     set_board_type(board_id, 8)
 
-    add_user_in_match(user_id2, match_id, 2)
+    add_user_in_match(user_id2, match_id, 1)
+    add_user_in_match(user_id3, match_id, 2)
 
     while not get_available_spell(board_id) == IMPERIO:
         enact_proclamation(match_id, DEATH_EATER_STR)
@@ -906,10 +909,13 @@ def test_imperio_medium_board():
 
     player_id1 = get_player_id(match_id, user_id1)
     player_id2 = get_player_id(match_id, user_id2)
+    player_id3 = get_player_id(match_id, user_id3)
 
     make_minister(player_id1)
     minister = get_minister_username(match_id)
     make_magician(player_id2)
+    make_director(player_id3)
+    set_current_director(match_id, 2)
 
     assert get_available_spell(board_id) == IMPERIO
 
@@ -930,14 +936,17 @@ def test_imperio_big_board():
 
     create_user("foo@gmail.com", "foo", "foo")
     create_user("bar@gmail.com", "bar", "bar")
+    create_user("baz@gmail.com", "baz", "baz")
     user_id1 = get_user("foo", "foo")["Id"]
     user_id2 = get_user("bar", "bar")["Id"]
+    user_id3 = get_user("baz", "baz")["Id"]
 
     match_id = add_match_db(9,10,user_id1)['Match_id']
     board_id = get_match_board_id(match_id)
     set_board_type(board_id, 10)
 
-    add_user_in_match(user_id2, match_id, 2)
+    add_user_in_match(user_id2, match_id, 1)
+    add_user_in_match(user_id3, match_id, 2)
 
     while not get_available_spell(board_id) == IMPERIO:
         enact_proclamation(match_id, DEATH_EATER_STR)
@@ -947,10 +956,13 @@ def test_imperio_big_board():
 
     player_id1 = get_player_id(match_id, user_id1)
     player_id2 = get_player_id(match_id, user_id2)
+    player_id3 = get_player_id(match_id, user_id3)
 
     make_minister(player_id1)
     minister = get_minister_username(match_id)
     make_magician(player_id2)
+    make_director(player_id3)
+    set_current_director(match_id, 2)
 
     assert get_available_spell(board_id) == IMPERIO
 

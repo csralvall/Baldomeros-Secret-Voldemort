@@ -422,10 +422,10 @@ class TestInMatch(unittest.TestCase):
         self.assertEqual(get_minister_username(self.matchid), 'example')
         imperio(self.matchid, self.player1id)
         self.assertEqual(get_minister_username(self.matchid), 'example2')
-        self.assertEqual(set_next_minister(self.matchid), 2)
+        self.assertEqual(set_next_minister(self.matchid), 1)
+        self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister(self.matchid),2)
         self.assertEqual(get_minister_username(self.matchid), 'exa')
-        self.assertEqual(set_next_minister(self.matchid),0)
-        self.assertEqual(get_minister_username(self.matchid), 'example')
 
 
     #------------------------set_next_minister_failed_election----------------------
