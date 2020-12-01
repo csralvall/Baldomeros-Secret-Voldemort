@@ -202,4 +202,3 @@ def get_num_voldemort(match_id: int):
 @db_session
 def change_player_rol(player_id: int, rol: int):
     Player[player_id].SecretRol = rol
-    
