@@ -1,6 +1,6 @@
-from pony.orm import db_session, select, count, delete
+from pony.orm import db_session, delete
 from server.db.database import *
-from server.db.crud import DeckNotFound, BoardNotFound
+from server.db.crud.exception_crud import *
 from server.db.dicts import *
 
 @db_session
@@ -146,3 +146,59 @@ def get_failed_election_count(board_id: int):
 @db_session
 def get_players_from_match(match_id: int):
     return Match[match_id].Players
+
+
+@db_session
+def get_num_phoenix(match_id: int): 
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            if (p.SecretRol == PHOENIX):
+                n = n + 1 
+    return n 
+
+@db_session
+def get_num_magicians(match_id: int): 
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            if (p.GovRol == MAGICIAN or p.GovRol == EX_MINISTER or p.GovRol == EX_DIRECTOR):
+                n = n + 1 
+    return n    
+
+
+@db_session
+def get_num_death(match_id: int): 
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            if (p.SecretRol == DEATH_EATER):
+                n = n + 1 
+    return n     
+
+@db_session
+def get_num_minister(match_id: int): 
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            if (p.GovRol == MINISTER):
+                n = n + 1 
+    return n    
+
+@db_session
+def get_num_voldemort(match_id: int): 
+    n = 0       
+    if Match.exists(Id=match_id):
+        players = Match[match_id].Players
+        for p in players:
+            if (p.SecretRol == VOLDEMORT):
+                n = n + 1 
+    return n 
+
+@db_session
+def change_player_rol(player_id: int, rol: int):
+    Player[player_id].SecretRol = rol
