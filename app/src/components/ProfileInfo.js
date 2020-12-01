@@ -36,10 +36,16 @@ function ProfileInfo() {
   return (
     <div className="profile-info-module">
       <h1 className="profile-info-title">Profile Info</h1>
-      <h1 className="profile-info-labels">Username</h1>
-      <h1 className="username">{info.Username}</h1>
-      <h1 className="profile-info-labels">E-Mail</h1>
-      <h1 className="email">{info.Email}</h1>
+      <div className="profile-info-content">
+        <div className="profile-info-content-item">
+          <h1 className="profile-info-labels">Username</h1>
+          <h1 className="username">{info.Username}</h1>
+        </div>
+        <div className="profile-info-content-item">
+          <h1 className="profile-info-labels">E-Mail</h1>
+          <h1 className="email">{info.Email}</h1>
+        </div>
+      </div>
     </div>
   );
 }

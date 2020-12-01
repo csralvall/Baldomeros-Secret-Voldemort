@@ -1108,7 +1108,7 @@ def get_username_and_email(user_id: int):
 @db_session
 def get_finished_matches(user_id: int):
     finished_matches = []
-    matches = User[user_id].Matches
+    matches = User[user_id].Matches.order_by(desc(Match.Id))
 
     for p in matches:
         if (get_match_status(p.Id) == 'Finished'):
@@ -1116,10 +1116,20 @@ def get_finished_matches(user_id: int):
             rol = get_player_rol(pid)
             winner = check_winner(p.Id)
             match_name = get_creator_username_match(p.Id)
+
+            amIWinner = False
+            if(rol == DEATH_EATER or rol == VOLDEMORT):
+                if (winner == 'death eater' or winner == 'Voldemort is the director'):
+                    amIWinner = True
+            else:
+                if (winner == 'phoenix' or winner == 'Voldemort died'):
+                    amIWinner = True
+
             match = {
                 "Match name": match_name,
                 "secret rol": SecretRolDiccionary[rol],
-                "winner": winner
+                "winner": winner,
+                "amIWinner": amIWinner
             }
             finished_matches.append(match)
     return finished_matches        
@@ -1147,35 +1157,26 @@ def get_winrate(user_id: int):
             pid = get_player_id(p.Id, user_id)
             rol = get_player_rol(pid)
             winner = check_winner(p.Id)
-
+    
+            partidas_jugadas += 1
             if (rol == 2):
+                partidas_jugadas_phoenix += 1
                 if (winner == 'phoenix' or winner == 'Voldemort died'):
-                    partidas_ganadas_phoenix = partidas_ganadas_phoenix + 1
-                    partidas_ganadas = partidas_ganadas + 1
-                    partidas_jugadas_phoenix = partidas_jugadas_phoenix + 1
-                    partidas_jugadas = partidas_jugadas + 1
-                else:
-                    partidas_jugadas_phoenix = partidas_jugadas_phoenix + 1
-                    partidas_jugadas = partidas_jugadas + 1
-                
+                    partidas_ganadas_phoenix += 1
+                    partidas_ganadas += 1
+
             elif (rol == 1):
+                partidas_jugadas_death_eater += 1
                 if (winner == 'death eater' or winner == 'Voldemort is the director'):
-                    partidas_ganadas_death_eater = partidas_ganadas_death_eater + 1
-                    partidas_ganadas = partidas_ganadas + 1
-                    partidas_jugadas_death_eater = partidas_jugadas_death_eater + 1
-                    partidas_jugadas = partidas_jugadas + 1
-                else:
-                    partidas_jugadas_death_eater = partidas_jugadas_death_eater + 1
-                    partidas_jugadas = partidas_jugadas + 1
+                    partidas_ganadas_death_eater += 1
+                    partidas_ganadas += 1
+
             else:
+                partidas_jugadas_voldemort += 1
                 if (winner == 'death eater' or winner == 'Voldemort is the director'):
-                    partidas_ganadas_voldemort = partidas_ganadas_death_eater + 1
-                    partidas_ganadas = partidas_ganadas + 1 
-                    partidas_jugadas_voldemort = partidas_jugadas_voldemort + 1
-                    partidas_jugadas = partidas_jugadas + 1 
-                else:
-                    partidas_jugadas_voldemort = partidas_jugadas_voldemort + 1
-                    partidas_jugadas = partidas_jugadas + 1
+                    partidas_ganadas_voldemort += 1
+                    partidas_ganadas += 1 
+
 
     if (partidas_jugadas == 0 ):
         partidas_jugadas = 1
@@ -1191,11 +1192,12 @@ def get_winrate(user_id: int):
     wind = (partidas_ganadas_death_eater / partidas_jugadas_death_eater) * 100
     winp = (partidas_ganadas_phoenix / partidas_jugadas_phoenix) * 100
 
+    import math
     winrates = {
-        'winrate total': wint,
-        'winrate as Voldemort': winv,
-        'winrate as Death eater': wind,
-        'winrate as Phoenix': winp
+        'winrate total': math.ceil(wint),
+        'winrate as Voldemort': math.ceil(winv),
+        'winrate as Death eater': math.ceil(wind),
+        'winrate as Phoenix': math.ceil(winp)
     }
     return winrates
 
