@@ -2,6 +2,7 @@ import React from "react";
 import ProfileInfo from "./ProfileInfo";
 import ChangePassword from "./ChangePassword";
 import ChangeEmail from "./ChangeEmail";
+import ProfileStats from "./ProfileStats";
 
 function Profile() {
   return (
@@ -11,8 +12,12 @@ function Profile() {
       <ProfileInfo />
       <hr className="line" />
       <h1 className="change-info-title">Change Info</h1>
-      <ChangePassword />
-      <ChangeEmail />
+      <div className="change-info-btns">
+        <ChangePassword />
+        <ChangeEmail />
+      </div>
+      <hr className="line" />
+      <ProfileStats />
     </div>
   );
 }

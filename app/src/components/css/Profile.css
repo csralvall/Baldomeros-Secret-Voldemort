@@ -7,6 +7,7 @@
   max-width: 75vmin;
   margin: auto;
   border-radius: 15px;
+  margin-bottom: 6vmin;
 }
 
 .profile-labels {
@@ -28,6 +29,42 @@
 }
 .line {
   max-width: 70vmin;
+}
+
+.change-info-btns {
+  display: flex;
+  max-width: 60vmin;
+  justify-content: space-between;
+  margin-left: 10%;
+}
+
+.profile-info-content {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1vmin;
+}
+
+.profile-info-content-item {
+  width: 30vmin;
+}
+
+.profile-info-btn {
+  padding-top: 2vmin;
+  padding-bottom: 2vmin;
+  padding-left: 4vmin;
+  padding-right: 4vmin;
+  background-color: #2e2d2d;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+  font-family: "Harry P", monospace, sans-serif;
+  font-size: 2.6vmin;
+  outline: none;
+  margin-bottom: 1vw;
+  width: 23vmin;
+  text-align: center;
 }
 
 .profile-info-title,
@@ -65,4 +102,51 @@
   font-size: 1.8rem;
   padding-top: 1.5vmin;
   margin: auto;
+}
+
+.profile-stats-msg {
+  font-family: "Harry P", monospace;
+  color: gray;
+}
+
+.winrate-total-chart {
+  max-width: 20vmin;
+}
+
+.winrate-chart {
+  max-width: 15vmin;
+}
+
+.chart-title {
+  font-family: "Harry P", monospace;
+  color: white;
+  max-width: 60vmin;
+  font-size: 1.8rem;
+  padding-top: 1.5vmin;
+  margin: auto;
+  margin-bottom: 2vmin;
+  margin-top: 1vmin;
+}
+
+.charts-and-titles {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 9vmin;
+}
+
+#bottom-chart-titles {
+  margin-bottom: 0px !important;
+}
+
+.match-history-item {
+  max-width: 50vmin;
+  margin: auto;
+  border-radius: 15px;
+  padding-top: 1px;
+  padding-bottom: 1vmin;
+  font-family: "Harry P", monospace, sans-serif;
+  color: #ffffff;
+  margin-bottom: 2vmin;
+  margin-top: 2vmin;
+  font-size: 2vmin;
 }

@@ -70,7 +70,7 @@ function ChangeEmail() {
   return (
     <div className="change-pass-module">
       <button
-        className="vote-btn"
+        className="profile-info-btn"
         onClick={() => {
           setEmailModalOpen(true);
         }}
