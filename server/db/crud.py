@@ -1108,7 +1108,14 @@ def get_username_and_email(user_id: int):
 @db_session
 def get_finished_matches(user_id: int):
     finished_matches = []
-    matches = User[user_id].Matches.order_by(desc(Match.Id))
+
+    players = User[user_id].Players
+    matches = []
+
+    for p in players:
+        matches.append(p.MatchId)
+
+    matches.sort(reverse=True)
 
     for p in matches:
         if (get_match_status(p.Id) == 'Finished'):
@@ -1151,7 +1158,14 @@ def get_winrate(user_id: int):
 
     winrates = []
 
-    matches = User[user_id].Matches
+    players = User[user_id].Players
+    matches = []
+
+    for p in players:
+        matches.append(p.MatchId)
+
+    matches.sort(reverse=True)
+    
     for p in matches: 
         if (get_match_status(p.Id) == 'Finished'):
             pid = get_player_id(p.Id, user_id)
