@@ -71,7 +71,9 @@ function Chat({ messages }) {
       .then((response) => {
         if (response.status !== 200) {
           if (response.status === 404) {
-            alert("Match Not Found");
+            alert(
+              "You can't send a message if you are dead or selecting proclamations"
+            );
           } else {
             alert("Could not Send Message. Unknown Error.");
           }
