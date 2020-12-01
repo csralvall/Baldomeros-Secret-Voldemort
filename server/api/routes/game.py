@@ -1,12 +1,17 @@
-from server.db.crud import *
-
-from server.db.crud_messages import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_spell import *
+from server.db.crud.crud_legislative_session import *
+from server.db.crud.crud_lobby import *
+from server.db.crud.crud_election import *
+from server.db.crud.crud_messages import *
+from server.db.crud.crud_deck import * 
+from server.db.crud.crud_match import *
 
 from server.db.dicts import *
 
 from fastapi import APIRouter, HTTPException, Query, Path, Body
 
-from typing import Optional, List
+from typing import  List
 
 
 router = APIRouter()
@@ -75,13 +80,13 @@ async def vote_candidate(
     if 'missing vote' not in player_votes.values():
         if compute_election_result(match_id) == 'lumos':
             successful_director_election(match_id)
-            change_ingame_status(match_id, MINISTER_SELECTION)#minister selects cards stage
+            change_ingame_status(match_id, MINISTER_SELECTION)
             if check_voldemort(match_id):
                 set_winner(match_id, VOLDEMORT_DIRECTOR)
         else :
             failed_director_election(match_id)
             set_next_minister_failed_election(match_id)
-            change_ingame_status(match_id, NOMINATION)# new minister chooses new director
+            change_ingame_status(match_id, NOMINATION)
             failed_election(match_id)            
 
     winner = check_winner(match_id)
@@ -105,6 +110,7 @@ async def player_rol(match_id: int, player_id: int):
         "rol": player_rol}
     
     return rol
+
 
 @router.get("/{match_id}/death_eaters", tags=["Game"])
 async def death_eaters_in_match(match_id: int):
@@ -131,7 +137,7 @@ async def start_game(match_id: int, user: int):
                 
     if not num >= minp: 
         raise HTTPException(status_code=404, detail="we need more people to start :)")
-    #BoardType=SMALL_BOARD, #hardcoded_hay que cambiarlo cuando empieza la partida
+
     set_roles(num,match_id)
     set_gob_roles(match_id)
     change_match_status(match_id, IN_GAME)
@@ -153,6 +159,7 @@ async def posible_directors(match_id:int):
     posible_directors = get_posible_directors(match_id)
 
     return posible_directors
+
 
 @router.post("/{match_id}/proclamation/{player_id}", tags=["Game"])
 async def receive_cards(match_id: int, player_id: int, discarded: str, selected: List[str]=Body(...)):
@@ -180,7 +187,7 @@ async def receive_cards(match_id: int, player_id: int, discarded: str, selected:
         except InvalidProclamation:
             raise HTTPException(status_code=404, detail="The proclamation selected doesn't match the proclamations passed.")    
 
-        change_ingame_status(match_id, DIRECTOR_SELECTION)#director selects cards stage
+        change_ingame_status(match_id, DIRECTOR_SELECTION)
 
     elif username == director:
         if not get_ingame_status(match_id) == DIRECTOR_SELECTION:
@@ -206,13 +213,13 @@ async def receive_cards(match_id: int, player_id: int, discarded: str, selected:
         unlock_expelliarmus(board_id)
         if selected_card == DEATH_EATER_STR:
             if not unlock_spell(match_id) == NO_SPELL:
-                change_ingame_status(match_id, USE_SPELL)#spell stage
+                change_ingame_status(match_id, USE_SPELL)
             else:
-                change_ingame_status(match_id, NOMINATION)#minister selects director stage
+                change_ingame_status(match_id, NOMINATION)
                 change_to_exdirector(match_id)
                 set_next_minister(match_id)
         else:
-            change_ingame_status(match_id, NOMINATION)#minister selects director stage
+            change_ingame_status(match_id, NOMINATION)
             change_to_exdirector(match_id)
             set_next_minister(match_id)
 
@@ -230,6 +237,7 @@ async def receive_cards(match_id: int, player_id: int, discarded: str, selected:
     
     winner = check_winner(match_id)
     return winner 
+
 
 @router.patch("/{match_id}/director", tags=["Game"])
 async def select_director(
@@ -255,6 +263,7 @@ async def select_director(
         raise HTTPException(status_code=404, detail="Resource not found")
 
     return f"{playername} is the candidate to director"
+
 
 @router.patch("/{match_id}/chat", tags=["Game"])
 async def send_message_endpoint(
@@ -288,4 +297,3 @@ async def send_message_endpoint(
         raise HTTPException(status_code=404, detail="username is too long")
 
     return "Message sent"
-

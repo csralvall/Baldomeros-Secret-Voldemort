@@ -1,8 +1,10 @@
-from server.db.crud import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_match import *
+from server.db.crud.crud_profile import *
+from server.db.crud.crud_lobby import *
 
-from fastapi import APIRouter, HTTPException, Query, Path
+from fastapi import APIRouter, HTTPException
 
-from typing import Optional
 
 router = APIRouter()
 
@@ -24,7 +26,6 @@ async def list_history(user_id: int):
         raise HTTPException(status_code=404, detail="failed giving user data")
 
 
-
 @router.post("/profile")
 async def give_profile_data(user_id: int):
 
@@ -39,6 +40,7 @@ async def give_profile_data(user_id: int):
     else: 
         raise HTTPException(status_code=404, detail="failed giving user data")
 
+
 @router.post("/new", tags=["Game"])
 async def create_match(minp: int, maxp: int, uhid: int):
   
@@ -49,7 +51,7 @@ async def create_match(minp: int, maxp: int, uhid: int):
     else:
         raise HTTPException(status_code=404, detail="couldnt create the game")  
 
-#se puede cambiar de user a user_id de nombre de variable, por que es el id
+
 @router.post("/{match_id}", tags=["Game"])
 async def join_game(match_id: int, user: int): 
 
@@ -79,6 +81,7 @@ async def join_game(match_id: int, user: int):
     }
 
     return playerdic
+
 
 @router.get("/list", tags=["Game"])
 async def list_games():
