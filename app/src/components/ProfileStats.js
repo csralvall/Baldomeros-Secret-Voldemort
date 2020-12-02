@@ -12,7 +12,7 @@ function ProfileStats() {
   }, []);
 
   const fetchProfileStats = async () => {
-    const url = "http://181.165.189.87:8000";
+    const url = "http://127.0.0.1:8000";
 
     await fetch(url + `/game/history?user_id=${user.id}`, {
       method: "POST",
