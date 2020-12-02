@@ -1,6 +1,15 @@
 
 import unittest 
-from server.db.crud import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_deck import *
+from server.db.crud.crud_election import *
+from server.db.crud.crud_legislative_session import *
+from server.db.crud.crud_lobby import *
+from server.db.crud.crud_match import *
+from server.db.crud.crud_messages import *
+from server.db.crud.crud_profile import *
+from server.db.crud.crud_spell import *
+
 from server.db.database import *
 from server.tests.helpers import *
 

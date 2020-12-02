@@ -1,7 +1,8 @@
-from server.db.crud import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_profile import *
 
-from fastapi import APIRouter, File, Form, UploadFile, HTTPException
-from pydantic import BaseModel, EmailStr, SecretStr
+from fastapi import APIRouter, Form, UploadFile, HTTPException
+from pydantic import EmailStr, SecretStr
 
 from typing import Optional
 

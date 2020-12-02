@@ -1,6 +1,15 @@
 from fastapi.testclient import TestClient
 
-from server.db.crud import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_deck import *
+from server.db.crud.crud_election import *
+from server.db.crud.crud_legislative_session import *
+from server.db.crud.crud_lobby import *
+from server.db.crud.crud_match import *
+from server.db.crud.crud_messages import *
+from server.db.crud.crud_profile import *
+from server.db.crud.crud_spell import *
+
 from server.tests.helpers import *
 
 from server.main import app
@@ -124,26 +133,6 @@ def test_vote_player_from_another_match():
 
     assert response.status_code == 404
     assert response.json()['detail'] == "Player not found"
-
-def test_vote_not_allowed_vote():
-    delete_data(Board)
-    delete_data(Player)
-    delete_data(Match)
-    delete_data(User)
-
-    create_user("foo@gmail.com", "foo", "foo")
-    user = get_user("foo", "foo")
-    uid = user['Id']
-
-    gid = add_match_db(5,7,uid)['Match_id']
-
-    pid = get_player_id(gid,uid)
-
-    response = client.put(
-        f"/game/{gid}/player/{pid}?vote=sfda",
-    )
-
-    assert response.status_code == 200
 
 def test_vote_not_allowed_vote():
     delete_data(Board)
@@ -353,7 +342,7 @@ def test_vote_endpoint():
         assert get_failed_election_count(bid)== i % 3
         assert i//3 == get_phoenix_proclamations(gid)+ get_death_eater_proclamations(gid)
 
-def test_vote_endpoint():
+def test_vote_endpoint2():
     delete_data(Board)
     delete_data(Player)
     delete_data(Match)
@@ -401,6 +390,7 @@ def test_vote_endpoint():
 
     make_voldemort(pid)
     set_next_candidate_director(gid,0)
+    assert get_candidate_director_username(gid) == "foo"
     restore_election(gid)
     
     client.put(f"/game/{gid}/player/{pid}?vote=lumos")
@@ -408,6 +398,8 @@ def test_vote_endpoint():
     client.put(f"/game/{gid}/player/{bazpid}?vote=lumos")
     client.put(f"/game/{gid}/player/{zoopid}?vote=lumos")
     client.put(f"/game/{gid}/player/{zarpid}?vote=lumos")
+    
+    assert get_director_username(gid) == "foo"
     assert check_winner(gid) == VOLDEMORT_DIRECTOR
     assert get_ingame_status(gid) == MINISTER_SELECTION
 

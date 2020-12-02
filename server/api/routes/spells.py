@@ -1,8 +1,13 @@
-from server.db.crud import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_legislative_session import *
+from server.db.crud.crud_deck import *
+from server.db.crud.crud_election import *
+from server.db.crud.crud_match import *
+from server.db.crud.crud_spell import *
 
 from server.db.dicts import *
 
-from fastapi import APIRouter, HTTPException, Query, Path, Body
+from fastapi import APIRouter, HTTPException, Query, Path
 
 
 router = APIRouter()
@@ -25,7 +30,7 @@ async def use_avada_kedavra(
         player_id = get_player_id_from_username(match_id, playername)
         board_id = get_match_board_id(match_id)
         avada_kedavra(board_id, player_id)
-        change_ingame_status(match_id, NOMINATION)#minister selects director stage
+        change_ingame_status(match_id, NOMINATION)
         change_to_exdirector(match_id)
         set_next_minister(match_id)
         if is_voldemort_dead(match_id):
