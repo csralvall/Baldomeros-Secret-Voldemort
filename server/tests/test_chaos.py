@@ -1,5 +1,14 @@
 import unittest 
-from server.db.crud import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_deck import *
+from server.db.crud.crud_election import *
+from server.db.crud.crud_legislative_session import *
+from server.db.crud.crud_lobby import *
+from server.db.crud.crud_match import *
+from server.db.crud.crud_messages import *
+from server.db.crud.crud_profile import *
+from server.db.crud.crud_spell import *
+
 from server.db.database import *
 from server.tests.helpers import *
 
@@ -87,7 +96,7 @@ class TestChaos(unittest.TestCase):
         selected= show_selected_deck(self.board_id)
         proclamation = selected[0]
         do_chaos(self.match_id)
-        if proclamation == 'phoenix':
+        if proclamation == PHOENIX_STR:
             self.assertEqual(get_phoenix_proclamations(self.match_id), 1)
             self.assertEqual(get_death_eater_proclamations(self.match_id), 0)
         else:
@@ -148,7 +157,7 @@ class TestChaos(unittest.TestCase):
         failed_election(self.match_id)
         self.assertEqual(len(show_selected_deck(self.board_id)), 3)
         self.assertEqual(get_failed_election_count(self.board_id), 0)
-        if proclamation == 'phoenix':
+        if proclamation == PHOENIX_STR:
             self.assertEqual(get_phoenix_proclamations(self.match_id), 1)
             self.assertEqual(get_death_eater_proclamations(self.match_id), 0)
         else:
@@ -176,9 +185,9 @@ class TestChaos(unittest.TestCase):
         set_current_minister(self.match_id, 0)
         make_director(self.player_id_2)
         set_current_director(self.match_id,1)
-        enact_proclamation(self.match_id, "death eater")
-        enact_proclamation(self.match_id, "death eater")
-        enact_proclamation(self.match_id, "death eater")
+        enact_proclamation(self.match_id, DEATH_EATER_STR)
+        enact_proclamation(self.match_id, DEATH_EATER_STR)
+        enact_proclamation(self.match_id, DEATH_EATER_STR)
         self.assertFalse(check_voldemort(self.match_id))
 
     def test_check_voldemort_true(self):
@@ -187,13 +196,14 @@ class TestChaos(unittest.TestCase):
         make_director(self.player_id_2)
         set_current_director(self.match_id,1)
         make_voldemort(self.player_id_2)
-        enact_proclamation(self.match_id, "death eater")
-        enact_proclamation(self.match_id, "death eater")
-        enact_proclamation(self.match_id, "death eater")
+        enact_proclamation(self.match_id, DEATH_EATER_STR)
+        enact_proclamation(self.match_id, DEATH_EATER_STR)
+        enact_proclamation(self.match_id, DEATH_EATER_STR)
         self.assertTrue(check_voldemort(self.match_id))
 
     def test_check_voldemort_wrong_mid(self):
         self.assertRaises(MatchNotFound,check_voldemort,self.match_id+1)
 
 
-check_voldemort
+if __name__ == "__main__":
+    unittest.main()

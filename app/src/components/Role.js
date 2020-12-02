@@ -23,13 +23,14 @@ if (process.env.NODE_ENV === "test") {
   Modal.setAppElement("#root");
 }
 
-function Role() {
+function Role(playerCount) {
   const matchID = useSelector((state) => state.match.id);
   const playerID = useSelector((state) => state.match.playerId);
+  const username = useSelector((state) => state.user.username);
   const [role, setRole] = useState("");
   const [roleImg, setRoleImg] = useState();
   const [deathEaterUsernames, setDeathEaterUsernames] = useState({
-    "Death Eater": {},
+    "Death Eater": [],
     Voldemort: "",
   });
 
@@ -126,16 +127,53 @@ function Role() {
       });
   };
 
+  function isNotMe(name) {
+    return username !== name;
+  }
+
   const deathEatersJSX = (
     <div className="other-death-eater-info">
-      <h1>Death Eaters:</h1>
-      {Object.values(deathEaterUsernames["Death Eater"]).map((name) => (
-        <h1 className="death-eater-role-username">{name}</h1>
-      ))}
-      <h1>Voldemort:</h1>
-      <h1 className="voldemort-role-username">
-        {deathEaterUsernames["Voldemort"]}
-      </h1>
+      {Object.values(playerCount)[0] === 5 ? (
+        <div>
+          <h1>Voldemort</h1>
+          <h1 className="voldemort-role-username">
+            {deathEaterUsernames["Voldemort"]}
+          </h1>
+        </div>
+      ) : (
+        ""
+      )}
+      {Object.values(playerCount)[0] !== 5 ? (
+        <div>
+          <h1>Fellow Death Eaters</h1>
+          {Object.values(deathEaterUsernames["Death Eater"])
+            .filter(isNotMe)
+            .map((name) => (
+              <h1 className="death-eater-role-username">{name}</h1>
+            ))}
+          <h1>Voldemort</h1>
+          <h1 className="voldemort-role-username">
+            {deathEaterUsernames["Voldemort"]}
+          </h1>
+        </div>
+      ) : (
+        ""
+      )}
+    </div>
+  );
+
+  const voldemortJSX = (
+    <div className="other-death-eater-info">
+      {Object.values(playerCount)[0] < 7 ? (
+        <div>
+          <h1>Death Eaters</h1>
+          {Object.values(deathEaterUsernames["Death Eater"]).map((name) => (
+            <h1 className="death-eater-role-username">{name}</h1>
+          ))}
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 
@@ -167,7 +205,8 @@ function Role() {
       >
         <div>
           <img src={roleImg} className="role-img" alt="logo" />
-          {role === "Order of The Phoenix" ? "" : deathEatersJSX}
+          {role === "Voldemort" ? voldemortJSX : ""}
+          {role === "Death Eater" ? deathEatersJSX : ""}
         </div>
       </Modal>
     </div>

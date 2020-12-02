@@ -1,6 +1,15 @@
 import unittest 
 
-from server.db.crud import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_deck import *
+from server.db.crud.crud_election import *
+from server.db.crud.crud_legislative_session import *
+from server.db.crud.crud_lobby import *
+from server.db.crud.crud_match import *
+from server.db.crud.crud_messages import *
+from server.db.crud.crud_profile import *
+from server.db.crud.crud_spell import *
+
 
 from server.tests.helpers import *
 
@@ -40,11 +49,11 @@ class TestDeck(unittest.TestCase):
         self.assertEqual(get_player_id_from_username(self.match, "dfa"), None)
 
     def test_unlock_spell_with_small_board(self):
-        enact_proclamation(self.match, "death eater")
-        enact_proclamation(self.match, "death eater")
-        enact_proclamation(self.match, "death eater")
+        enact_proclamation(self.match, DEATH_EATER_STR)
+        enact_proclamation(self.match, DEATH_EATER_STR)
+        enact_proclamation(self.match, DEATH_EATER_STR)
         self.assertEqual(unlock_spell(self.match), ADIVINATION)
-        enact_proclamation(self.match, "death eater")
+        enact_proclamation(self.match, DEATH_EATER_STR)
         self.assertEqual(unlock_spell(self.match), AVADA_KEDAVRA)
 
     def test_unlock_spell_bad_match_id(self):
@@ -101,30 +110,164 @@ class TestDeck(unittest.TestCase):
         player_id = get_player_id(self.match, new_userid)
         change_player_rol(player_id, VOLDEMORT)
         change_player_rol(self.playerid, PHOENIX)
-        self.assertEqual(get_player_rol(player_id),
-                        SecretRolDiccionary[VOLDEMORT])
-        self.assertEqual(get_player_rol(self.playerid),
-                        SecretRolDiccionary[PHOENIX])
+        self.assertEqual(get_player_rol(player_id), VOLDEMORT)
+        self.assertEqual(get_player_rol(self.playerid), PHOENIX)
         avada_kedavra(self.board, player_id)
         self.assertTrue(is_voldemort_dead(self.match))
 
     def test_is_voldemort_dead_not_setted_voldemort(self):
         change_player_rol(self.playerid, PHOENIX)
-        self.assertEqual(get_player_rol(self.playerid),
-                        SecretRolDiccionary[PHOENIX])
+        self.assertEqual(get_player_rol(self.playerid), PHOENIX)
         self.assertRaises(VoldemortNotFound, is_voldemort_dead, self.match)
 
     def test_is_voldemort_dead_match_not_found(self):
         self.assertRaises(MatchNotFound, is_voldemort_dead, self.match+1)
 
-    def test_set_death_eater_winner(self):
-        set_death_eater_winner(self.match)
+    def test_set_winner_DEATH_EATER_STR_OK(self):
+        set_winner(self.match, DEATH_EATER_STR)
         self.assertEqual(get_match_status(self.match), Status[FINISHED])
-        self.assertEqual(check_winner(self.match), DEATH_EATER_WINNER)
-        
+        self.assertEqual(check_winner(self.match), DEATH_EATER_STR)
+    
+    def test_set_winner_PHOENIX_STR_OK(self):
+        set_winner(self.match, PHOENIX_STR)
+        self.assertEqual(get_match_status(self.match), Status[FINISHED])
+        self.assertEqual(check_winner(self.match), PHOENIX_STR)
 
-    def test_set_death_eater_winner_match_not_found(self):
-        self.assertRaises(MatchNotFound, set_death_eater_winner, self.match+1)
+    def test_set_winner_PHOENIX_STR_OK(self):
+        set_winner(self.match, PHOENIX_STR)
+        self.assertEqual(get_match_status(self.match), Status[FINISHED])
+        self.assertEqual(check_winner(self.match), PHOENIX_STR)
+
+    def test_set_winner_VOLDEMORT_DEAD_OK(self):
+        set_winner(self.match, VOLDEMORT_DEAD)
+        self.assertEqual(get_match_status(self.match), Status[FINISHED])
+        self.assertEqual(check_winner(self.match), VOLDEMORT_DEAD)
+
+    def test_set_winner_VOLDEMORT_DIRECTOR_OK(self):
+        set_winner(self.match, VOLDEMORT_DIRECTOR)
+        self.assertEqual(get_match_status(self.match), Status[FINISHED])
+        self.assertEqual(check_winner(self.match), VOLDEMORT_DIRECTOR)
+
+    def test_set_winner_match_not_found(self):
+        self.assertRaises(MatchNotFound, set_winner, self.match+1, PHOENIX_STR)
+
+    def test_unlock_expelliarmus_before_five_death_eater_cards(self):
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        for i in range(3):
+            enact_proclamation(self.match, DEATH_EATER_STR)
+
+        unlock_expelliarmus(self.board)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+    def test_unlock_expelliarmus_after_five_death_eater_cards(self):
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        for i in range(5):
+            enact_proclamation(self.match, DEATH_EATER_STR)
+
+        unlock_expelliarmus(self.board)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[UNLOCKED])
+
+    def test_unlock_expelliarmus_bad_board_id(self):
+        self.assertRaises(BoardNotFound, unlock_expelliarmus, self.board+1)
+
+    def test_get_expelliarmus_status_bad_board_id(self):
+        self.assertRaises(BoardNotFound, get_expelliarmus_status, self.board+1)
+
+
+    def test_set_expelliarmus_status_after_five_death_eater_cards(self):
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        for i in range(5):
+            enact_proclamation(self.match, DEATH_EATER_STR)
+
+        unlock_expelliarmus(self.board)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[UNLOCKED])
+
+        set_expelliarmus_status(self.board, MINISTER_STAGE)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[MINISTER_STAGE])
+
+        set_expelliarmus_status(self.board, REJECTED)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[REJECTED])
+
+    def test_set_expelliarmus_status_before_five_death_eater_cards(self):
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        for i in range(3):
+            enact_proclamation(self.match, DEATH_EATER_STR)
+
+        unlock_expelliarmus(self.board)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        set_expelliarmus_status(self.board, MINISTER_STAGE)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        set_expelliarmus_status(self.board, REJECTED)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+    def test_set_expelliarmus_status_lock_after_unlock(self):
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[LOCKED])
+
+        for i in range(5):
+            enact_proclamation(self.match, DEATH_EATER_STR)
+
+        unlock_expelliarmus(self.board)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[UNLOCKED])
+
+        set_expelliarmus_status(self.board, LOCKED)
+
+        self.assertEqual(get_expelliarmus_status(self.board),
+                         expelliarmus[UNLOCKED])
+
+    def test_set_expelliarmus_status_bad_board_id(self):
+        self.assertRaises(BoardNotFound, set_expelliarmus_status,
+                          self.board+1, MINISTER_STAGE)
+
+    def test_get_available_spell_small_board(self):
+        for i in range(3):
+            self.assertEqual(get_available_spell(self.board), NO_SPELL)
+            enact_proclamation(self.match, DEATH_EATER_STR)
+            unlock_spell(self.board)
+
+        self.assertEqual(get_available_spell(self.board), ADIVINATION)
+
+    def test_get_available_spell_bad_board_id(self):
+        self.assertRaises(BoardNotFound, get_available_spell, self.board+1)
+
+    def test_use_imperio(self):
+        imperio(self.board, self.playerid)
+
+        self.assertEqual(get_minister_username(self.match), "foo")
+
+    def test_use_imperio_bad_board_id(self):
+        self.assertRaises(BoardNotFound, imperio, self.board+1, self.playerid)
+
+    def test_use_imperio_bad_player_id(self):
+        self.assertRaises(PlayerNotFound, imperio, self.board, self.playerid+1)
 
 if __name__ == "__main__":
     unittest.main()

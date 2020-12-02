@@ -1,6 +1,17 @@
 from fastapi.testclient import TestClient
 
-from server.db.crud import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_deck import *
+from server.db.crud.crud_election import *
+from server.db.crud.crud_legislative_session import *
+from server.db.crud.crud_lobby import *
+from server.db.crud.crud_match import *
+from server.db.crud.crud_messages import *
+from server.db.crud.crud_profile import *
+from server.db.crud.crud_spell import *
+
+
+from server.db.dicts import *
 
 from server.main import app
 
@@ -43,6 +54,8 @@ def test_start_game_5():
         f"/game/{gidauxid}?user={auxid}"
     )
 
+    board_id = get_match_board_id(gidauxid)
+    assert get_board_status(board_id)['boardtype'] == BoardType[SMALL_BOARD]
     assert response.status_code == 200
 
 def test_start_game_6():
@@ -83,7 +96,8 @@ def test_start_game_6():
     response = client.patch(
         f"/game/{gidauxid}?user={auxid}"
     )
-
+    board_id = get_match_board_id(gidauxid)
+    assert get_board_status(board_id)['boardtype'] == BoardType[SMALL_BOARD]
     assert response.status_code == 200
 
 def test_start_game_7():
@@ -129,6 +143,8 @@ def test_start_game_7():
         f"/game/{gidauxid}?user={auxid}"
     )
 
+    board_id = get_match_board_id(gidauxid)
+    assert get_board_status(board_id)['boardtype'] == BoardType[MEDIUM_BOARD]
     assert response.status_code == 200
 
 def test_start_game_8():
@@ -178,6 +194,8 @@ def test_start_game_8():
         f"/game/{gidauxid}?user={auxid}"
     )
 
+    board_id = get_match_board_id(gidauxid)
+    assert get_board_status(board_id)['boardtype'] == BoardType[MEDIUM_BOARD]
     assert response.status_code == 200    
 
 def test_start_game_9():
@@ -231,6 +249,8 @@ def test_start_game_9():
         f"/game/{gidauxid}?user={auxid}"
     )
 
+    board_id = get_match_board_id(gidauxid)
+    assert get_board_status(board_id)['boardtype'] == BoardType[BIG_BOARD]
     assert response.status_code == 200    
 
 def test_start_game_10():
@@ -287,7 +307,8 @@ def test_start_game_10():
     response = client.patch(
         f"/game/{gidauxid}?user={auxid}"
     )
-
+    board_id = get_match_board_id(gidauxid)
+    assert get_board_status(board_id)['boardtype'] == BoardType[BIG_BOARD]
     assert response.status_code == 200    
 
 def test_start_game_fail_mid():

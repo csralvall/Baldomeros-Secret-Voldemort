@@ -17,6 +17,7 @@ function CreateMatch() {
   const history = useHistory();
   const isLogged = useSelector((state) => state.user.logged_in);
   const userID = useSelector((state) => state.user.id);
+  const username = useSelector((state) => state.user.username);
   const [isCreateMatchSuccess, setIsCreateMatchSuccess] = useState(false);
   const [minMaxPlayers, setMinMaxPlayers] = useState({
     minPlayers: 5,
@@ -60,7 +61,7 @@ function CreateMatch() {
           const dispatchData = {
             Match_id: responseData.Match_id,
             Player_id: responseData.Player_id,
-            Host_id: userID,
+            Host_Name: username,
           };
           setIsCreateMatchSuccess(true);
           dispatch(createMatchAction(dispatchData));

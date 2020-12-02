@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import useInterval from "react-useinterval";
 import { useSelector } from "react-redux";
-import AvadaKedavra from "./AvadaKedavra";
 import Role from "./Role";
 import Election from "./Election";
 import MatchInfo from "./MatchInfo";
 import Board from "./Board";
-import Adivination from "./Adivination";
+import Chat from "./Chat";
 import "./css/Match.css";
+import Expelliarmus from "./Expelliarmus";
+import LeaveGame from "./LeaveGame";
+import Spell from "./Spell";
 
 function Match({ match }) {
   const game = useSelector((state) => state.match);
@@ -20,6 +22,7 @@ function Match({ match }) {
       spell: null,
       status: "",
       failcounter: 0,
+      expelliarmus: "",
     },
     matchstatus: "",
     winner: "",
@@ -27,6 +30,7 @@ function Match({ match }) {
     candidate: "",
     playerstatus: {},
     hand: [],
+    chat: {},
   });
 
   useInterval(async () => {
@@ -54,11 +58,47 @@ function Match({ match }) {
 
   const Winner = (
     <div className="winner-div">
-      <h1 className="winner-msg">The winner is {gameStatus.winner}</h1>
+      {gameStatus.winner === "Voldemort is the director" ? (
+        <div>
+          <h1 className="winner-msg">The Death Eaters have won!</h1>
+          <h2 className="winner-description">
+            Voldemort has been chosen as director
+          </h2>
+        </div>
+      ) : (
+        ""
+      )}
+      {gameStatus.winner === "Voldemort died" ? (
+        <div>
+          <h1 className="winner-msg">The Order of The Phoenix has won!</h1>
+          <h2 className="winner-description">Voldemort has died</h2>
+        </div>
+      ) : (
+        ""
+      )}
+      {gameStatus.winner === "death eater" ? (
+        <div>
+          <h1 className="winner-msg">The Death Eaters have won!</h1>
+          <h2 className="winner-description">
+            They managed to enact six of their proclamations
+          </h2>
+        </div>
+      ) : (
+        ""
+      )}
+      {gameStatus.winner === "phoenix" ? (
+        <div>
+          <h1 className="winner-msg">The Order of The Phoenix has won!</h1>
+          <h2 className="winner-description">
+            They managed to enact five of their proclamations
+          </h2>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 
-  //This needs a "Spell" component
   return (
     <div>
       {game.id === parseInt(match.params.id) ? (
@@ -80,6 +120,13 @@ function Match({ match }) {
                   ""
                 )}
                 <div>
+                  {gameStatus.matchstatus === "Closed" ? (
+                    <LeaveGame status={gameStatus.matchstatus} />
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div>
                   {gameStatus.matchstatus === "In Game" ? (
                     <Election
                       playerList={gameStatus.playerstatus}
@@ -88,27 +135,50 @@ function Match({ match }) {
                       candidate={gameStatus.candidate}
                       status={gameStatus.boardstatus.status}
                       hand={gameStatus.hand}
+                      expelliarmus={gameStatus.boardstatus.expelliarmus}
                     />
                   ) : (
                     ""
                   )}
                 </div>
                 <div>
-                  {" "}
-                  {gameStatus.matchstatus == "In Game" ? <Role /> : ""}{" "}
-                </div>
-                <div>
-                  {gameStatus.boardstatus.spell === "Avada Kedavra" &&
-                  gameStatus.boardstatus.status === "use spell" &&
-                  gameStatus.minister === user.username ? (
-                    <AvadaKedavra playerList={gameStatus.playerstatus} />
+                  {gameStatus.matchstatus === "In Game" ? (
+                    <Role
+                      playerCount={Object.keys(gameStatus.playerstatus).length}
+                    />
                   ) : (
                     ""
                   )}
-                  {gameStatus.boardstatus.spell === "Adivination" &&
-                  gameStatus.boardstatus.status === "use spell" &&
+                </div>
+                <div>
+                  {gameStatus.boardstatus.status === "use spell" ? (
+                    <Spell
+                      minister={gameStatus.minister}
+                      availableSpell={gameStatus.boardstatus.spell}
+                      playerList={gameStatus.playerstatus}
+                      hand={gameStatus.hand}
+                    />
+                  ) : (
+                    ""
+                  )}
+                  {gameStatus.boardstatus.status === "expelliarmus" &&
                   gameStatus.minister === user.username ? (
-                    <Adivination hand={gameStatus.hand} />
+                    <Expelliarmus
+                      minister={gameStatus.minister}
+                      director={gameStatus.director}
+                      expelliarmus={gameStatus.boardstatus.expelliarmus}
+                    />
+                  ) : (
+                    ""
+                  )}
+                  {gameStatus.boardstatus.expelliarmus === "unlocked" &&
+                  gameStatus.boardstatus.status === "director selection" &&
+                  gameStatus.director === user.username ? (
+                    <Expelliarmus
+                      minister={gameStatus.minister}
+                      director={gameStatus.director}
+                      expelliarmus={gameStatus.boardstatus.expelliarmus}
+                    />
                   ) : (
                     ""
                   )}
@@ -121,15 +191,19 @@ function Match({ match }) {
           <div>
             {gameStatus.matchstatus === "Joinable" ||
             gameStatus.matchstatus === "In Game" ? (
-              <Board
-                phoenixProclamationCount={
-                  gameStatus.boardstatus.phoenixproclamations
-                }
-                deathEaterProclamationCount={
-                  gameStatus.boardstatus.deatheaterproclamations
-                }
-                chaosCirclePosition={gameStatus.boardstatus.failcounter}
-              />
+              <div>
+                <Chat messages={gameStatus.chat} />
+                <Board
+                  phoenixProclamationCount={
+                    gameStatus.boardstatus.phoenixproclamations
+                  }
+                  deathEaterProclamationCount={
+                    gameStatus.boardstatus.deatheaterproclamations
+                  }
+                  boardType={gameStatus.boardstatus.boardtype}
+                  chaosCirclePosition={gameStatus.boardstatus.failcounter}
+                />
+              </div>
             ) : (
               ""
             )}

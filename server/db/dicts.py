@@ -1,38 +1,50 @@
 
-DEATH_EATER_WINNER = "death eater"
-PHOENIX_WINNER = "phoenix"
+DEATH_EATER_STR = "death eater"
+PHOENIX_STR = "phoenix"
 NO_WINNER_YET = "no winner yet"
+VOLDEMORT_DEAD = "Voldemort died"
+VOLDEMORT_DIRECTOR = "Voldemort is the director"
 
-Status = {0: "Joinable",
-          1: "In Game",
-          2: "Finished"}
+
+Status = ("Joinable", "In Game", "Finished", "Closed")
 
 JOINABLE = 0
 IN_GAME = 1
 FINISHED = 2
+CLOSED = 3
 
-BoardType = {0: "5-6",
-             1: "7-8",
-             2: "9-10"}
+BoardType = ("5-6", "7-8", "9-10")
 
+SMALL_BOARD = 0
+MEDIUM_BOARD = 1
+BIG_BOARD = 2
 
-SecretRolDiccionary = {0: "Voldemort",
-                       1: "Death Eater",
-                       2: "Order of The Phoenix"}
+SecretRolDiccionary = ("Voldemort", "Death Eater", "Order of The Phoenix")
 
 VOLDEMORT = 0
 DEATH_EATER = 1
 PHOENIX = 2
 
-GovRolDiccionary = {0: "Head Master",
-                    1: "Magic Minister",
-                    2: "Magician",
-                    3: "Ex Minister",
-                    4: "Ex Director"}
+GovRolDiccionary = ("Head Master",
+                    "Magic Minister",
+                    "Magician",
+                    "Ex Minister",
+                    "Ex Director",
+                    "Imperio Minister")
 
-VoteType = {0: "nox",
-            1: "lumos",
-            2: "missing vote"}
+DIRECTOR = 0
+MINISTER = 1
+MAGICIAN = 2
+EX_MINISTER = 3
+EX_DIRECTOR = 4
+IMPERIO_MINISTER = 5
+NO_DIRECTOR = 99
+
+VoteType = ("nox", "lumos", "missing vote")
+
+NOX = 0
+LUMOS = 1
+MISSING_VOTE = 2
 
 spells = (None, "Avada Kedavra", "Imperio", "Crucio", "Adivination")
 
@@ -42,7 +54,13 @@ IMPERIO = 2
 CRUCIO = 3
 ADIVINATION = 4
 
-ingame_status = ("nomination", "election", "minister selection", "director selection", "use spell", "chaos")
+ingame_status = ("nomination",
+                 "election",
+                 "minister selection",
+                 "director selection",
+                 "use spell",
+                 "chaos",
+                 "expelliarmus")
 
 NOMINATION = 0
 ELECTION = 1
@@ -50,5 +68,11 @@ MINISTER_SELECTION = 2
 DIRECTOR_SELECTION = 3
 USE_SPELL = 4
 CHAOS = 5
+EXPELLIARMUS = 6
 
-NO_DIRECTOR = 99
+expelliarmus = ("locked", "unlocked", "minister stage", "rejected")
+
+LOCKED = 0
+UNLOCKED = 1
+MINISTER_STAGE = 2
+REJECTED = 3

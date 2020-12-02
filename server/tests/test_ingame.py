@@ -1,5 +1,14 @@
 import unittest 
-from server.db.crud import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_deck import *
+from server.db.crud.crud_election import *
+from server.db.crud.crud_legislative_session import *
+from server.db.crud.crud_lobby import *
+from server.db.crud.crud_match import *
+from server.db.crud.crud_messages import *
+from server.db.crud.crud_profile import *
+from server.db.crud.crud_spell import *
+
 from server.db.database import *
 from server.tests.helpers import *
 
@@ -135,6 +144,12 @@ class TestInMatch(unittest.TestCase):
         make_magician(self.player1id)
         self.assertEqual(get_minister_username(self.matchid),"No minister yet")
 
+    def test_get_minister_imperio_minister(self):
+        make_magician(self.playeridcreator)
+        make_magician(self.player1id)
+        imperio(self.matchid, self.playeridcreator)
+        self.assertEqual(get_minister_username(self.matchid),"example")
+
     #------------------------get_candidate_director_username----------------------
     #won't receive a wrong matchid bc we check that before calling it
     def test_get_candidate_director_ok(self):
@@ -177,6 +192,7 @@ class TestInMatch(unittest.TestCase):
                 'PhoenixProclamations': 0,
                 'boardtype': '5-6',
                 'spell': None,
+                'expelliarmus': expelliarmus[LOCKED],
                 'status': 'nomination',
                 'failcounter': 0}
         board_id = get_match_board_id(self.matchid)
@@ -184,15 +200,16 @@ class TestInMatch(unittest.TestCase):
 
     def test_enact_proclamation(self):
         reset_proclamation(self.matchid)
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         board_id = get_match_board_id(self.matchid)
         add_failed_election(board_id)
         board = {'DeathEaterProclamations': 1,
                 'PhoenixProclamations': 3,
                 'boardtype': '5-6',
+                'expelliarmus': expelliarmus[LOCKED],
                 'spell': None,
                 'status': 'nomination',
                 'failcounter': 1}
@@ -206,6 +223,7 @@ class TestInMatch(unittest.TestCase):
                 'PhoenixProclamations': 0,
                 'boardtype': '5-6',
                 'spell': None,
+                'expelliarmus': expelliarmus[LOCKED],
                 'status': 'nomination',
                 'failcounter': 0}
         board_id = get_match_board_id(self.matchid)
@@ -217,21 +235,21 @@ class TestInMatch(unittest.TestCase):
     def test_get_fp_OK(self):
         reset_proclamation(self.matchid)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 0)
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 1)
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 2)
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 3)
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 4)
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 5)
 
     def test_get_fp_OK2(self):
         reset_proclamation(self.matchid)
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(get_phoenix_proclamations(self.matchid), 2)
 
     #------------------------get_death_eater_proclamations----------------------
@@ -240,23 +258,23 @@ class TestInMatch(unittest.TestCase):
     def test_get_dp_OK(self):
         reset_proclamation(self.matchid)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 0)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 1)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 2)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 3)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 4)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 5)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 6)
 
     def test_get_dp_OK2(self):
         reset_proclamation(self.matchid)
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(get_death_eater_proclamations(self.matchid), 2)
 
     #-------------27 test^-------------------
@@ -269,63 +287,63 @@ class TestInMatch(unittest.TestCase):
     def test_is_victory_OK_de(self):
         reset_proclamation(self.matchid)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
-        self.assertEqual(is_victory_from(self.matchid), "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        self.assertEqual(is_victory_from(self.matchid), DEATH_EATER_STR)
 
     def test_is_victory_OK_de2(self):
         reset_proclamation(self.matchid)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
-        self.assertEqual(is_victory_from(self.matchid), "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        self.assertEqual(is_victory_from(self.matchid), DEATH_EATER_STR)
 
     def test_is_victory_OK_ph(self):
         reset_proclamation(self.matchid)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        self.assertEqual(is_victory_from(self.matchid), "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        self.assertEqual(is_victory_from(self.matchid), PHOENIX_STR)
 
     def test_is_victory_OK_ph2(self):
         reset_proclamation(self.matchid)
-        enact_proclamation(self.matchid, "death eater")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "phoenix")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
         self.assertEqual(is_victory_from(self.matchid), "no winner yet")
-        enact_proclamation(self.matchid, "death eater")
-        enact_proclamation(self.matchid, "phoenix")
-        self.assertEqual(is_victory_from(self.matchid), "phoenix")
+        enact_proclamation(self.matchid, DEATH_EATER_STR)
+        enact_proclamation(self.matchid, PHOENIX_STR)
+        self.assertEqual(is_victory_from(self.matchid), PHOENIX_STR)
 
     def test_is_victory_fail(self):
         self.assertIsNone(is_victory_from(999999))#can fail if match has this id
@@ -400,6 +418,25 @@ class TestInMatch(unittest.TestCase):
         self.assertEqual(set_next_minister(self.matchid),0)
         self.assertEqual(get_minister_username(self.matchid), 'example')
 
+    # probando que el ministro seleccionado en el imperio, si la eleccion
+    # de director es exitosa, pase a ex-ministro luego de su periodo de
+    # actividad
+    def test_set_next_minister_after_imperio(self):
+        create_user("exa@gmail.com","exa","exa")
+        exa_user_id = get_user("exa","exa")['Id']
+        add_user_in_match(exa_user_id,self.matchid,2)
+        change_last_minister(self.matchid,0)
+        make_magician(self.player1id)
+        make_minister(self.playeridcreator)
+        self.assertEqual(get_minister_username(self.matchid), 'example')
+        imperio(self.matchid, self.player1id)
+        self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister(self.matchid), 1)
+        self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister(self.matchid),2)
+        self.assertEqual(get_minister_username(self.matchid), 'exa')
+
+
     #------------------------set_next_minister_failed_election----------------------
 
     def test_set_next_minister_failed_election_OK(self):
@@ -429,6 +466,25 @@ class TestInMatch(unittest.TestCase):
         make_minister(self.playeridcreator)
         self.assertEqual(set_next_minister_failed_election(self.matchid),1)
         self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister_failed_election(self.matchid),0)
+        self.assertEqual(get_minister_username(self.matchid), 'example')
+
+    # probando que el ciclado incluya al ministro del imperio cuando
+    # falla la eleccion de director
+    def test_set_next_minister_failed_election_after_imperio(self):
+        create_user("exa@gmail.com","exa","exa")
+        exa_user_id = get_user("exa","exa")['Id']
+        add_user_in_match(exa_user_id,self.matchid,2)
+        change_last_minister(self.matchid,0)
+        make_magician(self.player1id)
+        make_minister(self.playeridcreator)
+        self.assertEqual(get_minister_username(self.matchid), 'example')
+        imperio(self.matchid, self.player1id)
+        self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister_failed_election(self.matchid), 1)
+        self.assertEqual(get_minister_username(self.matchid), 'example2')
+        self.assertEqual(set_next_minister_failed_election(self.matchid),2)
+        self.assertEqual(get_minister_username(self.matchid), 'exa')
         self.assertEqual(set_next_minister_failed_election(self.matchid),0)
         self.assertEqual(get_minister_username(self.matchid), 'example')
 

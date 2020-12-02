@@ -12,6 +12,7 @@ if (process.env.NODE_ENV === "test") {
 }
 
 function MatchList() {
+  //ReactModal.defaultStyles = {}; // Flushes all of react-modal's styles
   const [gameList, setGameList] = useState([]);
   const [selectedGame, setSelectedGame] = useState(-1);
   const [open, setOpen] = useState(false);
@@ -57,14 +58,12 @@ function MatchList() {
         closeTimeoutMS={200}
         style={{
           content: {
-            position: "absolute",
             top: "50%",
             left: "50%",
             right: "auto",
             bottom: "auto",
             border: "1px solid #ccc",
             background: "#000",
-            overflow: "auto",
             WebkitOverflowScrolling: "touch",
             borderRadius: "4px",
             outline: "none",
@@ -103,7 +102,7 @@ function MatchList() {
                 }}
               >
                 <ul className="entry">
-                  <li>Partida de {game.Nombre_partida}</li>
+                  <li>{game.Nombre_partida + "'s Game"}</li>
                   <li>
                     {game.Min_and_Max[0]} - {game.Min_and_Max[1]}
                   </li>
@@ -112,7 +111,10 @@ function MatchList() {
             ))}
           </ul>
           {selectedGame !== -1 ? (
-            <JoinMatch matchID={gameList[selectedGame].Match_id} />
+            <JoinMatch
+              matchID={gameList[selectedGame].Match_id}
+              hostName={gameList[selectedGame].Nombre_partida}
+            />
           ) : (
             ""
           )}

@@ -23,7 +23,6 @@ function AvadaKedavra({ playerList }) {
     return username !== player[0];
   }
 
-  //flag for voting when the vote is the same as the last
   const loaded = useRef(false);
   useEffect(() => {
     if (loaded.current) {
@@ -87,6 +86,7 @@ function AvadaKedavra({ playerList }) {
         }}
       >
         <div>
+          <h1 className="avada-kedavra-modal-title">Cast Avada Kedavra</h1>
           {Object.entries(playerList)
             .filter(isPlayerDead)
             .filter(isNotMe)

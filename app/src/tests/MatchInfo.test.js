@@ -25,7 +25,11 @@ describe("Match Info Interface", () => {
   }
 
   it("should show if you are the host", () => {
-    store.getState().match = { name: "Tom Riddle's Game", id: 2, hostId: 1 };
+    store.getState().match = {
+      name: "Tom Riddle's Game",
+      id: 2,
+      hostName: "Tom Riddle",
+    };
     store.getState().user = {
       username: "Tom Riddle",
       id: 1,
@@ -38,7 +42,11 @@ describe("Match Info Interface", () => {
   });
 
   it("should show start game button if you are the host", () => {
-    store.getState().match = { name: "Tom Riddle's Game", id: 2, hostId: 1 };
+    store.getState().match = {
+      name: "Tom Riddle's Game",
+      id: 2,
+      hostName: "Tom Riddle",
+    };
     store.getState().user = {
       username: "Tom Riddle",
       id: 1,
@@ -47,11 +55,15 @@ describe("Match Info Interface", () => {
     };
     const wrapper = wrap();
     const button = wrapper.find("div div button");
-    expect(button.exists()).toBe(true);
+    expect(button).toHaveLength(2);
   });
 
   it("should show if you are not the host", () => {
-    store.getState().match = { name: "Tom Riddle's Game", id: 2, hostid: 1 };
+    store.getState().match = {
+      name: "Tom Riddle's Game",
+      id: 2,
+      hostName: "Tom Riddle",
+    };
     store.getState().user = {
       username: "Harry Potter",
       id: 2,
@@ -64,7 +76,11 @@ describe("Match Info Interface", () => {
   });
 
   it("shouldn't show button if you are not the host", () => {
-    store.getState().match = { name: "Tom Riddle's Game", id: 2, hostid: 1 };
+    store.getState().match = {
+      name: "Tom Riddle's Game",
+      id: 2,
+      hostName: "Tom Riddle",
+    };
     store.getState().user = {
       username: "Harry Potter",
       id: 2,
@@ -73,7 +89,7 @@ describe("Match Info Interface", () => {
     };
     const wrapper = wrap();
     const button = wrapper.find("div div button");
-    expect(button.exists()).toBe(false);
+    expect(button).toHaveLength(1);
   });
 
   it("should show player list title", () => {

@@ -1,7 +1,8 @@
-from server.db.crud import *
+from server.db.crud.exception_crud import *
+from server.db.crud.crud_profile import *
 
-from fastapi import APIRouter, File, Form, UploadFile, HTTPException
-from pydantic import BaseModel, EmailStr, SecretStr
+from fastapi import APIRouter, Form, UploadFile, HTTPException
+from pydantic import EmailStr, SecretStr
 
 from typing import Optional
 
@@ -47,3 +48,19 @@ async def autenticate_user(
 
     return user
   
+
+@router.post("/email", tags=["Authentication"])
+async def change_email(user_id: int, olde: str, newe: str):
+    if update_email(user_id, olde, newe):
+        return 200
+    else:
+        raise HTTPException(status_code=404, detail="invalid user or email") 
+        
+
+@router.post("/password", tags=["Authentication"])
+async def change_password(user_id: int, oldp: str, newp: str):
+    if update_password(user_id, oldp, newp):
+        return 200
+    else:
+        raise HTTPException(status_code=404, detail="invalid user or password") 
+
